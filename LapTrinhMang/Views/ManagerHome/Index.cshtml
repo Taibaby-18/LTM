@@ -2,338 +2,80 @@
     ViewData["Title"] = "Quản lý bàn";
 }
 
-<h2>Quản lý bàn (20 bàn)</h2>
+<link rel="stylesheet" href="~/css/manager-tables.css" asp-append-version="true" />
 
-<div style="display:flex; gap:10px; align-items:center; margin:10px 0;">
-    <select id="filter">
-        <option value="">-- Tất cả --</option>
-        <option value="Available">Available</option>
-        <option value="Pending">Pending</option>
-        <option value="Reserved">Reserved</option>
-    </select>
-
-    <button type="button" onclick="loadTables()">Reload</button>
-    <button type="button" onclick="logout()">Logout</button>
-
-    <a href="/ManagerHome/Reservations" style="margin-left:auto;">→ Danh sách đặt bàn</a>
-</div>
-
-<div id="grid" style="
-    display:grid;
-    grid-template-columns: repeat(5, minmax(160px, 1fr));
-    gap:12px;
-">
-</div>
-
-<!-- ===== MODAL XEM ĐƠN THEO BÀN ===== -->
-<div id="resModal" style="display:none; position:fixed; inset:0; background:#0006; z-index:9999;">
-    <div style="background:#fff; max-width:960px; margin:40px auto; padding:16px; border-radius:12px;">
-        <div style="display:flex; align-items:center; gap:10px;">
-            <h3 id="resTitle" style="margin:0;">Đơn đặt bàn</h3>
-            <div style="margin-left:auto; display:flex; gap:8px;">
-                <button type="button" onclick="reloadReservations()">Reload</button>
-                <button type="button" onclick="closeResModal()">Đóng</button>
+<div class="wrap">
+    <div class="topbar">
+        <div>
+            <h2 class="title">Quản lý bàn (20 bàn)</h2>
+            <div class="subtitle">
+                Chọn ngày để xem “suất trống / hết suất” giống bên User. Bàn có Pending sẽ hiện Pending (n) để vào duyệt.
             </div>
         </div>
 
-        <div style="display:flex; gap:10px; align-items:center; margin:12px 0;">
-            <label style="display:flex; gap:6px; align-items:center;">
-                Trạng thái:
+        <div class="controls">
+            <div class="ctrl">
+                <span>Ngày</span>
+                <input id="pageDate" type="date" />
+            </div>
+
+            <div class="ctrl">
+                <span>Lọc</span>
+                <select id="filter">
+                    <option value="">Tất cả</option>
+                    <option value="Available">Available</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Reserved">Reserved</option>
+                    <option value="Full">Full</option>
+                </select>
+            </div>
+
+            <a class="btnGhost" href="/ManagerHome/Reservations">Danh sách đặt bàn</a>
+            <button class="btn" type="button" id="btnLogout">Logout</button>
+        </div>
+    </div>
+
+    <div id="grid" class="grid"></div>
+
+    <pre id="rtlog" style="display:none"></pre>
+</div>
+
+<!-- ===== DIALOG: ĐƠN ĐẶT BÀN THEO BÀN ===== -->
+<dialog id="resDlg">
+    <div class="dlgTop">
+        <div>
+            <div class="dlgTitle" id="resTitle">Đơn đặt bàn</div>
+            <div class="dlgSub" id="resHint"></div>
+        </div>
+        <button type="button" class="xbtn" id="resCloseX">×</button>
+    </div>
+
+    <div class="dlgBody">
+        <div class="resBar">
+            <div class="ctrl">
+                <span>Trạng thái</span>
                 <select id="resFilter">
-                    <option value="">-- Tất cả --</option>
+                    <option value="">Tất cả</option>
                     <option value="Pending">Pending</option>
                     <option value="Approved">Approved</option>
                     <option value="Canceled">Canceled</option>
                 </select>
-            </label>
+            </div>
 
-            <div id="resHint" style="color:#6b7280;"></div>
+            <button class="btnSmall" type="button" id="btnResReload">Refresh</button>
         </div>
 
         <div id="resList"></div>
     </div>
-</div>
 
-<pre id="rtlog" style="background:#0b1020;color:#b6ffb6;padding:10px;border-radius:12px;margin-top:12px;height:120px;overflow:auto"></pre>
-
-<script src="https://unpkg.com/@@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
+    <div class="dlgFoot">
+        <button type="button" class="btnGhost" id="btnResClose">Đóng</button>
+    </div>
+</dialog>
 
 <script>
-    const baseUrl = location.origin;
-
-    // ====== AUTH HEADER (JWT localStorage) ======
-    function getToken() {
-        return localStorage.getItem("token") || "";
-    }
-    function authHeaders(extra = {}) {
-        const t = getToken();
-        return t ? { ...extra, "Authorization": `Bearer ${t}` } : { ...extra };
-    }
-
-    function getGrid() {
-        return document.getElementById("grid");
-    }
-
-    function rtlog(m) {
-        const el = document.getElementById("rtlog");
-        el.textContent += m + "\n";
-        el.scrollTop = el.scrollHeight;
-    }
-
-    function badgeColor(status) {
-        if (status === "Pending") return "#f59e0b";
-        if (status === "Reserved") return "#ef4444";
-        return "#22c55e";
-    }
-
-    function fmtTime(x) {
-        if (!x) return "";
-        return new Date(x).toLocaleTimeString();
-    }
-
-    function fmtDateTime(x) {
-        if (!x) return "";
-        return new Date(x).toLocaleString();
-    }
-
-    async function loadTables() {
-        const filter = document.getElementById("filter").value;
-
-        const res = await fetch(baseUrl + "/api/manager/tables", {
-            headers: authHeaders()
-        });
-
-        if (!res.ok) {
-            rtlog("API /api/manager/tables => " + res.status);
-            return;
-        }
-
-        const data = await res.json();
-        const items = filter ? data.filter(x => x.status === filter) : data;
-
-        const grid = getGrid();
-        if (!grid) return;
-
-        grid.innerHTML = items.map(t => {
-            const color = badgeColor(t.status);
-
-            // API mới nên trả thêm:
-            // t.isUpcoming (bool), t.currentStartTime, t.currentEndTime
-            // Nếu chưa có thì vẫn chạy, chỉ hiển thị theo kiểu cũ.
-            let cur = `Đang: <b>Trống</b>`;
-
-            if (t.currentCustomer) {
-                const phone = t.currentPhone || "";
-                const end = fmtTime(t.currentEndTime);
-
-                if (t.isUpcoming) {
-                    const st = fmtTime(t.currentStartTime);
-                    cur = `Sắp tới: <b>${t.currentCustomer}</b> (${phone})<br/>
-                           từ <b>${st}</b> đến <b>${end}</b>`;
-                } else {
-                    cur = `Đang: <b>${t.currentCustomer}</b> (${phone})<br/>
-                           đến <b>${end}</b>`;
-                }
-            }
-
-            return `
-                <div style="border:1px solid #e5e7eb;border-radius:14px;padding:12px;background:#fff;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;">
-                        <div style="font-size:18px;font-weight:800;">Bàn ${t.tableNumber}</div>
-                        <span style="padding:4px 10px;border-radius:999px;background:${color};color:#fff;font-weight:800;">
-                            ${t.status}
-                        </span>
-                    </div>
-
-                    <div style="margin-top:6px;color:#374151;">
-                        Sức chứa: <b>${t.capacity}</b>
-                    </div>
-
-                    <div style="margin-top:8px;color:#111827; line-height:1.35;">
-                        ${cur}
-                    </div>
-
-                    <div style="margin-top:10px;display:flex;gap:8px;">
-                        <button type="button" onclick="openReservations(${t.tableNumber})" style="
-                            flex:1; padding:8px 10px; border:1px solid #e5e7eb; border-radius:10px;
-                            background:#fff; cursor:pointer;
-                        ">Xem đơn</button>
-                    </div>
-                </div>
-            `;
-        }).join("");
-    }
-
-    async function logout() {
-        try { await fetch(baseUrl + "/api/auth/logout", { method: "POST" }); } catch {}
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        localStorage.removeItem("fullName");
-        localStorage.removeItem("phone");
-        location.href = "/AuthView/Login";
-    }
-
-    // ===== MODAL RESERVATIONS =====
-    let currentTableNumber = null;
-
-    function closeResModal() {
-        document.getElementById("resModal").style.display = "none";
-        currentTableNumber = null;
-    }
-
-    function openReservations(tableNumber) {
-        currentTableNumber = tableNumber;
-        document.getElementById("resTitle").innerText = `Đơn đặt bàn - Bàn ${tableNumber}`;
-        document.getElementById("resHint").innerText = "";
-        document.getElementById("resModal").style.display = "block";
-        document.getElementById("resFilter").value = "";
-        reloadReservations();
-    }
-
-    function statusPill(status) {
-        const map = {
-            "Pending": { bg: "#f59e0b", txt: "Pending" },
-            "Approved": { bg: "#22c55e", txt: "Approved" },
-            "Canceled": { bg: "#9ca3af", txt: "Canceled" }
-        };
-        const s = map[status] || { bg: "#111827", txt: status };
-        return `<span style="padding:2px 10px;border-radius:999px;background:${s.bg};color:#fff;font-weight:700;font-size:12px;">${s.txt}</span>`;
-    }
-
-    async function reloadReservations() {
-        if (!currentTableNumber) return;
-
-        const status = document.getElementById("resFilter").value;
-        const qs = new URLSearchParams();
-        if (status) qs.set("status", status);
-        qs.set("tableNumber", currentTableNumber);
-
-        const res = await fetch(baseUrl + `/api/manager/reservations?${qs.toString()}`, {
-            headers: authHeaders()
-        });
-
-        if (!res.ok) {
-            const t = await res.text();
-            document.getElementById("resHint").innerText = `Load failed: ${res.status} ${t}`;
-            return;
-        }
-
-        const data = await res.json();
-        const box = document.getElementById("resList");
-
-        if (!data || data.length === 0) {
-            box.innerHTML = `<div style="padding:12px;border:1px dashed #e5e7eb;border-radius:12px;">Không có đơn.</div>`;
-            return;
-        }
-
-        box.innerHTML = data.map(r => {
-            const start = fmtDateTime(r.startTime);
-            const end = fmtDateTime(r.endTime);
-
-            const canApprove = r.status === "Pending";
-            const canCancel = r.status !== "Canceled";
-
-            return `
-                <div style="border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin:8px 0;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
-                        <div style="font-weight:800;">#${r.id} - Bàn ${r.tableNumber}</div>
-                        ${statusPill(r.status)}
-                    </div>
-
-                    <div style="margin-top:6px;color:#111827;">
-                        <b>${r.customerName}</b> (${r.phone})
-                    </div>
-                    <div style="margin-top:4px;color:#374151;">
-                        ${start} → ${end}
-                    </div>
-
-                    <div style="margin-top:10px;display:flex;gap:8px;">
-                        <button type="button" ${canApprove ? "" : "disabled"}
-                            onclick="approveRes(${r.id})"
-                            style="padding:8px 10px;border-radius:10px;border:1px solid #e5e7eb; background:${canApprove ? "#111827" : "#e5e7eb"}; color:${canApprove ? "#fff" : "#6b7280"}; cursor:${canApprove ? "pointer" : "not-allowed"};">
-                            Duyệt
-                        </button>
-
-                        <button type="button" ${canCancel ? "" : "disabled"}
-                            onclick="cancelRes(${r.id})"
-                            style="padding:8px 10px;border-radius:10px;border:1px solid #e5e7eb; background:${canCancel ? "#fff" : "#e5e7eb"}; color:#111827; cursor:${canCancel ? "pointer" : "not-allowed"};">
-                            Hủy
-                        </button>
-                    </div>
-                </div>
-            `;
-        }).join("");
-    }
-
-    async function approveRes(id) {
-        const res = await fetch(baseUrl + `/api/manager/reservations/${id}/approve`, {
-            method: "PUT",
-            headers: authHeaders()
-        });
-
-        if (!res.ok) {
-            alert(await res.text());
-            return;
-        }
-        await reloadReservations();
-        await loadTables();
-    }
-
-    async function cancelRes(id) {
-        const res = await fetch(baseUrl + `/api/manager/reservations/${id}/cancel`, {
-            method: "PUT",
-            headers: authHeaders()
-        });
-
-        if (!res.ok) {
-            alert(await res.text());
-            return;
-        }
-        await reloadReservations();
-        await loadTables();
-    }
-
-    // ===== SignalR connect =====
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl(baseUrl + "/hubs/booking", {
-            accessTokenFactory: () => getToken()
-        })
-        .withAutomaticReconnect()
-        .configureLogging(signalR.LogLevel.Information)
-        .build();
-
-    connection.on("TableUpdated", data => {
-        rtlog("TableUpdated: " + JSON.stringify(data));
-        loadTables();
-        if (currentTableNumber) reloadReservations();
-    });
-
-    connection.on("ReservationCreated", data => {
-        rtlog("ReservationCreated: " + JSON.stringify(data));
-        loadTables();
-        if (currentTableNumber) reloadReservations();
-    });
-
-    connection.on("ReservationUpdated", data => {
-        rtlog("ReservationUpdated: " + JSON.stringify(data));
-        loadTables();
-        if (currentTableNumber) reloadReservations();
-    });
-
-    connection.on("ReservationCanceled", data => {
-        rtlog("ReservationCanceled: " + JSON.stringify(data));
-        loadTables();
-        if (currentTableNumber) reloadReservations();
-    });
-
-    document.addEventListener("DOMContentLoaded", async () => {
-        try { await loadTables(); } catch (e) { rtlog("LoadTables ERROR: " + e); }
-
-        try {
-            await connection.start();
-            rtlog("SignalR: Connected");
-        } catch (e) {
-            rtlog("SignalR: ERROR " + e);
-        }
-    });
+    window.MANAGER_CFG = { baseUrl: location.origin };
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+<script src="~/js/manager-tables.js" asp-append-version="true"></script>
