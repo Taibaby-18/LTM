@@ -1,0 +1,132 @@
+﻿@{
+    Layout = null;
+}
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f6f7fb;
+            padding: 24px
+        }
+
+        .card {
+            max-width: 420px;
+            margin: auto;
+            background: #fff;
+            padding: 16px;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #d1d5db;
+            border-radius: 10px
+        }
+
+        button {
+            width: 100%;
+            padding: 10px 12px;
+            border: 0;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #111827;
+            color: #fff
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px
+        }
+
+            .row button {
+                width: auto;
+                flex: 1
+            }
+
+        pre {
+            background: #0b1020;
+            color: #b6ffb6;
+            padding: 10px;
+            border-radius: 12px;
+            margin-top: 12px;
+            height: 160px;
+            overflow: auto
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 10px
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Đăng nhập</h2>
+
+        <input id="phone" placeholder="SĐT" />
+        <input id="pass" type="password" placeholder="Mật khẩu" />
+
+        <button onclick="login()">Login</button>
+
+        <div class="row">
+            <button onclick="logout()" style="background:#6b7280">Logout</button>
+            <button onclick="whoami()" style="background:#2563eb">Role?</button>
+        </div>
+
+        <a href="/AuthView/Register">Đăng ký User</a> |
+        <a href="/AuthView/RegisterManager">Đăng ký Manager</a>
+
+        <pre id="log"></pre>
+    </div>
+
+    <script>
+        const baseUrl = location.origin;
+        const logEl = document.getElementById("log");
+        function log(m){ logEl.textContent += m + "\n"; logEl.scrollTop = logEl.scrollHeight; }
+
+        async function login(){
+          const body = {
+            phone: document.getElementById("phone").value.trim(),
+            password: document.getElementById("pass").value
+          };
+
+          const res = await fetch(baseUrl + "/api/auth/login", {
+            method:"POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify(body)
+          });
+
+          const text = await res.text();
+          log(res.status + " " + text);
+
+          if(res.ok){
+            const json = JSON.parse(text);
+            localStorage.setItem("role", json.role || "");
+            log("Login OK. role=" + (json.role || ""));
+
+            // ✅ redirect theo role
+            if(json.role === "Manager") location.href = "/ManagerHome/Index";
+            else location.href = "/UserHome/Index";
+          }
+        }
+
+        async function logout(){
+          await fetch(baseUrl + "/api/auth/logout", { method: "POST" });
+          localStorage.removeItem("role");
+          log("Logged out (cookie cleared)");
+        }
+
+        function whoami(){
+          log("role(localStorage)=" + (localStorage.getItem("role") || ""));
+        }
+    </script>
+</body>
+</html>

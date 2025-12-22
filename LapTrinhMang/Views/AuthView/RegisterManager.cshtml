@@ -1,0 +1,107 @@
+﻿@{
+    Layout = null;
+}
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>Register Manager</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f6f7fb;
+            padding: 24px
+        }
+
+        .card {
+            max-width: 420px;
+            margin: auto;
+            background: #fff;
+            padding: 16px;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #d1d5db;
+            border-radius: 10px
+        }
+
+        button {
+            width: 100%;
+            padding: 10px 12px;
+            border: 0;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #059669;
+            color: #fff
+        }
+
+        pre {
+            background: #0b1020;
+            color: #b6ffb6;
+            padding: 10px;
+            border-radius: 12px;
+            margin-top: 12px;
+            height: 160px;
+            overflow: auto
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 10px
+        }
+
+        .small {
+            font-size: 12px;
+            color: #6b7280
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Đăng ký Manager</h2>
+        <div class="small">Mã đăng ký (appsettings.json): <b>MANAGER-123</b></div>
+
+        <input id="phone" placeholder="SĐT" />
+        <input id="name" placeholder="Họ tên" />
+        <input id="pass" type="password" placeholder="Mật khẩu" />
+        <input id="code" placeholder="Mã đăng ký" value="MANAGER-123" />
+
+        <button onclick="registerManager()">Đăng ký Manager</button>
+
+        <a href="/AuthView/Login">← Về Login</a>
+
+        <pre id="log"></pre>
+    </div>
+
+    <script>
+        const baseUrl = location.origin;
+        const logEl = document.getElementById("log");
+        function log(m){ logEl.textContent += m + "\n"; logEl.scrollTop = logEl.scrollHeight; }
+
+        async function registerManager(){
+          const body = {
+            phone: document.getElementById("phone").value.trim(),
+            fullName: document.getElementById("name").value.trim(),
+            password: document.getElementById("pass").value,
+            registerCode: document.getElementById("code").value.trim()
+          };
+
+          const res = await fetch(baseUrl + "/api/auth/register-manager", {
+            method:"POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify(body)
+          });
+
+          const text = await res.text();
+          log(res.status + " " + text);
+
+          if(res.ok) log("OK. Qua Login để đăng nhập.");
+        }
+    </script>
+</body>
+</html>

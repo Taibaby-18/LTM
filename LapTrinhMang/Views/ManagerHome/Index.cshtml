@@ -1,0 +1,148 @@
+﻿@{
+    ViewData["Title"] = "Quản lý bàn";
+}
+
+<h2>Quản lý bàn (20 bàn)</h2>
+
+<div style="display:flex; gap:10px; align-items:center; margin:10px 0;">
+    <select id="filter">
+        <option value="">-- Tất cả --</option>
+        <option value="Available">Available</option>
+        <option value="Pending">Pending</option>
+        <option value="Reserved">Reserved</option>
+    </select>
+
+    <button type="button" onclick="loadTables()">Reload</button>
+    <button type="button" onclick="logout()">Logout</button>
+
+    <a href="/ManagerHome/Reservations" style="margin-left:auto;">→ Danh sách đặt bàn</a>
+</div>
+
+<div id="grid" style="
+    display:grid;
+    grid-template-columns: repeat(5, minmax(160px, 1fr));
+    gap:12px;
+">
+</div>
+
+<pre id="rtlog" style="background:#0b1020;color:#b6ffb6;padding:10px;border-radius:12px;margin-top:12px;height:120px;overflow:auto"></pre>
+
+<script src="https://unpkg.com/@@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
+
+<script>
+    const baseUrl = location.origin;
+
+    function getGrid() {
+        return document.getElementById("grid");
+    }
+
+    function rtlog(m) {
+        const el = document.getElementById("rtlog");
+        el.textContent += m + "\n";
+        el.scrollTop = el.scrollHeight;
+    }
+
+    function badgeColor(status) {
+        if (status === "Pending") return "#f59e0b";
+        if (status === "Reserved") return "#ef4444";
+        return "#22c55e";
+    }
+
+    async function loadTables() {
+        const filter = document.getElementById("filter").value;
+
+        const res = await fetch(baseUrl + "/api/manager/tables");
+        if (!res.ok) {
+            rtlog("API /api/manager/tables => " + res.status);
+            return;
+        }
+
+        const data = await res.json();
+        const items = filter ? data.filter(x => x.status === filter) : data;
+
+        const grid = getGrid();
+        if (!grid) return;
+
+        grid.innerHTML = items.map(t => {
+            const color = badgeColor(t.status);
+
+            const cur = t.currentCustomer
+                ? `Đang: <b>${t.currentCustomer}</b> (${t.currentPhone || ""})<br/>đến <b>${new Date(t.currentEndTime).toLocaleTimeString()}</b>`
+                : `Đang: <b>Trống</b>`;
+
+            return `
+                <div style="border:1px solid #e5e7eb;border-radius:14px;padding:12px;background:#fff;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <div style="font-size:18px;font-weight:800;">Bàn ${t.tableNumber}</div>
+                        <span style="padding:4px 10px;border-radius:999px;background:${color};color:#fff;font-weight:800;">
+                            ${t.status}
+                        </span>
+                    </div>
+
+                    <div style="margin-top:6px;color:#374151;">
+                        Sức chứa: <b>${t.capacity}</b>
+                    </div>
+
+                    <div style="margin-top:8px;color:#111827; line-height:1.35;">
+                        ${cur}
+                    </div>
+
+                    <div style="margin-top:10px;display:flex;gap:8px;">
+                        <a href="/ManagerHome/Reservations" style="
+                            flex:1;text-align:center;text-decoration:none;
+                            padding:8px 10px;border:1px solid #e5e7eb;border-radius:10px;
+                        ">Xem đơn</a>
+                    </div>
+                </div>
+            `;
+        }).join("");
+    }
+
+    async function logout() {
+        await fetch(baseUrl + "/api/auth/logout", { method: "POST" });
+        localStorage.removeItem("role");
+        location.href = "/AuthView/Login";
+    }
+
+    // SignalR connect (tự reload khi có thay đổi)
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl(baseUrl + "/hubs/booking")
+        .withAutomaticReconnect()
+        .configureLogging(signalR.LogLevel.Information)
+        .build();
+
+    connection.on("TableUpdated", data => {
+        rtlog("TableUpdated: " + JSON.stringify(data));
+        loadTables();
+    });
+
+    connection.on("ReservationCreated", data => {
+        rtlog("ReservationCreated: " + JSON.stringify(data));
+        loadTables();
+    });
+
+    connection.on("ReservationUpdated", data => {
+        rtlog("ReservationUpdated: " + JSON.stringify(data));
+        loadTables();
+    });
+
+    connection.on("ReservationCanceled", data => {
+        rtlog("ReservationCanceled: " + JSON.stringify(data));
+        loadTables();
+    });
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        try {
+            await loadTables();
+        } catch (e) {
+            rtlog("LoadTables ERROR: " + e);
+        }
+
+        try {
+            await connection.start();
+            rtlog("SignalR: Connected");
+        } catch (e) {
+            rtlog("SignalR: ERROR " + e);
+        }
+    });
+</script>
