@@ -25,7 +25,7 @@ public class ManagerHomeController : Controller
         ViewBag.Name = User.FindFirst("name")?.Value ?? "";
         ViewBag.Phone = User.FindFirst("phone")?.Value ?? "";
         ViewBag.Role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "";
-        return View(); // Views/ManagerHome/Index.cshtml
+        return View();
     }
 
     public IActionResult Reservations()
@@ -33,7 +33,24 @@ public class ManagerHomeController : Controller
         ViewBag.Name = User.FindFirst("name")?.Value ?? "";
         ViewBag.Phone = User.FindFirst("phone")?.Value ?? "";
         ViewBag.Role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "";
-        return View(); // Views/ManagerHome/Reservations.cshtml (tạo thêm nếu cần)
+        return View();
+    }
+
+    private async Task<(string status, string? customer, string? phone, DateTime? endTimeUtc)> GetCurrentTableState(int tableId, DateTime nowUtc)
+    {
+        var a = await _db.Reservations
+            .AsNoTracking()
+            .Where(r => r.TableId == tableId
+                        && (r.Status == "Pending" || r.Status == "Approved")
+                        && r.StartTime <= nowUtc && nowUtc < r.EndTime)
+            .OrderByDescending(r => r.Id)
+            .Select(r => new { r.Status, r.CustomerName, r.Phone, r.EndTime })
+            .FirstOrDefaultAsync();
+
+        if (a == null) return ("Available", null, null, null);
+
+        var st = a.Status == "Pending" ? "Pending" : "Reserved";
+        return (st, a.CustomerName, a.Phone, DateTime.SpecifyKind(a.EndTime, DateTimeKind.Utc));
     }
 
     // ===== API: TABLES (grid bàn) =====
@@ -41,7 +58,7 @@ public class ManagerHomeController : Controller
     [Route("api/manager/tables")]
     public async Task<IActionResult> GetTablesStatus()
     {
-        var now = DateTime.Now;
+        var now = DateTime.UtcNow;
 
         var tables = await _db.Tables
             .AsNoTracking()
@@ -49,19 +66,33 @@ public class ManagerHomeController : Controller
             .Select(t => new { t.Id, t.Number, t.Capacity })
             .ToListAsync();
 
-        var active = await _db.Reservations
+        var candidates = await _db.Reservations
             .AsNoTracking()
-            .Where(r => (r.Status == "Pending" || r.Status == "Approved")
-                        && r.StartTime <= now && now < r.EndTime)
-            .Select(r => new { r.TableId, r.Status, r.CustomerName, r.Phone, r.EndTime })
+            .Where(r => (r.Status == "Pending" || r.Status == "Approved") && r.EndTime > now)
+            .OrderBy(r => r.StartTime)
+            .Select(r => new
+            {
+                r.TableId,
+                r.Status,
+                r.CustomerName,
+                r.Phone,
+                r.StartTime,
+                r.EndTime
+            })
             .ToListAsync();
+
+        var nextByTable = candidates
+            .GroupBy(x => x.TableId)
+            .ToDictionary(g => g.Key, g => g.First());
 
         var result = tables.Select(t =>
         {
-            var a = active.FirstOrDefault(x => x.TableId == t.Id);
+            nextByTable.TryGetValue(t.Id, out var a);
 
             var status = "Available";
             if (a != null) status = (a.Status == "Pending") ? "Pending" : "Reserved";
+
+            var isUpcoming = a != null && a.StartTime > now;
 
             return new
             {
@@ -70,7 +101,9 @@ public class ManagerHomeController : Controller
                 status,
                 currentCustomer = a?.CustomerName,
                 currentPhone = a?.Phone,
-                currentEndTime = a?.EndTime
+                currentStartTime = a == null ? (DateTime?)null : DateTime.SpecifyKind(a.StartTime, DateTimeKind.Utc),
+                currentEndTime = a == null ? (DateTime?)null : DateTime.SpecifyKind(a.EndTime, DateTimeKind.Utc),
+                isUpcoming
             };
         });
 
@@ -80,7 +113,7 @@ public class ManagerHomeController : Controller
     // ===== API: RESERVATIONS LIST =====
     [HttpGet]
     [Route("api/manager/reservations")]
-    public async Task<IActionResult> GetReservations([FromQuery] string? status)
+    public async Task<IActionResult> GetReservations([FromQuery] string? status, [FromQuery] int? tableNumber)
     {
         var q = _db.Reservations
             .AsNoTracking()
@@ -91,14 +124,17 @@ public class ManagerHomeController : Controller
         if (!string.IsNullOrWhiteSpace(status))
             q = q.Where(r => r.Status == status);
 
+        if (tableNumber.HasValue)
+            q = q.Where(r => r.Table != null && r.Table.Number == tableNumber.Value);
+
         var items = await q.Select(r => new
         {
             r.Id,
             tableNumber = r.Table!.Number,
             r.CustomerName,
             r.Phone,
-            r.StartTime,
-            r.EndTime,
+            startTime = DateTime.SpecifyKind(r.StartTime, DateTimeKind.Utc),
+            endTime = DateTime.SpecifyKind(r.EndTime, DateTimeKind.Utc),
             r.Status,
             r.CreatedAt
         }).ToListAsync();
@@ -112,27 +148,51 @@ public class ManagerHomeController : Controller
     public async Task<IActionResult> Approve(int id)
     {
         var r = await _db.Reservations.Include(x => x.Table).FirstOrDefaultAsync(x => x.Id == id);
-        if (r is null) return NotFound();
+        if (r is null) return NotFound(new { message = "Not found" });
 
-        if (r.Status == "Canceled") return BadRequest(new { message = "Already canceled" });
+        if (r.Status == "Canceled")
+            return BadRequest(new { message = "Already canceled" });
+
+        if (r.Status != "Pending")
+            return BadRequest(new { message = "Only Pending can be approved" });
+
+        var overlapApproved = await _db.Reservations.AnyAsync(x =>
+            x.Id != r.Id &&
+            x.TableId == r.TableId &&
+            x.Status == "Approved" &&
+            x.StartTime < r.EndTime &&
+            r.StartTime < x.EndTime
+        );
+        if (overlapApproved)
+            return Conflict(new { message = "Overlapping with another approved reservation" });
 
         r.Status = "Approved";
         await _db.SaveChangesAsync();
+
+        var now = DateTime.UtcNow;
+        var tableState = await GetCurrentTableState(r.TableId, now);
 
         await _hub.Clients.All.SendAsync("ReservationUpdated", new
         {
             id = r.Id,
             tableNumber = r.Table!.Number,
-            status = r.Status
+            status = r.Status,
+            startTime = DateTime.SpecifyKind(r.StartTime, DateTimeKind.Utc),
+            endTime = DateTime.SpecifyKind(r.EndTime, DateTimeKind.Utc),
+            customerName = r.CustomerName,
+            phone = r.Phone
         });
 
         await _hub.Clients.All.SendAsync("TableUpdated", new
         {
             tableNumber = r.Table!.Number,
-            status = "Reserved"
+            status = tableState.status,
+            currentCustomer = tableState.customer,
+            currentPhone = tableState.phone,
+            currentEndTime = tableState.endTimeUtc
         });
 
-        return Ok(new { message = "Approved" });
+        return Ok(new { id = r.Id, status = r.Status, message = "Approved" });
     }
 
     // ===== API: CANCEL =====
@@ -141,12 +201,16 @@ public class ManagerHomeController : Controller
     public async Task<IActionResult> Cancel(int id)
     {
         var r = await _db.Reservations.Include(x => x.Table).FirstOrDefaultAsync(x => x.Id == id);
-        if (r is null) return NotFound();
+        if (r is null) return NotFound(new { message = "Not found" });
 
-        if (r.Status == "Canceled") return Ok(new { message = "Already canceled" });
+        if (r.Status == "Canceled")
+            return Ok(new { id = r.Id, status = r.Status, message = "Already canceled" });
 
         r.Status = "Canceled";
         await _db.SaveChangesAsync();
+
+        var now = DateTime.UtcNow;
+        var tableState = await GetCurrentTableState(r.TableId, now);
 
         await _hub.Clients.All.SendAsync("ReservationCanceled", new
         {
@@ -158,9 +222,12 @@ public class ManagerHomeController : Controller
         await _hub.Clients.All.SendAsync("TableUpdated", new
         {
             tableNumber = r.Table!.Number,
-            status = "Available"
+            status = tableState.status,
+            currentCustomer = tableState.customer,
+            currentPhone = tableState.phone,
+            currentEndTime = tableState.endTimeUtc
         });
 
-        return Ok(new { message = "Canceled" });
+        return Ok(new { id = r.Id, status = r.Status, message = "Canceled" });
     }
 }

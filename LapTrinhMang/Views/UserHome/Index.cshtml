@@ -1,313 +1,89 @@
 ﻿@{
     ViewData["Title"] = "Đặt bàn";
-    // Lấy từ claims (controller đã set ViewBag.Name / ViewBag.Phone)
     var userName = (ViewBag.Name ?? "").ToString();
     var userPhone = (ViewBag.Phone ?? "").ToString();
 }
 
-<h2>Đặt bàn (20 bàn)</h2>
+<link rel="stylesheet" href="~/css/user-booking.css" />
 
-<div style="display:flex; gap:10px; align-items:center; margin:10px 0;">
-    <select id="filter">
-        <option value="">-- Tất cả --</option>
-        <option value="Available">Available</option>
-        <option value="Pending">Pending</option>
-        <option value="Reserved">Reserved</option>
-    </select>
+<div class="wrap">
+    <div class="topbar">
+        <div>
+            <h2 class="title">Đặt bàn</h2>
+            <div class="subtitle">Chọn ngày → hệ thống tự tính “suất trống” từng bàn. Popup chỉ nhập SĐT + chọn suất.</div>
+        </div>
 
-    <button type="button" id="btnReload">Reload</button>
-    <button type="button" id="btnLogout">Logout</button>
+        <div class="controls">
+            <div class="ctrl">
+                <span>Ngày</span>
+                <input id="pageDate" type="date" />
+            </div>
 
-    <div style="margin-left:auto; display:flex; gap:10px; align-items:center;">
-        <span style="color:#6b7280;font-size:13px;">Bấm “Đặt bàn” để mở popup nhập thông tin</span>
+            <div class="ctrl">
+                <span>Lọc</span>
+                <select id="filter">
+                    <option value="">Tất cả</option>
+                    <option value="Available">Còn suất</option>
+                    <option value="Full">Hết suất</option>
+                </select>
+            </div>
+
+            <button class="btn" type="button" id="btnLogout">Logout</button>
+        </div>
     </div>
+
+    <div id="grid" class="grid"></div>
+
+    <pre id="rtlog" style="display:none"></pre>
 </div>
 
-<div id="grid" style="
-    display:grid;
-    grid-template-columns: repeat(5, minmax(160px, 1fr));
-    gap:12px;
-"></div>
-
-<pre id="rtlog" style="background:#0b1020;color:#b6ffb6;padding:10px;border-radius:12px;margin-top:12px;height:120px;overflow:auto"></pre>
-
-<!-- ===== POPUP ĐẶT BÀN ===== -->
-<dialog id="bookDlg" style="border:0; border-radius:16px; padding:0; width:min(520px, 92vw);">
-    <div style="padding:16px 16px 12px; border-bottom:1px solid #e5e7eb; display:flex; justify-content:space-between; align-items:center;">
+<!-- ===== POPUP: CHỈ SĐT + SUẤT ===== -->
+<dialog id="bookDlg">
+    <div class="dlgTop">
         <div>
-            <div style="font-size:18px; font-weight:800;">
-                Đặt bàn <span id="dlgTableNo"></span>
-            </div>
-            <div style="font-size:12px; color:#6b7280;">
-                Nhập thông tin để gửi yêu cầu đặt bàn (Pending).
-            </div>
+            <div class="dlgTitle">Đặt bàn <span id="dlgTableNo"></span></div>
+            <div class="dlgSub">Ngày đang chọn: <b id="dlgDateLabel"></b> — chọn suất còn trống để gửi yêu cầu.</div>
         </div>
-        <button type="button" id="dlgCloseX" style="border:0; background:transparent; font-size:22px; cursor:pointer;">×</button>
+        <button type="button" class="xbtn" id="dlgCloseX">×</button>
     </div>
 
-    <div style="padding:16px;">
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <div style="grid-column:1/3;">
-                <label style="font-size:12px;color:#6b7280;">Tên khách</label>
-                <input id="dlgName" style="width:100%; padding:10px; border:1px solid #e5e7eb; border-radius:12px;" />
-            </div>
-
-            <div>
-                <label style="font-size:12px;color:#6b7280;">SĐT</label>
-                <input id="dlgPhone" style="width:100%; padding:10px; border:1px solid #e5e7eb; border-radius:12px;" />
-            </div>
-
-            <div>
-                <label style="font-size:12px;color:#6b7280;">Số giờ</label>
-                <input id="dlgHours" type="number" min="1" max="12" value="2"
-                       style="width:100%; padding:10px; border:1px solid #e5e7eb; border-radius:12px;" />
-            </div>
-
-            <div style="grid-column:1/3;">
-                <label style="font-size:12px;color:#6b7280;">Bắt đầu</label>
-                <input id="dlgStart" type="datetime-local"
-                       style="width:100%; padding:10px; border:1px solid #e5e7eb; border-radius:12px;" />
-            </div>
+    <div class="dlgBody">
+        <div class="field" style="margin-bottom:10px;">
+            <label>Tên khách</label>
+            <input id="dlgName" placeholder="Nhập tên..." />
         </div>
 
-        <div id="dlgErr" style="margin-top:10px; color:#ef4444; font-size:13px; display:none;"></div>
-        <div id="dlgOk" style="margin-top:10px; color:#16a34a; font-size:13px; display:none;"></div>
+        <div class="field" style="margin-bottom:10px;">
+            <label>SĐT</label>
+            <input id="dlgPhone" placeholder="Nhập số điện thoại..." />
+        </div>
+
+        <div class="field">
+            <label>Chọn suất giờ</label>
+            <select id="dlgSlot">
+                <option value="">-- Chọn suất giờ --</option>
+            </select>
+            <div class="help">Suất đã có người đặt sẽ không hiện.</div>
+        </div>
+
+        <div id="dlgErr" class="msgErr"></div>
+        <div id="dlgOk" class="msgOk"></div>
     </div>
 
-    <div style="padding:12px 16px; border-top:1px solid #e5e7eb; display:flex; gap:10px; justify-content:flex-end;">
-        <button type="button" id="dlgCancel"
-                style="padding:10px 12px; border:1px solid #e5e7eb; border-radius:12px; background:#fff; cursor:pointer;">
-            Hủy
-        </button>
-        <button type="button" id="dlgSubmitBtn"
-                style="padding:10px 12px; border:0; border-radius:12px; background:#111827; color:#fff; cursor:pointer; font-weight:700;">
-            Xác nhận đặt bàn
-        </button>
+    <div class="dlgFoot">
+        <button type="button" class="btnGhost" id="dlgCancel">Hủy</button>
+        <button type="button" class="btnPrimary" id="dlgSubmitBtn">Xác nhận đặt bàn</button>
     </div>
 </dialog>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
-
 <script>
-    const baseUrl = location.origin;
-
-    // ✅ lấy sẵn tên/sđt từ server (claims) để auto fill
-    const loggedName = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(userName));
-    const loggedPhone = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(userPhone));
-
-    function rtlog(m) {
-        const el = document.getElementById("rtlog");
-        el.textContent += m + "\n";
-        el.scrollTop = el.scrollHeight;
-    }
-
-    function badgeColor(status) {
-        if (status === "Pending") return "#f59e0b";
-        if (status === "Reserved") return "#ef4444";
-        return "#22c55e";
-    }
-
-    function pad2(n) { return String(n).padStart(2, "0"); }
-
-    function toDatetimeLocalValue(d) {
-        return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}T${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
-    }
-
-    function showDlgMsg(type, msg) {
-        const err = document.getElementById("dlgErr");
-        const ok = document.getElementById("dlgOk");
-        err.style.display = "none";
-        ok.style.display = "none";
-        if (type === "err") { err.textContent = msg; err.style.display = "block"; }
-        if (type === "ok") { ok.textContent = msg; ok.style.display = "block"; }
-    }
-
-    let selectedTableNumber = null;
-
-    function openBook(tableNumber, status) {
-        rtlog("openBook table=" + tableNumber + " status=" + status);
-
-        if (status && status !== "Available") {
-            rtlog(`Bàn ${tableNumber} đang ${status} nên không đặt được.`);
-            return;
-        }
-
-        selectedTableNumber = tableNumber;
-        document.getElementById("dlgTableNo").textContent = tableNumber;
-
-        // ✅ auto fill từ user đăng nhập
-        document.getElementById("dlgName").value = loggedName || "";
-        document.getElementById("dlgPhone").value = loggedPhone || "";
-
-        // mặc định start = now + 5 phút
-        const d = new Date();
-        d.setMinutes(d.getMinutes() + 5);
-        document.getElementById("dlgStart").value = toDatetimeLocalValue(d);
-
-        document.getElementById("dlgHours").value = 2;
-
-        showDlgMsg("", "");
-        document.getElementById("bookDlg").showModal();
-    }
-
-    function closeDlg() {
-        document.getElementById("bookDlg").close();
-        showDlgMsg("", "");
-    }
-
-    async function loadTables() {
-        const filter = document.getElementById("filter").value;
-
-        const res = await fetch(baseUrl + "/api/user/tables");
-        if (!res.ok) {
-            rtlog("GET /api/user/tables => " + res.status);
-            return;
-        }
-
-        const data = await res.json();
-        const items = filter ? data.filter(x => x.status === filter) : data;
-
-        const grid = document.getElementById("grid");
-        grid.innerHTML = items.map(t => {
-            const color = badgeColor(t.status);
-
-            const cur = t.currentCustomer
-                ? `Đang: <b>${t.currentCustomer}</b> (${t.currentPhone || ""})<br/>
-                   ${new Date(t.currentStartTime).toLocaleString()} → ${new Date(t.currentEndTime).toLocaleString()}`
-                : `Đang: <b>Trống</b>`;
-
-            const disabled = (t.status !== "Available");
-
-            return `
-            <div style="border:1px solid #e5e7eb;border-radius:14px;padding:12px;background:#fff;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <div style="font-size:18px;font-weight:800;">Bàn ${t.tableNumber}</div>
-                    <span style="padding:4px 10px;border-radius:999px;background:${color};color:#fff;font-weight:800;">
-                        ${t.status}
-                    </span>
-                </div>
-
-                <div style="margin-top:6px;color:#374151;">
-                    Sức chứa: <b>${t.capacity}</b>
-                </div>
-
-                <div style="margin-top:8px;color:#111827; line-height:1.35;">
-                    ${cur}
-                </div>
-
-                <div style="margin-top:10px;display:flex;gap:8px;">
-                    <button ${disabled ? "disabled" : ""} type="button"
-                        onclick="openBook(${t.tableNumber}, '${t.status}')"
-                        style="flex:1;padding:8px 10px;border:0;border-radius:10px;cursor:pointer;
-                               background:${!disabled ? "#111827" : "#9ca3af"};color:#fff;">
-                        Đặt bàn
-                    </button>
-                </div>
-            </div>
-            `;
-        }).join("");
-    }
-
-    async function submitBooking() {
-        rtlog("submitBooking() called. selectedTableNumber=" + selectedTableNumber);
-
-        showDlgMsg("", "");
-
-        const name = document.getElementById("dlgName").value.trim();
-        const phone = document.getElementById("dlgPhone").value.trim();
-        const startLocal = document.getElementById("dlgStart").value;
-        const hours = parseInt(document.getElementById("dlgHours").value || "2", 10);
-
-        if (!selectedTableNumber) return showDlgMsg("err", "Chưa chọn bàn.");
-        if (!name) return showDlgMsg("err", "Tên khách bị trống.");
-        if (phone.length < 8) return showDlgMsg("err", "SĐT không hợp lệ.");
-        if (!startLocal) return showDlgMsg("err", "Chưa chọn thời gian bắt đầu.");
-
-        // datetime-local -> ISO UTC
-        const startIsoUtc = new Date(startLocal).toISOString();
-
-        const body = {
-            tableNumber: selectedTableNumber,
-            customerName: name,
-            phone: phone,
-            startTime: startIsoUtc,
-            hours: hours
-        };
-
-        const btn = document.getElementById("dlgSubmitBtn");
-        btn.disabled = true;
-        btn.style.opacity = "0.7";
-
-        try {
-            const res = await fetch(baseUrl + "/api/user/reservations", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body)
-            });
-
-            const text = await res.text();
-            rtlog("POST /api/user/reservations => " + res.status + " " + text);
-
-            if (!res.ok) {
-                let msg = text;
-                try { msg = JSON.parse(text).message || text; } catch { }
-                showDlgMsg("err", msg);
-                return;
-            }
-
-            showDlgMsg("ok", "Đã gửi yêu cầu đặt bàn! (Pending)");
-            await loadTables();
-            setTimeout(() => closeDlg(), 500);
-        }
-        catch (e) {
-            rtlog("submitBooking ERROR: " + e);
-            showDlgMsg("err", "Lỗi mạng/JS: " + e);
-        }
-        finally {
-            btn.disabled = false;
-            btn.style.opacity = "1";
-        }
-    }
-
-    async function logout() {
-        await fetch(baseUrl + "/api/auth/logout", { method: "POST" });
-        location.href = "/AuthView/Login";
-    }
-
-    // ✅ Ép các hàm ra global để onclick chắc chắn gọi được
-    window.openBook = openBook;
-    window.submitBooking = submitBooking;
-    window.loadTables = loadTables;
-    window.logout = logout;
-    window.closeDlg = closeDlg;
-
-    // SignalR realtime
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl(baseUrl + "/hubs/booking")
-        .withAutomaticReconnect()
-        .configureLogging(signalR.LogLevel.Information)
-        .build();
-
-    connection.on("TableUpdated", data => { rtlog("TableUpdated: " + JSON.stringify(data)); loadTables(); });
-    connection.on("ReservationCreated", data => { rtlog("ReservationCreated: " + JSON.stringify(data)); loadTables(); });
-    connection.on("ReservationUpdated", data => { rtlog("ReservationUpdated: " + JSON.stringify(data)); loadTables(); });
-    connection.on("ReservationCanceled", data => { rtlog("ReservationCanceled: " + JSON.stringify(data)); loadTables(); });
-
-    document.addEventListener("DOMContentLoaded", async () => {
-        // bind nút (đảm bảo click chạy)
-        document.getElementById("btnReload").addEventListener("click", loadTables);
-        document.getElementById("btnLogout").addEventListener("click", logout);
-        document.getElementById("dlgSubmitBtn").addEventListener("click", submitBooking);
-        document.getElementById("dlgCancel").addEventListener("click", closeDlg);
-        document.getElementById("dlgCloseX").addEventListener("click", closeDlg);
-
-        await loadTables();
-
-        try {
-            await connection.start();
-            rtlog("SignalR: Connected");
-        } catch (e) {
-            rtlog("SignalR: ERROR " + e);
-        }
-    });
+    // ✅ Đẩy dữ liệu Razor ra ngoài cho file JS dùng
+    window.BOOKING_CFG = {
+        baseUrl: location.origin,
+        loggedName: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(userName)),
+        loggedPhone: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(userPhone))
+    };
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+<script src="~/js/user-booking.js"></script>
