@@ -1,0 +1,146 @@
+﻿@{
+    ViewData["Title"] = "Trang chủ - Nhà hàng ABC";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Hero Section (hiện ngay khi load trang) -->
+<section class="hero vh-100 d-flex align-items-center text-center text-white"
+         style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;">
+    <div class="container">
+        <h1 class="display-3 fw-bold scroll-reveal">Nhà hàng ABC</h1>
+        <p class="lead mb-4 scroll-reveal delay-2">Thưởng thức ẩm thực Việt Nam truyền thống trong không gian sang trọng, ấm cúng</p>
+        <a asp-controller="UserHome" asp-action="Index" class="btn btn-danger btn-lg px-5 shadow scroll-reveal delay-3">
+            <i class="fas fa-calendar-check me-2"></i> Đặt bàn ngay
+        </a>
+    </div>
+</section>
+
+<!-- Giới thiệu ngắn -->
+<section class="py-5 bg-light">
+    <div class="container text-center">
+        <h2 class="section-title mb-4 scroll-reveal">Chào mừng bạn đến với Nhà hàng ABC</h2>
+        <p class="lead text-muted col-lg-8 mx-auto scroll-reveal delay-2">
+            Chúng tôi tự hào mang đến những món ăn đậm đà hương vị quê hương, được chế biến từ nguyên liệu tươi ngon nhất.
+            Không gian ấm cúng, dịch vụ chu đáo – nơi lý tưởng cho bữa ăn gia đình, tiệc cưới, sinh nhật hay hẹn hò lãng mạn.
+        </p>
+    </div>
+</section>
+
+<!-- 3 tính năng nổi bật -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title text-center mb-5 scroll-reveal">Tại sao chọn chúng tôi?</h2>
+        <div class="row text-center g-4">
+            <div class="col-md-4">
+                <div class="feature-card p-4 bg-white rounded shadow-sm h-100 scroll-reveal delay-1">
+                    <i class="fas fa-utensils fa-4x text-danger mb-3"></i>
+                    <h4>Ẩm thực đa dạng</h4>
+                    <p>Menu phong phú từ món Việt truyền thống đến các món Âu – Á hiện đại.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card p-4 bg-white rounded shadow-sm h-100 scroll-reveal delay-2">
+                    <i class="fas fa-calendar-alt fa-4x text-danger mb-3"></i>
+                    <h4>Đặt bàn dễ dàng</h4>
+                    <p>Đặt chỗ chỉ trong 30 giây, nhận xác nhận ngay qua tin nhắn và email.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card p-4 bg-white rounded shadow-sm h-100 scroll-reveal delay-3">
+                    <i class="fas fa-users fa-4x text-danger mb-3"></i>
+                    <h4>Dịch vụ tận tâm</h4>
+                    <p>Đội ngũ nhân viên chuyên nghiệp, luôn sẵn sàng phục vụ bạn.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to action cuối -->
+<section class="py-5 bg-danger text-white text-center">
+    <div class="container">
+        <h3 class="display-6 mb-4 scroll-reveal">Bạn đã sẵn sàng cho một bữa ăn tuyệt vời?</h3>
+        <a asp-controller="UserHome" asp-action="Index" class="btn btn-light btn-lg px-5 shadow scroll-reveal delay-2">
+            <i class="fas fa-calendar-check me-2"></i> Đặt bàn ngay hôm nay
+        </a>
+    </div>
+</section>
+
+<style>
+    /* Dòng gạch dưới tiêu đề */
+    .section-title {
+        position: relative;
+        display: inline-block;
+        padding-bottom: 10px;
+    }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: #e74c3c;
+            border-radius: 2px;
+        }
+
+    /* Hover cho feature card */
+    .feature-card {
+        transition: all 0.4s ease;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
+        }
+
+    /* Hiệu ứng scroll reveal */
+    .scroll-reveal {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 0.8s ease-out;
+    }
+
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    /* Delay cho từng phần tử */
+    .delay-1 {
+        transition-delay: 0.2s;
+    }
+
+    .delay-2 {
+        transition-delay: 0.4s;
+    }
+
+    .delay-3 {
+        transition-delay: 0.6s;
+    }
+</style>
+
+<script>
+    // Hiệu ứng scroll reveal - hiện phần tử khi cuộn đến
+    document.addEventListener("DOMContentLoaded", function () {
+        const revealElements = document.querySelectorAll('.scroll-reveal');
+
+        const revealOnScroll = () => {
+            const triggerBottom = window.innerHeight * 0.85; // Kích hoạt khi 85% viewport
+
+            revealElements.forEach(el => {
+                const elementTop = el.getBoundingClientRect().top;
+
+                if (elementTop < triggerBottom) {
+                    el.classList.add('revealed');
+                }
+            });
+        };
+
+        // Chạy khi load và khi scroll
+        revealOnScroll();
+        window.addEventListener('scroll', revealOnScroll);
+    });
+</script>

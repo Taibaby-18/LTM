@@ -69,7 +69,7 @@ app.UseAuthorization();
 // Trang mặc định vào Login
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=AuthView}/{action=Login}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllers(); // API controllers (AuthController)
 app.MapHub<LapTrinhMang.Hubs.BookingHub>("/hubs/booking");

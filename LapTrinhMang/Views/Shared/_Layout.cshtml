@@ -1,45 +1,232 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - LapTrinhMang</title>
-    <script type="importmap"></script>
+    <title>@ViewData["Title"] - Nhà hàng ABC</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/LapTrinhMang.styles.css" asp-append-version="true" />
+    <style>
+        :root {
+            --primary-color: #2563eb; /* Xanh dương chính */
+            --primary-dark: #1d4ed8;
+            --text-dark: #1e293b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+        }
+        /* Header đẹp hơn */
+        .navbar {
+            background-color: white !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 0.8rem 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.6rem;
+            color: var(--primary-color) !important;
+        }
+
+            .navbar-brand i {
+                color: #e74c3c;
+                margin-right: 8px;
+            }
+
+        .nav-link {
+            font-weight: 500;
+            color: var(--text-dark) !important;
+            padding: 0.5rem 1rem !important;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+            .nav-link:hover {
+                background-color: rgba(37, 99, 235, 0.1);
+                color: var(--primary-color) !important;
+            }
+        /* Nút Đặt bàn nổi bật */
+        .btn-book {
+            background-color: #e74c3c;
+            color: white;
+            font-weight: 600;
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+            transition: all 0.3s;
+        }
+
+            .btn-book:hover {
+                background-color: #c0392b;
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(231, 76, 60, 0.4);
+                color: white;
+            }
+
+            .btn-book i {
+                margin-right: 8px;
+            }
+        /* Dropdown User */
+        .dropdown-user .dropdown-toggle {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+            .dropdown-user .dropdown-toggle::after {
+                margin-left: 8px;
+            }
+
+        .dropdown-user .dropdown-menu {
+            min-width: 200px;
+        }
+
+        .dropdown-user .logout-item {
+            color: #dc3545 !important;
+            font-weight: 500;
+        }
+
+            .dropdown-user .logout-item:hover {
+                background-color: #f8d7da;
+                color: #dc3545 !important;
+            }
+        /* Footer */
+        footer {
+            background-color: #1e293b;
+            color: #cbd5e1;
+            margin-top: 4rem;
+            padding: 3rem 0 1.5rem;
+        }
+
+            footer a {
+                color: #60a5fa;
+                text-decoration: none;
+            }
+
+                footer a:hover {
+                    text-decoration: underline;
+                }
+
+        .footer-links a {
+            margin: 0 15px;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">LapTrinhMang</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-lg fixed-top">
+            <div class="container">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-utensils"></i> Nhà hàng ABC
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                       
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Menu" asp-action="Index">Thực đơn</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="About" asp-action="Index">Giới thiệu</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Contact" asp-action="Index">Liên hệ</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav align-items-center">
+                        <!-- Nút Đặt bàn - Kiểm tra đăng nhập trước khi chuyển hướng -->
+                        <li class="nav-item me-3">
+                            <a class="btn btn-book" href="javascript:void(0)" id="btnBookTable">
+                                <i class="fas fa-calendar-check"></i> Đặt bàn
+                            </a>
+                        </li>
+
+                        <!-- Dropdown User (khi đã đăng nhập) -->
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item dropdown dropdown-user">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user-circle me-1"></i>
+                                    @User.Identity.Name
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" asp-controller="UserHome" asp-action="Profile">Hồ sơ cá nhân</a></li>
+                                    <li><a class="dropdown-item" asp-controller="UserHome" asp-action="BookingHistory">Lịch sử đặt bàn</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form asp-controller="AuthView" asp-action="Login" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="dropdown-item logout-item">
+                                                <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="AuthView" asp-action="Login">
+                                    <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
+    <main class="pt-5 mt-5">
         <div class="container">
-            &copy; 2025 - LapTrinhMang - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            @RenderBody()
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-utensils text-danger"></i> Nhà hàng ABC</h5>
+                    <p>Thưởng thức ẩm thực Việt Nam tinh tế trong không gian sang trọng và ấm cúng.</p>
+                    <p><i class="fas fa-phone"></i> Hotline: 0123 456 789</p>
+                    <p><i class="fas fa-envelope"></i> Email: info@nhahangabc.vn</p>
+                </div>
+                <div class="col-md-6 text-md-end footer-links">
+                    <a href="#">Facebook</a>
+                    <a href="#">Instagram</a>
+                    <a href="#">Zalo</a>
+                    <br /><br />
+                    <small>&copy; @DateTime.Now.Year - Nhà hàng ABC. All rights reserved.</small>
+                </div>
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Script kiểm tra đăng nhập trước khi chuyển đến trang Đặt bàn -->
+    <script>
+        document.getElementById('btnBookTable').addEventListener('click', function () {
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                    @:location.href = '@Url.Action("Index", "UserHome")';
+            }
+            else
+            {
+                    @:location.href = '@Url.Action("Login", "AuthView")';
+            }
+        });
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

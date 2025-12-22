@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LapTrinhMang.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251222144529_AddTablesAndReservations")]
-    partial class AddTablesAndReservations
+    [Migration("20251222161022_1")]
+    partial class _1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
