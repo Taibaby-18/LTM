@@ -1,0 +1,169 @@
+﻿@{
+    ViewData["Title"] = "Liên hệ";
+}
+
+<div class="py-5">
+    <div class="container">
+        <!-- Tiêu đề trang -->
+        <div class="text-center mb-5 scroll-reveal">
+            <h1 class="display-5 fw-bold text-primary scroll-reveal delay-1">Liên hệ với chúng tôi</h1>
+            <p class="lead text-muted scroll-reveal delay-2">Chúng tôi luôn sẵn sàng hỗ trợ bạn. Hãy liên lạc ngay hôm nay!</p>
+        </div>
+
+        <div class="row g-5">
+            <!-- Thông tin liên hệ - Card bên trái được thiết kế đẹp hơn -->
+            <div class="col-lg-5 scroll-reveal delay-1">
+                <div class="card border-0 shadow-lg h-100 overflow-hidden" style="border-radius: 20px;">
+                    <div class="card-header bg-primary text-white text-center py-4">
+                        <h3 class="h4 fw-bold mb-0"><i class="fas fa-headset me-2"></i> Thông tin liên hệ</h3>
+                    </div>
+                    <div class="card-body p-5 bg-light">
+                        <div class="mb-5">
+                            <h5 class="fw-bold text-primary mb-3"><i class="fas fa-location-dot me-3"></i>Địa chỉ</h5>
+                            <p class="text-muted mb-0 fs-5">123 Đường Lê Lợi, Quận 1<br>TP. Hồ Chí Minh, Việt Nam</p>
+                        </div>
+
+                        <div class="mb-5">
+                            <h5 class="fw-bold text-primary mb-3"><i class="fas fa-phone me-3"></i>Điện thoại</h5>
+                            <p class="text-muted mb-0 fs-5">
+                                <a href="tel:0123456789" class="text-decoration-none text-dark">0123 456 789</a><br>
+                                <a href="tel:0987654321" class="text-decoration-none text-dark">0987 654 321</a> <small>(Đặt bàn)</small>
+                            </p>
+                        </div>
+
+                        <div class="mb-5">
+                            <h5 class="fw-bold text-primary mb-3"><i class="fas fa-envelope me-3"></i>Email</h5>
+                            <p class="text-muted mb-0 fs-5">
+                                <a href="mailto:info@nhahangabc.vn" class="text-decoration-none text-dark">info@nhahangabc.vn</a><br>
+                                <a href="mailto:booking@nhahangabc.vn" class="text-decoration-none text-dark">booking@nhahangabc.vn</a>
+                            </p>
+                        </div>
+
+                        <div class="mb-5">
+                            <h5 class="fw-bold text-primary mb-3"><i class="fas fa-clock me-3"></i>Giờ mở cửa</h5>
+                            <p class="text-muted mb-0 fs-5">
+                                Thứ 2 - Thứ 6: 10:00 - 22:00<br>
+                                Thứ 7, Chủ Nhật: 09:00 - 23:00<br>
+                                <span class="text-success fw-bold">Mở cửa tất cả các ngày lễ</span>
+                            </p>
+                        </div>
+
+                        <!-- Nút đặt bàn nhanh -->
+                        <div class="text-center">
+                            <a asp-controller="UserHome" asp-action="Index" class="btn btn-danger btn-lg px-5 shadow-lg">
+                                <i class="fas fa-calendar-check me-2"></i> Đặt bàn ngay
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bản đồ + Form liên hệ -->
+            <div class="col-lg-7">
+                <!-- Bản đồ Google Maps -->
+                <div class="mb-4 rounded overflow-hidden shadow-lg scroll-reveal delay-2">
+                    <iframe width="100%"
+                            height="450"
+                            style="border:0; border-radius: 20px;"
+                            loading="lazy"
+                            allowfullscreen
+                            referrerpolicy="no-referrer-when-downgrade"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.447946568876!2d106.697329!3d10.777992!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f38d7d79f6d%3A0x8f2c1e1e8e8b8e8b!2sNh%C3%A0%20h%C3%A0ng%20ABC!5e0!3m2!1svi!2s!4v1700000000000">
+                    </iframe>
+                </div>
+
+                <!-- Form liên hệ -->
+                <div class="bg-white rounded shadow-lg p-5 scroll-reveal delay-3" style="border-radius: 20px;">
+                    <h3 class="h4 fw-bold mb-4 text-primary">Gửi tin nhắn cho chúng tôi</h3>
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label fw-semibold">Họ và tên</label>
+                                <input type="text" class="form-control form-control-lg" id="name" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="phone" class="form-label fw-semibold">Số điện thoại</label>
+                                <input type="tel" class="form-control form-control-lg" id="phone" required />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label fw-semibold">Email</label>
+                            <input type="email" class="form-control form-control-lg" id="email" />
+                        </div>
+                        <div class="mb-4">
+                            <label for="message" class="form-label fw-semibold">Nội dung tin nhắn</label>
+                            <textarea class="form-control form-control-lg" id="message" rows="6" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg px-5 shadow">
+                            <i class="fas fa-paper-plane me-2"></i> Gửi tin nhắn
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Hiệu ứng scroll reveal */
+    .scroll-reveal {
+        opacity: 0;
+        transform: translateY(60px);
+        transition: all 0.9s ease-out;
+    }
+
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    /* Delay cho từng phần tử */
+    .delay-1 {
+        transition-delay: 0.2s;
+    }
+
+    .delay-2 {
+        transition-delay: 0.4s;
+    }
+
+    .delay-3 {
+        transition-delay: 0.6s;
+    }
+
+    /* Card thông tin liên hệ đẹp hơn */
+    .card-header {
+        border-radius: 20px 20px 0 0 !important;
+    }
+
+    .card-body {
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    }
+</style>
+
+<script>
+    // Hiệu ứng scroll reveal
+    document.addEventListener("DOMContentLoaded", function () {
+        const revealElements = document.querySelectorAll('.scroll-reveal');
+
+        const revealOnScroll = () => {
+            const triggerBottom = window.innerHeight * 0.85;
+
+            revealElements.forEach(el => {
+                const elementTop = el.getBoundingClientRect().top;
+                if (elementTop < triggerBottom) {
+                    el.classList.add('revealed');
+                }
+            });
+        };
+
+        revealOnScroll();
+        window.addEventListener('scroll', revealOnScroll);
+    });
+
+    // Xử lý form demo
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi trong vòng 24 giờ.');
+        this.reset();
+    });
+</script>

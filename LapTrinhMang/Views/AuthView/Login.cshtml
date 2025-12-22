@@ -1,132 +1,150 @@
 ﻿@{
     Layout = null;
 }
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Đăng nhập</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
     <style>
         body {
-            font-family: Arial;
-            background: #f6f7fb;
-            padding: 24px
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
         }
 
         .card {
-            max-width: 420px;
-            margin: auto;
-            background: #fff;
-            padding: 16px;
-            border-radius: 14px;
-            border: 1px solid #e5e7eb
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
 
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border: 1px solid #d1d5db;
-            border-radius: 10px
+        .card-header {
+            background: #2563eb; /* Xanh dương */
+            color: white;
+            text-align: center;
+            padding: 2rem;
         }
 
-        button {
-            width: 100%;
-            padding: 10px 12px;
-            border: 0;
-            border-radius: 10px;
-            cursor: pointer;
-            background: #111827;
-            color: #fff
-        }
-
-        .row {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px
-        }
-
-            .row button {
-                width: auto;
-                flex: 1
+            .card-header h3 {
+                color: white !important; /* Đảm bảo chữ "Đăng nhập" luôn trắng */
+                font-weight: 600;
             }
 
-        pre {
-            background: #0b1020;
-            color: #b6ffb6;
-            padding: 10px;
-            border-radius: 12px;
-            margin-top: 12px;
-            height: 160px;
-            overflow: auto
+        .btn-login {
+            background: #2563eb;
+            border: none;
+            padding: 0.75rem;
+            font-weight: 600;
         }
 
-        a {
-            display: inline-block;
-            margin-top: 10px
+            .btn-login:hover {
+                background: #1d4ed8;
+            }
+
+        .form-control {
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
         }
+
+            .form-control:focus {
+                border-color: #2563eb;
+                box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.25);
+            }
+
+        .links {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+            .links a {
+                color: #2563eb;
+                text-decoration: none;
+            }
+
+                .links a:hover {
+                    text-decoration: underline;
+                }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>Đăng nhập</h2>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">Đăng nhập</h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Số điện thoại</label>
+                                <input type="tel" class="form-control" id="phone" placeholder="Nhập SĐT" required />
+                            </div>
+                            <div class="mb-4">
+                                <label for="pass" class="form-label">Mật khẩu</label>
+                                <input type="password" class="form-control" id="pass" placeholder="Nhập mật khẩu" required />
+                            </div>
+                            <button type="submit" class="btn btn-login w-100 text-white">Đăng nhập</button>
+                        </form>
 
-        <input id="phone" placeholder="SĐT" />
-        <input id="pass" type="password" placeholder="Mật khẩu" />
+                        <div id="message" class="mt-3 text-center"></div>
 
-        <button onclick="login()">Login</button>
-
-        <div class="row">
-            <button onclick="logout()" style="background:#6b7280">Logout</button>
-            <button onclick="whoami()" style="background:#2563eb">Role?</button>
+                        <div class="links">
+                            <a href="/AuthView/Register">Đăng ký</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <a href="/AuthView/Register">Đăng ký User</a> |
-        <a href="/AuthView/RegisterManager">Đăng ký Manager</a>
-
-        <pre id="log"></pre>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script>
         const baseUrl = location.origin;
-        const logEl = document.getElementById("log");
-        function log(m){ logEl.textContent += m + "\n"; logEl.scrollTop = logEl.scrollHeight; }
+        const messageEl = document.getElementById("message");
 
-        async function login(){
-          const body = {
-            phone: document.getElementById("phone").value.trim(),
-            password: document.getElementById("pass").value
-          };
+        document.getElementById("loginForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            messageEl.innerHTML = "";
 
-          const res = await fetch(baseUrl + "/api/auth/login", {
-            method:"POST",
-            headers: {"Content-Type":"application/json"},
-            body: JSON.stringify(body)
-          });
+            const body = {
+                phone: document.getElementById("phone").value.trim(),
+                password: document.getElementById("pass").value
+            };
 
-          const text = await res.text();
-          log(res.status + " " + text);
+            try {
+                const res = await fetch(baseUrl + "/api/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
 
-          if(res.ok){
-            const json = JSON.parse(text);
-            localStorage.setItem("role", json.role || "");
-            log("Login OK. role=" + (json.role || ""));
+                const text = await res.text();
 
-            // ✅ redirect theo role
-            if(json.role === "Manager") location.href = "/ManagerHome/Index";
-            else location.href = "/UserHome/Index";
-          }
-        }
+                if (res.ok) {
+                    const json = JSON.parse(text);
+                    localStorage.setItem("role", json.role || "");
+                    messageEl.innerHTML = '<div class="alert alert-success">Đăng nhập thành công! Đang chuyển hướng...</div>';
 
-        async function logout(){
-          await fetch(baseUrl + "/api/auth/logout", { method: "POST" });
-          localStorage.removeItem("role");
-          log("Logged out (cookie cleared)");
-        }
-
-        function whoami(){
-          log("role(localStorage)=" + (localStorage.getItem("role") || ""));
-        }
+                    setTimeout(() => {
+                        if (json.role === "Manager") {
+                            location.href = "/ManagerHome/Index";
+                        } else {
+                            location.href = "/UserHome/Index";
+                        }
+                    }, 1000);
+                } else {
+                    messageEl.innerHTML = `<div class="alert alert-danger">${res.status}: ${text}</div>`;
+                }
+            } catch (err) {
+                messageEl.innerHTML = '<div class="alert alert-danger">Lỗi kết nối. Vui lòng thử lại.</div>';
+            }
+        });
     </script>
 </body>
 </html>

@@ -8,19 +8,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LapTrinhMang.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTablesAndReservations : Migration
+    public partial class _1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<string>(
-                name: "Phone",
-                table: "Users",
-                type: "nvarchar(450)",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(max)");
-
             migrationBuilder.CreateTable(
                 name: "Tables",
                 columns: table => new
@@ -33,6 +25,23 @@ namespace LapTrinhMang.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tables", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Phone = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -95,12 +104,6 @@ namespace LapTrinhMang.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_Phone",
-                table: "Users",
-                column: "Phone",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Reservations_TableId",
                 table: "Reservations",
                 column: "TableId");
@@ -115,6 +118,12 @@ namespace LapTrinhMang.Migrations
                 table: "Tables",
                 column: "Number",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Phone",
+                table: "Users",
+                column: "Phone",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -126,17 +135,8 @@ namespace LapTrinhMang.Migrations
             migrationBuilder.DropTable(
                 name: "Tables");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Users_Phone",
-                table: "Users");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Phone",
-                table: "Users",
-                type: "nvarchar(max)",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(450)");
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

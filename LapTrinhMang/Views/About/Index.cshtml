@@ -1,0 +1,164 @@
+﻿@{
+    ViewData["Title"] = "Giới thiệu";
+}
+
+<div class="py-5">
+    <div class="container">
+        <!-- Hero Section Giới thiệu -->
+        <div class="row mb-5">
+            <div class="col-lg-6 d-flex align-items-center scroll-reveal">
+                <div>
+                    <h1 class="display-4 fw-bold text-primary mb-4 scroll-reveal delay-1">Chào mừng đến với Nhà hàng ABC</h1>
+                    <p class="lead text-muted mb-4 scroll-reveal delay-2">
+                        Hơn 10 năm mang đến những bữa ăn ngon, không gian ấm cúng và dịch vụ tận tâm cho thực khách tại TP. Hồ Chí Minh.
+                    </p>
+                    <p class="fs-5 text-secondary scroll-reveal delay-3">
+                        Chúng tôi tự hào là nơi lưu giữ hương vị truyền thống Việt Nam kết hợp hài hòa với phong cách hiện đại,
+                        phục vụ từ những bữa cơm gia đình thân mật đến tiệc chiêu đãi sang trọng.
+                    </p>
+                    <a asp-controller="UserHome" asp-action="Index" class="btn btn-danger btn-lg mt-3 shadow scroll-reveal delay-4">
+                        <i class="fas fa-calendar-check me-2"></i> Đặt bàn ngay hôm nay
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center scroll-reveal delay-2">
+                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                     alt="Không gian nhà hàng ABC"
+                     class="img-fluid rounded shadow-lg"
+                     style="max-height: 500px; object-fit: cover;" />
+            </div>
+        </div>
+
+        <!-- Sứ mệnh - Tầm nhìn - Giá trị cốt lõi -->
+        <div class="row g-5 my-5">
+            <div class="col-md-4 text-center scroll-reveal delay-1">
+                <div class="p-4">
+                    <i class="fas fa-heart fa-4x text-danger mb-4"></i>
+                    <h3 class="h4 fw-bold">Sứ mệnh</h3>
+                    <p class="text-muted">
+                        Mang đến những bữa ăn ngon từ nguyên liệu tươi sạch, phục vụ bằng cả tấm lòng để mỗi thực khách đều cảm thấy như đang dùng bữa tại nhà.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center scroll-reveal delay-2">
+                <div class="p-4">
+                    <i class="fas fa-eye fa-4x text-primary mb-4"></i>
+                    <h3 class="h4 fw-bold">Tầm nhìn</h3>
+                    <p class="text-muted">
+                        Trở thành chuỗi nhà hàng Việt Nam được yêu thích nhất, nơi mọi người nghĩ đến đầu tiên khi muốn thưởng thức ẩm thực truyền thống chất lượng cao.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center scroll-reveal delay-3">
+                <div class="p-4">
+                    <i class="fas fa-star fa-4x text-warning mb-4"></i>
+                    <h3 class="h4 fw-bold">Giá trị cốt lõi</h3>
+                    <p class="text-muted">
+                        Chất lượng - Tận tâm - Sạch sẽ - Sáng tạo - Trách nhiệm với cộng đồng.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Đội ngũ & Không gian -->
+        <div class="row align-items-center g-5 my-5">
+            <div class="col-lg-6 scroll-reveal delay-1">
+                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                     alt="Đầu bếp nhà hàng ABC"
+                     class="img-fluid rounded shadow" />
+            </div>
+            <div class="col-lg-6 scroll-reveal delay-2">
+                <h2 class="h3 fw-bold mb-4">Đội ngũ đầu bếp tài hoa</h2>
+                <p class="text-secondary fs-5">
+                    Đội ngũ đầu bếp của chúng tôi được dẫn dắt bởi Bếp trưởng Nguyễn Văn A – người có hơn 20 năm kinh nghiệm tại các nhà hàng 5 sao trong và ngoài nước.
+                </p>
+                <p class="text-secondary">
+                    Mỗi món ăn đều được chế biến tỉ mỉ, giữ trọn hương vị truyền thống nhưng vẫn sáng tạo để phù hợp với khẩu vị hiện đại.
+                </p>
+            </div>
+        </div>
+
+        <div class="row align-items-center g-5 my-5 flex-lg-row-reverse">
+            <div class="col-lg-6 scroll-reveal delay-1">
+                <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                     alt="Không gian nhà hàng sang trọng"
+                     class="img-fluid rounded shadow" />
+            </div>
+            <div class="col-lg-6 scroll-reveal delay-2">
+                <h2 class="h3 fw-bold mb-4">Không gian lý tưởng cho mọi dịp</h2>
+                <p class="text-secondary fs-5">
+                    Với sức chứa lên đến 300 khách, nhà hàng được thiết kế đa khu vực: phòng VIP riêng tư, khu ngoài trời thoáng đãng, sảnh lớn cho tiệc cưới và hội nghị.
+                </p>
+                <ul class="list-unstyled text-secondary">
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Phòng VIP riêng biệt</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Sân khấu biểu diễn âm nhạc sống</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Khu vui chơi cho trẻ em</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Bãi đỗ xe rộng rãi miễn phí</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Call to action cuối trang -->
+        <div class="text-center py-5 bg-light rounded-4 my-5 scroll-reveal">
+            <h2 class="h3 fw-bold mb-4 scroll-reveal delay-1">Hãy đến và trải nghiệm ngay hôm nay!</h2>
+            <p class="lead text-muted mb-4 scroll-reveal delay-2">Đặt bàn nhanh chóng - Nhận ưu đãi đặc biệt cho khách đặt online</p>
+            <a asp-controller="UserHome" asp-action="Index" class="btn btn-danger btn-lg px-5 shadow scroll-reveal delay-3">
+                <i class="fas fa-calendar-alt me-2"></i> Đặt bàn online
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Hiệu ứng scroll reveal */
+    .scroll-reveal {
+        opacity: 0;
+        transform: translateY(60px);
+        transition: all 0.9s ease-out;
+    }
+
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    /* Delay cho từng phần tử */
+    .delay-1 {
+        transition-delay: 0.2s;
+    }
+
+    .delay-2 {
+        transition-delay: 0.4s;
+    }
+
+    .delay-3 {
+        transition-delay: 0.6s;
+    }
+
+    .delay-4 {
+        transition-delay: 0.8s;
+    }
+</style>
+
+<script>
+    // Hiệu ứng scroll reveal - hiện phần tử khi cuộn đến
+    document.addEventListener("DOMContentLoaded", function () {
+        const revealElements = document.querySelectorAll('.scroll-reveal');
+
+        const revealOnScroll = () => {
+            const triggerBottom = window.innerHeight * 0.85; // Kích hoạt khi 85% viewport
+
+            revealElements.forEach(el => {
+                const elementTop = el.getBoundingClientRect().top;
+
+                if (elementTop < triggerBottom) {
+                    el.classList.add('revealed');
+                }
+            });
+        };
+
+        // Chạy khi load và khi scroll
+        revealOnScroll();
+        window.addEventListener('scroll', revealOnScroll);
+    });
+</script>

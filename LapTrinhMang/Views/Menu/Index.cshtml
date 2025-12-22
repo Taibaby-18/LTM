@@ -1,0 +1,306 @@
+﻿@{
+    ViewData["Title"] = "Thực đơn";
+}
+
+<div class="py-5">
+    <div class="container">
+        <!-- Tiêu đề trang -->
+        <div class="text-center mb-5 fade-in">
+            <h1 class="display-4 fw-bold text-primary">Thực đơn Nhà hàng ABC</h1>
+            <p class="lead text-muted col-lg-8 mx-auto">
+                Những món ăn được chế biến từ nguyên liệu tươi ngon nhất, kết hợp hài hòa giữa truyền thống Việt Nam và phong cách hiện đại.
+            </p>
+        </div>
+
+        <!-- Tabs phân loại món -->
+        <ul class="nav nav-tabs justify-content-center mb-5 fade-in" id="menuTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active fw-semibold fs-5" id="khai-vi-tab" data-bs-toggle="tab" data-bs-target="#khai-vi" type="button" role="tab">
+                    Món khai vị
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link fw-semibold fs-5" id="mon-chinh-tab" data-bs-toggle="tab" data-bs-target="#mon-chinh" type="button" role="tab">
+                    Món chính
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link fw-semibold fs-5" id="trang-mieng-tab" data-bs-toggle="tab" data-bs-target="#trang-mieng" type="button" role="tab">
+                    Tráng miệng
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link fw-semibold fs-5" id="do-uong-tab" data-bs-toggle="tab" data-bs-target="#do-uong" type="button" role="tab">
+                    Đồ uống
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="menuTabContent">
+            <!-- Món khai vị -->
+            <div class="tab-pane fade show active" id="khai-vi" role="tabpanel">
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
+                            <img src="https://i0.wp.com/vickypham.com/wp-content/uploads/2020/09/90a39-thumbnail-9264.jpg" class="card-img-top" alt="Gỏi cuốn tôm thịt" style="height: 220px; object-fit: cover;">
+                            <div class="card-body d-flex flex-column p-4">
+                                <h5 class="card-title fw-bold text-primary">Gỏi cuốn tôm thịt</h5>
+                                <p class="card-text text-muted flex-grow-1">Tôm tươi, thịt heo quay, rau sống cuốn bánh tráng kèm nước chấm đậu phộng.</p>
+                                <div class="price-tag">85.000 ₫</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
+                            <img src="https://legiaseafood.com/uploads/product/full_396vfsygcpc61bq-568-cha-gio-hai-san.jpg" class="card-img-top" alt="Chả giò hải sản" style="height: 220px; object-fit: cover;">
+                            <div class="card-body d-flex flex-column p-4">
+                                <h5 class="card-title fw-bold text-primary">Chả giò hải sản</h5>
+                                <p class="card-text text-muted flex-grow-1">Chả giò giòn tan nhân tôm, cua, mực tươi.</p>
+                                <div class="price-tag">95.000 ₫</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
+                            <img src="https://www.seriouseats.com/thmb/jEaaVJpI_UjVZtH8Z6c9I4PCanY=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/20231204-SEA-PorkPasteRicePaperRolls-VyTran-59-d677d06be638468ea11817a6f660e122.jpg" class="card-img-top" alt="Nem nướng Nha Trang" style="height: 220px; object-fit: cover;">
+                            <div class="card-body d-flex flex-column p-4">
+                                <h5 class="card-title fw-bold text-primary">Nem nướng Nha Trang</h5>
+                                <p class="card-text text-muted flex-grow-1">Nem nướng than hồng kèm bánh tráng và rau sống.</p>
+                                <div class="price-tag">120.000 ₫</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Món chính -->
+            <div class="tab-pane fade" id="mon-chinh" role="tabpanel">
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
+                            <img src="https://thewoksoflife.com/wp-content/uploads/2025/07/shaking-beef-11.jpg" class="card-img-top" alt="Bò lúc lắc" style="height: 220px; object-fit: cover;">
+                            <div class="card-body d-flex flex-column p-4">
+                                <h5 class="card-title fw-bold text-primary">Bò lúc lắc</h5>
+                                <p class="card-text text-muted flex-grow-1">Thịt bò fillet xào lắc kèm khoai tây chiên và salad.</p>
+                                <div class="price-tag">250.000 ₫</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
+                            <img src="https://i0.wp.com/vickypham.com/wp-content/uploads/2016/02/Steamed-Fish-with-Scallions-Ginger-and-Soy-Sauce-Recipe-Ca-Hap-Gung-Hanh-3.jpg?resize=1024%2C683&ssl=1" class="card-img-top" alt="Cá chẽm hấp Hồng Kông" style="height: 220px; object-fit: cover;">
+                            <div class="card-body d-flex flex-column p-4">
+                                <h5 class="card-title fw-bold text-primary">Cá chẽm hấp Hồng Kông</h5>
+                                <p class="card-text text-muted flex-grow-1">Cá chẽm tươi hấp nguyên con với gừng, hành, xì dầu thượng hạng.</p>
+                                <div class="price-tag">380.000 ₫</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
+                            <img src="https://image.mux.com/acaUESI01518hCK84fQ00A2taaMIfj9hJhCCa9x6e9Jvg/thumbnail.jpg?height=720&time=0" class="card-img-top" alt="Lẩu thái hải sản" style="height: 220px; object-fit: cover;">
+                            <div class="card-body d-flex flex-column p-4">
+                                <h5 class="card-title fw-bold text-primary">Lẩu thái hải sản</h5>
+                                <p class="card-text text-muted flex-grow-1">Lẩu chua cay Thái Lan với tôm, mực, cá, nghêu tươi (2-4 người).</p>
+                                <div class="price-tag">450.000 ₫</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
+                            <img src="https://inox304.com.vn/wp-content/uploads/2024/09/Mon-ga-hap-la-chanh-mang-lai-loi-ich-gi-cho-suc-khoe.jpg" class="card-img-top" alt="Gà ta hấp lá chanh" style="height: 220px; object-fit: cover;">
+                            <div class="card-body d-flex flex-column p-4">
+                                <h5 class="card-title fw-bold text-primary">Gà ta hấp lá chanh</h5>
+                                <p class="card-text text-muted flex-grow-1">Gà ta thả vườn hấp lá chanh thơm lừng (nửa con).</p>
+                                <div class="price-tag">320.000 ₫</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tráng miệng -->
+            <div class="tab-pane fade" id="trang-mieng" role="tabpanel">
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
+                            <img src="https://xa6zemg4r8.cloudimg.io/_images_/g/Hue-Am%20thuc-Che%20khoai-Che%20khoa-qrznUzNayX06nK7Bi4oy.jpg" class="card-img-top" alt="Chè khoai tím" style="height: 220px; object-fit: cover;">
+                            <div class="card-body d-flex flex-column p-4">
+                                <h5 class="card-title fw-bold text-primary">Chè khoai tím</h5>
+                                <p class="card-text text-muted flex-grow-1">Khoai tím dẻo ngọt nấu với nước cốt dừa béo ngậy.</p>
+                                <div class="price-tag">45.000 ₫</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
+                            <img src="https://tarasmulticulturaltable.com/wp-content/uploads/2024/03/Banh-Flan-Creme-Caramel-4-of-4.jpg" class="card-img-top" alt="Bánh flan caramen" style="height: 220px; object-fit: cover;">
+                            <div class="card-body d-flex flex-column p-4">
+                                <h5 class="card-title fw-bold text-primary">Bánh flan caramen</h5>
+                                <p class="card-text text-muted flex-grow-1">Flan truyền thống với caramen đắng ngọt.</p>
+                                <div class="price-tag">50.000 ₫</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
+                            <img src="https://runawayrice.com/wp-content/uploads/2014/08/a-Vanilla-Ice-Cream-in-Pandan-Waffle-Bowl.jpg" class="card-img-top" alt="Kem vani nhà làm" style="height: 220px; object-fit: cover;">
+                            <div class="card-body d-flex flex-column p-4">
+                                <h5 class="card-title fw-bold text-primary">Kem vani nhà làm</h5>
+                                <p class="card-text text-muted flex-grow-1">Kem vani tự làm kèm trái cây tươi.</p>
+                                <div class="price-tag">60.000 ₫</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Đồ uống -->
+            <div class="tab-pane fade" id="do-uong" role="tabpanel">
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
+                            <img src="https://vietnam-tea.com/wp-content/uploads/2021/12/vietnamese-lime-iced-tea.jpg" class="card-img-top" alt="Trà đá" style="height: 220px; object-fit: cover;">
+                            <div class="card-body d-flex flex-column p-4">
+                                <h5 class="card-title fw-bold text-primary">Trà đá</h5>
+                                <p class="card-text text-muted flex-grow-1">Trà đen truyền thống mát lạnh.</p>
+                                <div class="price-tag">10.000 ₫</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
+                            <img src="https://static.wixstatic.com/media/6a893c_c4cfde5c69b14399992eb03e2e33de10~mv2.jpg/v1/fill/w_6720,h_4480,al_c,q_90/Avocado%20Smoothie.jpg" class="card-img-top" alt="Sinh tố bơ" style="height: 220px; object-fit: cover;">
+                            <div class="card-body d-flex flex-column p-4">
+                                <h5 class="card-title fw-bold text-primary">Sinh tố bơ</h5>
+                                <p class="card-text text-muted flex-grow-1">Bơ tươi xay mịn với sữa đặc.</p>
+                                <div class="price-tag">55.000 ₫</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
+                            <img src="https://www.zulaykitchen.com/cdn/shop/articles/How_to_Authentic_Vietnamese_Iced_Coffee_Ca_Phe_S_a_Da_93df60f4-a9ff-4959-ac8b-542dcb32cffa_1001x.jpg?v=1749504398" class="card-img-top" alt="Cà phê sữa đá" style="height: 220px; object-fit: cover;">
+                            <div class="card-body d-flex flex-column p-4">
+                                <h5 class="card-title fw-bold text-primary">Cà phê sữa đá</h5>
+                                <p class="card-text text-muted flex-grow-1">Cà phê phin nguyên chất Việt Nam.</p>
+                                <div class="price-tag">35.000 ₫</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
+                            <img src="https://media.istockphoto.com/id/507143336/photo/red-wine.jpg?s=612x612&w=0&k=20&c=E4dDQlwkGe0A7URC4J6rfUXtcCiDmMHi2pVPfj6PnAs=" class="card-img-top" alt="Rượu vang đỏ (chai)" style="height: 220px; object-fit: cover;">
+                            <div class="card-body d-flex flex-column p-4">
+                                <h5 class="card-title fw-bold text-primary">Rượu vang đỏ (chai)</h5>
+                                <p class="card-text text-muted flex-grow-1">Rượu vang Chile nhập khẩu.</p>
+                                <div class="price-tag">650.000 ₫</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to action -->
+        <div class="text-center mt-5 py-5 bg-light rounded-4 fade-in">
+            <h3 class="h3 fw-bold mb-3">Thưởng thức ngay tại Nhà hàng ABC</h3>
+            <p class="lead text-muted mb-4">Đặt bàn để trải nghiệm những món ăn tuyệt vời nhất!</p>
+            <a asp-controller="UserHome" asp-action="Index" class="btn btn-danger btn-lg px-5 shadow">
+                <i class="fas fa-calendar-check me-2"></i> Đặt bàn ngay
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- CSS cho hiệu ứng hover và fade-in -->
+<style>
+    /* Hiệu ứng fade-in khi load trang */
+    .fade-in {
+        opacity: 0;
+        animation: fadeIn 1s ease-out forwards;
+    }
+
+        .fade-in:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .fade-in:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .fade-in:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+    @@keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    /* Hiệu ứng hover cho card món ăn */
+    .menu-card {
+        transition: all 0.4s ease;
+        cursor: pointer;
+    }
+
+        .menu-card:hover {
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2) !important;
+        }
+
+            .menu-card:hover img {
+                transform: scale(1.15);
+                transition: transform 0.6s ease;
+            }
+
+            .menu-card:hover .price-tag {
+                transform: scale(1.1);
+                background: #dc3545;
+            }
+
+    /* Tag giá - ĐÃ GIẢM 50% KÍCH THƯỚC */
+    .price-tag {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        background: rgba(220, 53, 69, 0.95);
+        color: white;
+        padding: 6px 12px; /* Giảm padding */
+        border-radius: 30px;
+        font-size: 1rem; /* Giảm từ 1.4rem xuống 1rem (~50% nhỏ hơn) */
+        font-weight: bold;
+        transition: all 0.4s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+</style>
+
+<!-- Script kích hoạt hiệu ứng fade-in cho card khi chuyển tab -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const tabPanes = document.querySelectorAll('.tab-pane');
+        tabPanes.forEach(pane => {
+            pane.addEventListener('shown.bs.tab', function () {
+                pane.querySelectorAll('.menu-card').forEach((card, index) => {
+                    card.style.opacity = '0';
+                    card.style.animation = 'fadeIn 0.8s ease-out forwards';
+                    card.style.animationDelay = index * 0.1 + 's';
+                });
+            });
+        });
+
+        // Kích hoạt cho tab đầu tiên
+        const firstTab = new bootstrap.Tab(document.querySelector('#khai-vi-tab'));
+        firstTab.show();
+    });
+</script>
