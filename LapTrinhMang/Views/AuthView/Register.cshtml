@@ -68,6 +68,10 @@
                     <div class="card-body p-4">
                         <form id="registerForm">
                             <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" id="email" class="form-control" placeholder="Nhập email..." />
+                            </div>
+                            <div class="mb-3">
                                 <label for="phone" class="form-label">Số điện thoại</label>
                                 <input type="tel" class="form-control" id="phone" placeholder="Nhập SĐT" required />
                             </div>
@@ -94,32 +98,47 @@
     <script>
         const baseUrl = location.origin;
         const messageEl = document.getElementById("message");
+
         document.getElementById("registerForm").addEventListener("submit", async function(e) {
             e.preventDefault();
             messageEl.innerHTML = ""; // Xóa thông báo cũ
+
+            // 👇 SỬA ĐOẠN NÀY: Thêm dòng lấy email
             const body = {
                 phone: document.getElementById("phone").value.trim(),
                 fullName: document.getElementById("name").value.trim(),
-                password: document.getElementById("pass").value
+                password: document.getElementById("pass").value,
+
+                // ✅ THÊM DÒNG NÀY ĐỂ GỬI EMAIL LÊN SERVER
+                email: document.getElementById("email").value.trim()
             };
+
             try {
                 const res = await fetch(baseUrl + "/api/auth/register", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(body)
                 });
+
                 const text = await res.text();
+
                 if (res.ok) {
-                    messageEl.innerHTML = '<div class="alert alert-success">Đăng ký thành công! Đang chuyển hướng đến trang Đăng nhập...</div>';
-                    // Tự động redirect sau 2 giây
+                    messageEl.innerHTML = '<div class="alert alert-success">Đăng ký thành công! Đang chuyển hướng...</div>';
                     setTimeout(() => {
                         location.href = "/AuthView/Login";
-                    }, 500);
+                    }, 1000); // Tăng lên 1s để kịp đọc thông báo
                 } else {
-                    messageEl.innerHTML = `<div class="alert alert-danger">${res.status} ${text}</div>`;
+                    // Hiển thị lỗi từ server trả về (nếu có json message)
+                    try {
+                        const jsonErr = JSON.parse(text);
+                        messageEl.innerHTML = `<div class="alert alert-danger">${jsonErr.message || text}</div>`;
+                    } catch {
+                         messageEl.innerHTML = `<div class="alert alert-danger">${text}</div>`;
+                    }
                 }
             } catch (err) {
-                messageEl.innerHTML = '<div class="alert alert-danger">Lỗi kết nối. Vui lòng thử lại.</div>';
+                console.error(err);
+                messageEl.innerHTML = '<div class="alert alert-danger">Lỗi kết nối server.</div>';
             }
         });
     </script>

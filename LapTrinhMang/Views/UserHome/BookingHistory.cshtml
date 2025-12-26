@@ -1,0 +1,122 @@
+﻿@model IEnumerable<LapTrinhMang.Models.ReservationEntity>
+
+@{
+    ViewData["Title"] = "Lịch sử đặt bàn";
+}
+
+@* Re-designed for a modern C# Web App with a luxury dark/gold aesthetic. Used deep shadows, refined badges, and improved typography. *@
+<div class="container py-16 max-w-7xl mx-auto px-6">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-16 border-b border-primary/10 pb-12">
+        <div class="text-center md:text-left">
+            <h1 class="text-6xl font-serif text-primary mb-4 tracking-tighter italic">
+                Reservations
+            </h1>
+            <p class="text-muted-foreground uppercase tracking-[0.3em] text-[10px] font-bold opacity-70">
+                Lịch sử đặt bàn — The Lighthouse Experience
+            </p>
+        </div>
+        <div class="flex gap-4 mt-8 md:mt-0">
+            <a asp-action="Index" class="group relative px-8 py-4 bg-primary text-primary-foreground overflow-hidden transition-all duration-500 hover:shadow-[0_0_30px_rgba(197,160,89,0.3)]">
+                <span class="relative z-10 uppercase tracking-widest text-[10px] font-black">Book a Table</span>
+                <div class="absolute inset-0 bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+            </a>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-32 bg-card/50 border border-border backdrop-blur-sm">
+            <div class="w-20 h-20 mx-auto mb-8 rounded-full border border-primary/20 flex items-center justify-center">
+                <i class="fas fa-wine-glass-alt text-2xl text-primary/40"></i>
+            </div>
+            <h2 class="text-3xl font-serif text-foreground mb-4">No Reservations Found</h2>
+            <p class="text-muted-foreground mb-10 max-w-md mx-auto text-sm leading-relaxed">Bạn chưa có yêu cầu đặt bàn nào. Hãy bắt đầu hành trình khám phá vị giác của bạn ngay bây giờ.</p>
+            <a asp-action="Index" class="inline-block px-12 py-4 border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-500 uppercase tracking-widest text-[10px] font-bold">
+                Make Your First Booking
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="bg-card/30 border border-border overflow-hidden shadow-2xl backdrop-blur-md">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-primary/10 bg-secondary/10">
+                            <th class="px-8 py-6 text-[10px] uppercase tracking-[0.25em] font-black text-primary/70">Table Details</th>
+                            <th class="px-8 py-6 text-[10px] uppercase tracking-[0.25em] font-black text-primary/70">Time & Date</th>
+                            <th class="px-8 py-6 text-[10px] uppercase tracking-[0.25em] font-black text-primary/70">Guest Info</th>
+                            <th class="px-8 py-6 text-[10px] uppercase tracking-[0.25em] font-black text-primary/70">Status</th>
+                            <th class="px-8 py-6 text-[10px] uppercase tracking-[0.25em] font-black text-primary/70 text-right">Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-primary/5">
+                        @foreach (var item in Model)
+                        {
+                            <tr class="group hover:bg-primary/[0.03] transition-all duration-500">
+                                <td class="px-8 py-10">
+                                    <div class="flex items-center gap-8">
+                                        <div class="relative w-16 h-16 flex items-center justify-center group-hover:scale-110 transition-transform duration-700">
+                                            <div class="absolute inset-0 border border-primary/30 rotate-45 group-hover:rotate-90 transition-transform duration-1000"></div>
+                                            <span class="text-2xl font-serif text-primary italic">@(item.Table?.Number.ToString() ?? "?")</span>
+                                        </div>
+                                        <div>
+                                            <div class="text-lg font-serif text-foreground group-hover:text-primary transition-colors">Table No. @(item.Table?.Number.ToString() ?? "N/A")</div>
+                                            <div class="text-[9px] uppercase tracking-[0.2em] text-muted-foreground mt-1">@item.Table?.Type • @(item.Table?.Capacity ?? 2) Guests</div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="px-8 py-10">
+                                    <div class="flex flex-col">
+                                        <span class="text-sm font-bold tracking-tight text-foreground">@item.StartTime.ToString("ddd, dd MMM yyyy")</span>
+                                        <span class="text-[10px] text-primary uppercase tracking-widest mt-1.5 opacity-80">
+                                            @item.StartTime.ToString("HH:mm") — @item.EndTime.ToString("HH:mm")
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <td class="px-8 py-10">
+                                    <div class="text-base font-serif text-foreground">@item.CustomerName</div>
+                                    <div class="text-[10px] text-muted-foreground font-mono mt-1 opacity-60">@item.Phone</div>
+                                </td>
+
+                                <td class="px-8 py-10">
+                                    <div class="flex items-center">
+                                        @if (item.Status == "Pending")
+                                        {
+                                            <div class="relative flex h-2 w-2 mr-3">
+                                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                                <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                                            </div>
+                                            <span class="text-[9px] uppercase tracking-[0.25em] font-black text-primary">Pending</span>
+                                        }
+                                        else if (item.Status == "Approved" || item.Status == "Confirmed")
+                                        {
+                                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 mr-3 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
+                                            <span class="text-[9px] uppercase tracking-[0.25em] font-black text-emerald-500">Confirmed</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="h-1.5 w-1.5 rounded-full bg-rose-500 mr-3 shadow-[0_0_10px_rgba(244,63,94,0.5)]"></span>
+                                            <span class="text-[9px] uppercase tracking-[0.25em] font-black text-rose-500">Cancelled</span>
+                                        }
+                                    </div>
+                                </td>
+
+                                <td class="px-8 py-10 text-right">
+                                    <span class="text-[10px] text-muted-foreground/40 font-mono tracking-tighter italic">@item.CreatedAt.ToString("MMM dd, HH:mm")</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mt-20 flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-[0.3em] font-bold opacity-30">
+            <p>Late arrivals may forfeit reservation after 15 minutes.</p>
+            <p class="mt-4 md:mt-0">© 2025 THE LIGHTHOUSE DINING</p>
+        </div>
+    }
+</div>

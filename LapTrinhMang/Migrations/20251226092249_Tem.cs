@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LapTrinhMang.Migrations
 {
     /// <inheritdoc />
-    public partial class _1 : Migration
+    public partial class Tem : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,7 +20,8 @@ namespace LapTrinhMang.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Number = table.Column<int>(type: "int", nullable: false),
-                    Capacity = table.Column<int>(type: "int", nullable: false)
+                    Capacity = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -35,6 +36,7 @@ namespace LapTrinhMang.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Phone = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -78,29 +80,29 @@ namespace LapTrinhMang.Migrations
 
             migrationBuilder.InsertData(
                 table: "Tables",
-                columns: new[] { "Id", "Capacity", "Number" },
+                columns: new[] { "Id", "Capacity", "Number", "Type" },
                 values: new object[,]
                 {
-                    { 1, 4, 1 },
-                    { 2, 4, 2 },
-                    { 3, 4, 3 },
-                    { 4, 4, 4 },
-                    { 5, 4, 5 },
-                    { 6, 4, 6 },
-                    { 7, 4, 7 },
-                    { 8, 4, 8 },
-                    { 9, 4, 9 },
-                    { 10, 4, 10 },
-                    { 11, 6, 11 },
-                    { 12, 6, 12 },
-                    { 13, 6, 13 },
-                    { 14, 6, 14 },
-                    { 15, 6, 15 },
-                    { 16, 6, 16 },
-                    { 17, 6, 17 },
-                    { 18, 6, 18 },
-                    { 19, 6, 19 },
-                    { 20, 6, 20 }
+                    { 1, 4, 1, "Normal" },
+                    { 2, 4, 2, "Normal" },
+                    { 3, 4, 3, "Normal" },
+                    { 4, 4, 4, "Normal" },
+                    { 5, 4, 5, "Normal" },
+                    { 6, 4, 6, "Normal" },
+                    { 7, 4, 7, "Normal" },
+                    { 8, 4, 8, "Normal" },
+                    { 9, 4, 9, "Normal" },
+                    { 10, 4, 10, "Normal" },
+                    { 11, 6, 11, "Normal" },
+                    { 12, 6, 12, "Normal" },
+                    { 13, 6, 13, "Normal" },
+                    { 14, 6, 14, "Normal" },
+                    { 15, 6, 15, "Normal" },
+                    { 16, 6, 16, "Normal" },
+                    { 17, 6, 17, "Normal" },
+                    { 18, 6, 18, "Normal" },
+                    { 19, 6, 19, "Normal" },
+                    { 20, 6, 20, "Normal" }
                 });
 
             migrationBuilder.CreateIndex(

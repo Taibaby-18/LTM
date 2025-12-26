@@ -15,6 +15,7 @@ public class ReservationEntity
 
     public string CustomerName { get; set; } = "";
     public string Phone { get; set; } = "";
+    
 
     // Pending / Approved / Canceled
     public string Status { get; set; } = "Pending";

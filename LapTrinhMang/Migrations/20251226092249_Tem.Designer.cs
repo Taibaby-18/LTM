@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LapTrinhMang.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251222161022_1")]
-    partial class _1
+    [Migration("20251226092249_Tem")]
+    partial class Tem
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,6 +35,10 @@ namespace LapTrinhMang.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -118,6 +122,10 @@ namespace LapTrinhMang.Migrations
                     b.Property<int>("Number")
                         .HasColumnType("int");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Number")
@@ -130,121 +138,141 @@ namespace LapTrinhMang.Migrations
                         {
                             Id = 1,
                             Capacity = 4,
-                            Number = 1
+                            Number = 1,
+                            Type = "Normal"
                         },
                         new
                         {
                             Id = 2,
                             Capacity = 4,
-                            Number = 2
+                            Number = 2,
+                            Type = "Normal"
                         },
                         new
                         {
                             Id = 3,
                             Capacity = 4,
-                            Number = 3
+                            Number = 3,
+                            Type = "Normal"
                         },
                         new
                         {
                             Id = 4,
                             Capacity = 4,
-                            Number = 4
+                            Number = 4,
+                            Type = "Normal"
                         },
                         new
                         {
                             Id = 5,
                             Capacity = 4,
-                            Number = 5
+                            Number = 5,
+                            Type = "Normal"
                         },
                         new
                         {
                             Id = 6,
                             Capacity = 4,
-                            Number = 6
+                            Number = 6,
+                            Type = "Normal"
                         },
                         new
                         {
                             Id = 7,
                             Capacity = 4,
-                            Number = 7
+                            Number = 7,
+                            Type = "Normal"
                         },
                         new
                         {
                             Id = 8,
                             Capacity = 4,
-                            Number = 8
+                            Number = 8,
+                            Type = "Normal"
                         },
                         new
                         {
                             Id = 9,
                             Capacity = 4,
-                            Number = 9
+                            Number = 9,
+                            Type = "Normal"
                         },
                         new
                         {
                             Id = 10,
                             Capacity = 4,
-                            Number = 10
+                            Number = 10,
+                            Type = "Normal"
                         },
                         new
                         {
                             Id = 11,
                             Capacity = 6,
-                            Number = 11
+                            Number = 11,
+                            Type = "Normal"
                         },
                         new
                         {
                             Id = 12,
                             Capacity = 6,
-                            Number = 12
+                            Number = 12,
+                            Type = "Normal"
                         },
                         new
                         {
                             Id = 13,
                             Capacity = 6,
-                            Number = 13
+                            Number = 13,
+                            Type = "Normal"
                         },
                         new
                         {
                             Id = 14,
                             Capacity = 6,
-                            Number = 14
+                            Number = 14,
+                            Type = "Normal"
                         },
                         new
                         {
                             Id = 15,
                             Capacity = 6,
-                            Number = 15
+                            Number = 15,
+                            Type = "Normal"
                         },
                         new
                         {
                             Id = 16,
                             Capacity = 6,
-                            Number = 16
+                            Number = 16,
+                            Type = "Normal"
                         },
                         new
                         {
                             Id = 17,
                             Capacity = 6,
-                            Number = 17
+                            Number = 17,
+                            Type = "Normal"
                         },
                         new
                         {
                             Id = 18,
                             Capacity = 6,
-                            Number = 18
+                            Number = 18,
+                            Type = "Normal"
                         },
                         new
                         {
                             Id = 19,
                             Capacity = 6,
-                            Number = 19
+                            Number = 19,
+                            Type = "Normal"
                         },
                         new
                         {
                             Id = 20,
                             Capacity = 6,
-                            Number = 20
+                            Number = 20,
+                            Type = "Normal"
                         });
                 });
 

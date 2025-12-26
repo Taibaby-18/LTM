@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-
+using LapTrinhMang.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // MVC + API
@@ -48,6 +48,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 builder.Services.AddSignalR();
 builder.Services.AddAuthorization();
+// Nhớ thêm using LapTrinhMang.Services;
+builder.Services.AddTransient<SendMailService>();
 
 var app = builder.Build();
 
