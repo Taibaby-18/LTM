@@ -192,27 +192,143 @@ public class UserHomeController : Controller
                 .Select(u => u.Email)
                 .FirstOrDefaultAsync();
 
+            // ... (đoạn code tìm userEmail phía trên giữ nguyên) ...
+
             if (!string.IsNullOrEmpty(userEmail))
             {
-                var subject = $"[ABC Restaurant] Xác nhận đặt bàn #{entity.Id}";
-                var body = $@"
-                    <div style='font-family: Arial, sans-serif; color: #333;'>
-                        <h2 style='color: #b5924a;'>Cảm ơn {entity.CustomerName} đã đặt bàn!</h2>
-                        <p>Chúng tôi đã nhận được yêu cầu của bạn:</p>
-                        <ul>
-                            <li><b>Mã đơn:</b> #{entity.Id}</li>
-                            <li><b>Bàn số:</b> {table.Number} ({table.Type})</li>
-                            <li><b>Thời gian:</b> {dto.StartTime:dd/MM/yyyy HH:mm}</li>
-                            <li><b>Thời lượng:</b> {dto.Hours} tiếng</li>
-                        </ul>
-                        <p>Trạng thái hiện tại: <b style='color: orange;'>Chờ duyệt (Pending)</b></p>
-                        <p>Vui lòng chờ nhân viên xác nhận(nhớ kiểm tra phần lịch sử trên web nhé).</p>
-                        <hr>
-                        <small>ABC Restaurant - Hotline: 0123 456 789</small>
-                    </div>";
+                var subject = $"✅ Xác nhận đặt bàn #{entity.Id} - ABC Restaurant";
 
-                // Gọi Service gửi mail (Background task)
-                _ = _mailService.SendEmailAsync(userEmail, subject, body);
+                // 👇 THAY THẾ ĐOẠN BODY CŨ BẰNG ĐOẠN HTML NÀY 👇
+                var body = $@"
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            .email-container {{
+                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                max-width: 600px;
+                margin: 20px auto;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                overflow: hidden;
+            }}
+            .email-header {{
+                background-color: #0f172a; /* Màu xanh đậm chủ đạo */
+                color: #ffffff;
+                padding: 20px;
+                text-align: center;
+            }}
+            .email-header h1 {{
+                margin: 0;
+                font-size: 24px;
+                font-weight: bold;
+                letter-spacing: 1px;
+            }}
+            .email-body {{
+                padding: 30px 20px;
+                background-color: #ffffff;
+            }}
+            .email-body h2 {{
+                color: #b5924a; /* Màu vàng accent */
+                margin-top: 0;
+            }}
+            .info-table {{
+                width: 100%;
+                border-collapse: collapse;
+                margin: 20px 0;
+                font-size: 15px;
+            }}
+            .info-table td {{
+                padding: 12px;
+                border-bottom: 1px solid #eee;
+            }}
+            .info-table td:first-child {{
+                font-weight: bold;
+                color: #555;
+                width: 40%;
+            }}
+            .status-badge {{
+                display: inline-block;
+                background-color: #fff3cd;
+                color: #856404;
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-weight: bold;
+                border: 1px solid #ffeeba;
+            }}
+            .email-footer {{
+                background-color: #f8f9fa;
+                color: #777;
+                padding: 20px;
+                text-align: center;
+                font-size: 13px;
+                border-top: 1px solid #eee;
+            }}
+            .email-footer p {{ margin: 5px 0; }}
+            .contact-link {{ color: #b5924a; text-decoration: none; }}
+        </style>
+    </head>
+    <body>
+        <div class='email-container'>
+            <div class='email-header'>
+                <h1>ABC RESTAURANT</h1>
+            </div>
+            <div class='email-body'>
+                <h2>Xin chào {entity.CustomerName},</h2>
+                <p>Cảm ơn bạn đã lựa chọn ABC Restaurant. Chúng tôi đã nhận được yêu cầu đặt bàn của bạn với các thông tin chi tiết dưới đây:</p>
+                
+                <table class='info-table'>
+                    <tr>
+                        <td>Mã đặt bàn:</td>
+                        <td style='font-family: monospace; font-size: 16px;'><b>#{entity.Id}</b></td>
+                    </tr>
+                    <tr>
+                        <td>Vị trí bàn:</td>
+                        <td>Bàn số <b>{table.Number}</b> <span style='color: #777;'>({table.Type})</span></td>
+                    </tr>
+                    <tr>
+                        <td>Thời gian bắt đầu:</td>
+                        <td>{dto.StartTime:HH:mm, ngày dd/MM/yyyy}</td>
+                    </tr>
+                    <tr>
+                        <td>Thời lượng:</td>
+                        <td>{dto.Hours} tiếng</td>
+                    </tr>
+                    <tr>
+                        <td>Số điện thoại liên hệ:</td>
+                        <td>{entity.Phone}</td>
+                    </tr>
+                    <tr>
+                        <td>Trạng thái hiện tại:</td>
+                        <td><span class='status-badge'>⏳ Đang chờ duyệt (Pending)</span></td>
+                    </tr>
+                </table>
+                
+                <p>Nhân viên của chúng tôi sẽ sớm kiểm tra và xác nhận đơn đặt bàn của bạn.</p>
+                <p>Nếu có bất kỳ thay đổi nào, vui lòng liên hệ với chúng tôi qua hotline để được hỗ trợ nhanh nhất.</p>
+                <p style='margin-top: 30px;'>Trân trọng,<br><b>Đội ngũ ABC Restaurant</b></p>
+            </div>
+            <div class='email-footer'>
+                <p>Địa chỉ: 123 Đường ABC, Quận 1, TP.HCM</p>
+                <p>Hotline: <a href='tel:0123456789' class='contact-link'>0123 456 789</a> | Email: hello@abcrestaurant.com</p>
+                <p>&copy; {DateTime.Now.Year} ABC Restaurant. All rights reserved.</p>
+            </div>
+        </div>
+    </body>
+    </html>";
+
+                // Đoạn gửi mail giữ nguyên (nếu đang test thì để await, chạy thật thì bỏ await cho nhanh)
+                try
+                {
+                    await _mailService.SendEmailAsync(userEmail, subject, body);
+                }
+                catch (Exception ex)
+                {
+                    // Log lỗi (tùy chọn)
+                    Console.WriteLine("Lỗi gửi mail: " + ex.Message);
+                }
             }
         }
 
