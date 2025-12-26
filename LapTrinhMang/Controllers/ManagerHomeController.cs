@@ -194,6 +194,10 @@ public class ManagerHomeController : Controller
         return Ok(result);
     }
 
+
+
+
+
     // ===== API: RESERVATIONS LIST (lọc theo ngày cho đúng) =====
     [HttpGet]
     [Route("api/manager/reservations")]
@@ -228,6 +232,11 @@ public class ManagerHomeController : Controller
 
         return Ok(items);
     }
+
+
+
+
+
 
     // ===== API: APPROVE =====
     [HttpPut]
@@ -274,6 +283,11 @@ public class ManagerHomeController : Controller
 
         return Ok(new { id = r.Id, status = r.Status, message = "Approved" });
     }
+
+
+
+
+
 
     // ===== API: CANCEL =====
     [HttpPut]

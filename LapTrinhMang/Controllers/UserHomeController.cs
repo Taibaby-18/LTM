@@ -215,7 +215,8 @@ public class UserHomeController : Controller
                 (new TimeSpan(17,0,0), new TimeSpan(18,0,0)),
                 (new TimeSpan(18,0,0), new TimeSpan(19,0,0)),
                 (new TimeSpan(19,0,0), new TimeSpan(20,0,0)),
-                (new TimeSpan(20,0,0), new TimeSpan(21,0,0))
+                (new TimeSpan(20,0,0), new TimeSpan(21,0,0)),
+                (new TimeSpan(21,0,0), new TimeSpan(23,0,0))
             }
         };
 
