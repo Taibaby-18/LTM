@@ -167,7 +167,7 @@ public class UserHomeController : Controller
                         if (!string.IsNullOrEmpty(email))
                         {
                             // ✏️ SỬA TIÊU ĐỀ: Dùng icon đồng hồ cát và từ ngữ "Đã nhận yêu cầu"
-                            var subject = $"⏳ Đã nhận yêu cầu đặt bàn #{bookingId} - ABC Restaurant";
+                            var subject = $"⏳ Đã nhận yêu cầu đặt bàn #{bookingId} - FOURMEN RESTAURANT";
 
                             var body = GetHtmlEmailBody(custName, bookingId, tableInfo, bookTime, hours, custPhone);
 
@@ -237,7 +237,9 @@ public class UserHomeController : Controller
                 (new TimeSpan(17,0,0), new TimeSpan(18,0,0)),
                 (new TimeSpan(18,0,0), new TimeSpan(19,0,0)),
                 (new TimeSpan(19,0,0), new TimeSpan(20,0,0)),
-                (new TimeSpan(20,0,0), new TimeSpan(21,0,0))
+                (new TimeSpan(20,0,0), new TimeSpan(21,0,0)),
+                (new TimeSpan(21,0,0), new TimeSpan(22,0,0)),
+                (new TimeSpan(22,0,0), new TimeSpan(23,0,0))
             }
         };
 
@@ -293,7 +295,7 @@ public class UserHomeController : Controller
         <body>
             <div class='container'>
                 <div class='header'>
-                    <h1>ABC RESTAURANT</h1>
+                    <h1>FOURMEN RESTAURANT</h1>
                     <p>Yêu cầu đặt bàn đã được tiếp nhận</p>
                 </div>
                 <div class='content'>
@@ -315,8 +317,8 @@ public class UserHomeController : Controller
                     </div>
                 </div>
                 <div class='footer'>
-                    <p>123 Đường ABC, Quận 1, TP.HCM | Hotline: 0123 456 789</p>
-                    <p>&copy; {DateTime.Now.Year} ABC Restaurant</p>
+                    <p>123 123 Đường Lê Lợi, Quận 1, TP.HCM | Hotline: 0123 456 789</p>
+                    <p>&copy; {DateTime.Now.Year} FOURMEN RESTAURANT</p>
                 </div>
             </div>
         </body>

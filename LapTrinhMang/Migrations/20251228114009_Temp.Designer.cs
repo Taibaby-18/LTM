@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LapTrinhMang.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251226092249_Tem")]
-    partial class Tem
+    [Migration("20251228114009_Temp")]
+    partial class Temp
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

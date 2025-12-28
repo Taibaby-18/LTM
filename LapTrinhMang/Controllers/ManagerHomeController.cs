@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Security.Claims;
-
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 namespace LapTrinhMang.Controllers;
 
 [Authorize(Roles = "Manager")]
@@ -87,6 +88,8 @@ public class ManagerHomeController : Controller
             slots.Add((d.AddHours(18), d.AddHours(19)));
             slots.Add((d.AddHours(19), d.AddHours(20)));
             slots.Add((d.AddHours(20), d.AddHours(21)));
+            slots.Add((d.AddHours(21), d.AddHours(22)));
+            slots.Add((d.AddHours(22), d.AddHours(23)));
         }
         return slots.Select(x => new SlotUtc(x.sLocal.ToUniversalTime(), x.eLocal.ToUniversalTime())).ToList();
     }
@@ -206,7 +209,7 @@ public class ManagerHomeController : Controller
                         var email = await dbScope.Users.Where(u => u.Id == userId).Select(u => u.Email).FirstOrDefaultAsync();
                         if (!string.IsNullOrEmpty(email))
                         {
-                            var subject = $"🎉 Đặt bàn thành công! #{bookingId} - ABC Restaurant";
+                            var subject = $"🎉 Đặt bàn thành công! #{bookingId} - FOURMEN RESTAURANT";
                             var body = GetApprovedHtmlBody(custName, bookingId, tableInfo, bookTime, hours);
                             await mailerScope.SendEmailAsync(email, subject, body);
                         }
@@ -267,7 +270,7 @@ public class ManagerHomeController : Controller
         <body>
             <div class='container'>
                 <div class='header'>
-                    <h1>ABC RESTAURANT</h1>
+                    <h1>FOURMEN RESTAURANT</h1>
                     <p>Đặt bàn thành công!</p>
                 </div>
                 <div class='content'>
@@ -286,11 +289,12 @@ public class ManagerHomeController : Controller
                     </div>
                 </div>
                 <div class='footer'>
-                    <p>123 Đường ABC, Quận 1, TP.HCM | Hotline: 0123 456 789</p>
-                    <p>&copy; {DateTime.Now.Year} ABC Restaurant</p>
+                    <p>123 Đường Lê Lợi, Quận 1, TP.HCM | Hotline: 0123 456 789</p>
+                    <p>&copy; {DateTime.Now.Year} FOURMEN RESTAURANT</p>
                 </div>
             </div>
         </body>
         </html>";
     }
+
 }

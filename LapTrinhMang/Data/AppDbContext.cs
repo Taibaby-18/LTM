@@ -10,6 +10,7 @@ public class AppDbContext : DbContext
     public DbSet<AppUser> Users => Set<AppUser>();
     public DbSet<TableEntity> Tables => Set<TableEntity>();
     public DbSet<ReservationEntity> Reservations => Set<ReservationEntity>();
+    public DbSet<ChatMessage> ChatMessages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

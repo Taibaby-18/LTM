@@ -1,9 +1,10 @@
 ﻿using LapTrinhMang.Data;
+using LapTrinhMang.Hubs;
+using LapTrinhMang.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using LapTrinhMang.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // MVC + API
@@ -75,4 +76,5 @@ app.MapControllerRoute(
 
 app.MapControllers(); // API controllers (AuthController)
 app.MapHub<LapTrinhMang.Hubs.BookingHub>("/hubs/booking");
+app.MapHub<ChatHub>("/hubs/chat");
 app.Run();
