@@ -1,306 +1,1120 @@
 ﻿@{
-    ViewData["Title"] = "Thực đơn";
+    ViewData["Title"] = "Thực đơn - FOURMEN";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="py-5">
-    <div class="container">
-        <!-- Tiêu đề trang -->
-        <div class="text-center mb-5 fade-in">
-            <h1 class="display-4 fw-bold text-primary">Thực đơn Nhà hàng ABC</h1>
-            <p class="lead text-muted col-lg-8 mx-auto">
-                Những món ăn được chế biến từ nguyên liệu tươi ngon nhất, kết hợp hài hòa giữa truyền thống Việt Nam và phong cách hiện đại.
+<!-- Hero Section -->
+<section class="menu-hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <div class="container">
+            <span class="hero-label animate-fade-in">Menu</span>
+            <h1 class="hero-title animate-fade-in-delay">Thực đơn FOURMEN</h1>
+            <div class="hero-divider animate-fade-in-delay-2"></div>
+            <p class="hero-description animate-fade-in-delay-3">
+                Tinh hoa ẩm thực Á - Âu trong từng món ăn
             </p>
         </div>
+    </div>
+</section>
 
-        <!-- Tabs phân loại món -->
-        <ul class="nav nav-tabs justify-content-center mb-5 fade-in" id="menuTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active fw-semibold fs-5" id="khai-vi-tab" data-bs-toggle="tab" data-bs-target="#khai-vi" type="button" role="tab">
-                    Món khai vị
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link fw-semibold fs-5" id="mon-chinh-tab" data-bs-toggle="tab" data-bs-target="#mon-chinh" type="button" role="tab">
-                    Món chính
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link fw-semibold fs-5" id="trang-mieng-tab" data-bs-toggle="tab" data-bs-target="#trang-mieng" type="button" role="tab">
-                    Tráng miệng
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link fw-semibold fs-5" id="do-uong-tab" data-bs-toggle="tab" data-bs-target="#do-uong" type="button" role="tab">
-                    Đồ uống
-                </button>
-            </li>
-        </ul>
-
-        <div class="tab-content" id="menuTabContent">
-            <!-- Món khai vị -->
-            <div class="tab-pane fade show active" id="khai-vi" role="tabpanel">
-                <div class="row g-4">
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
-                            <img src="https://i0.wp.com/vickypham.com/wp-content/uploads/2020/09/90a39-thumbnail-9264.jpg" class="card-img-top" alt="Gỏi cuốn tôm thịt" style="height: 220px; object-fit: cover;">
-                            <div class="card-body d-flex flex-column p-4">
-                                <h5 class="card-title fw-bold text-primary">Gỏi cuốn tôm thịt</h5>
-                                <p class="card-text text-muted flex-grow-1">Tôm tươi, thịt heo quay, rau sống cuốn bánh tráng kèm nước chấm đậu phộng.</p>
-                                <div class="price-tag">85.000 ₫</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
-                            <img src="https://legiaseafood.com/uploads/product/full_396vfsygcpc61bq-568-cha-gio-hai-san.jpg" class="card-img-top" alt="Chả giò hải sản" style="height: 220px; object-fit: cover;">
-                            <div class="card-body d-flex flex-column p-4">
-                                <h5 class="card-title fw-bold text-primary">Chả giò hải sản</h5>
-                                <p class="card-text text-muted flex-grow-1">Chả giò giòn tan nhân tôm, cua, mực tươi.</p>
-                                <div class="price-tag">95.000 ₫</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
-                            <img src="https://www.seriouseats.com/thmb/jEaaVJpI_UjVZtH8Z6c9I4PCanY=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/20231204-SEA-PorkPasteRicePaperRolls-VyTran-59-d677d06be638468ea11817a6f660e122.jpg" class="card-img-top" alt="Nem nướng Nha Trang" style="height: 220px; object-fit: cover;">
-                            <div class="card-body d-flex flex-column p-4">
-                                <h5 class="card-title fw-bold text-primary">Nem nướng Nha Trang</h5>
-                                <p class="card-text text-muted flex-grow-1">Nem nướng than hồng kèm bánh tráng và rau sống.</p>
-                                <div class="price-tag">120.000 ₫</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Món chính -->
-            <div class="tab-pane fade" id="mon-chinh" role="tabpanel">
-                <div class="row g-4">
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
-                            <img src="https://thewoksoflife.com/wp-content/uploads/2025/07/shaking-beef-11.jpg" class="card-img-top" alt="Bò lúc lắc" style="height: 220px; object-fit: cover;">
-                            <div class="card-body d-flex flex-column p-4">
-                                <h5 class="card-title fw-bold text-primary">Bò lúc lắc</h5>
-                                <p class="card-text text-muted flex-grow-1">Thịt bò fillet xào lắc kèm khoai tây chiên và salad.</p>
-                                <div class="price-tag">250.000 ₫</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
-                            <img src="https://i0.wp.com/vickypham.com/wp-content/uploads/2016/02/Steamed-Fish-with-Scallions-Ginger-and-Soy-Sauce-Recipe-Ca-Hap-Gung-Hanh-3.jpg?resize=1024%2C683&ssl=1" class="card-img-top" alt="Cá chẽm hấp Hồng Kông" style="height: 220px; object-fit: cover;">
-                            <div class="card-body d-flex flex-column p-4">
-                                <h5 class="card-title fw-bold text-primary">Cá chẽm hấp Hồng Kông</h5>
-                                <p class="card-text text-muted flex-grow-1">Cá chẽm tươi hấp nguyên con với gừng, hành, xì dầu thượng hạng.</p>
-                                <div class="price-tag">380.000 ₫</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
-                            <img src="https://image.mux.com/acaUESI01518hCK84fQ00A2taaMIfj9hJhCCa9x6e9Jvg/thumbnail.jpg?height=720&time=0" class="card-img-top" alt="Lẩu thái hải sản" style="height: 220px; object-fit: cover;">
-                            <div class="card-body d-flex flex-column p-4">
-                                <h5 class="card-title fw-bold text-primary">Lẩu thái hải sản</h5>
-                                <p class="card-text text-muted flex-grow-1">Lẩu chua cay Thái Lan với tôm, mực, cá, nghêu tươi (2-4 người).</p>
-                                <div class="price-tag">450.000 ₫</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
-                            <img src="https://inox304.com.vn/wp-content/uploads/2024/09/Mon-ga-hap-la-chanh-mang-lai-loi-ich-gi-cho-suc-khoe.jpg" class="card-img-top" alt="Gà ta hấp lá chanh" style="height: 220px; object-fit: cover;">
-                            <div class="card-body d-flex flex-column p-4">
-                                <h5 class="card-title fw-bold text-primary">Gà ta hấp lá chanh</h5>
-                                <p class="card-text text-muted flex-grow-1">Gà ta thả vườn hấp lá chanh thơm lừng (nửa con).</p>
-                                <div class="price-tag">320.000 ₫</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tráng miệng -->
-            <div class="tab-pane fade" id="trang-mieng" role="tabpanel">
-                <div class="row g-4">
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
-                            <img src="https://xa6zemg4r8.cloudimg.io/_images_/g/Hue-Am%20thuc-Che%20khoai-Che%20khoa-qrznUzNayX06nK7Bi4oy.jpg" class="card-img-top" alt="Chè khoai tím" style="height: 220px; object-fit: cover;">
-                            <div class="card-body d-flex flex-column p-4">
-                                <h5 class="card-title fw-bold text-primary">Chè khoai tím</h5>
-                                <p class="card-text text-muted flex-grow-1">Khoai tím dẻo ngọt nấu với nước cốt dừa béo ngậy.</p>
-                                <div class="price-tag">45.000 ₫</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
-                            <img src="https://tarasmulticulturaltable.com/wp-content/uploads/2024/03/Banh-Flan-Creme-Caramel-4-of-4.jpg" class="card-img-top" alt="Bánh flan caramen" style="height: 220px; object-fit: cover;">
-                            <div class="card-body d-flex flex-column p-4">
-                                <h5 class="card-title fw-bold text-primary">Bánh flan caramen</h5>
-                                <p class="card-text text-muted flex-grow-1">Flan truyền thống với caramen đắng ngọt.</p>
-                                <div class="price-tag">50.000 ₫</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
-                            <img src="https://runawayrice.com/wp-content/uploads/2014/08/a-Vanilla-Ice-Cream-in-Pandan-Waffle-Bowl.jpg" class="card-img-top" alt="Kem vani nhà làm" style="height: 220px; object-fit: cover;">
-                            <div class="card-body d-flex flex-column p-4">
-                                <h5 class="card-title fw-bold text-primary">Kem vani nhà làm</h5>
-                                <p class="card-text text-muted flex-grow-1">Kem vani tự làm kèm trái cây tươi.</p>
-                                <div class="price-tag">60.000 ₫</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Đồ uống -->
-            <div class="tab-pane fade" id="do-uong" role="tabpanel">
-                <div class="row g-4">
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
-                            <img src="https://vietnam-tea.com/wp-content/uploads/2021/12/vietnamese-lime-iced-tea.jpg" class="card-img-top" alt="Trà đá" style="height: 220px; object-fit: cover;">
-                            <div class="card-body d-flex flex-column p-4">
-                                <h5 class="card-title fw-bold text-primary">Trà đá</h5>
-                                <p class="card-text text-muted flex-grow-1">Trà đen truyền thống mát lạnh.</p>
-                                <div class="price-tag">10.000 ₫</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
-                            <img src="https://static.wixstatic.com/media/6a893c_c4cfde5c69b14399992eb03e2e33de10~mv2.jpg/v1/fill/w_6720,h_4480,al_c,q_90/Avocado%20Smoothie.jpg" class="card-img-top" alt="Sinh tố bơ" style="height: 220px; object-fit: cover;">
-                            <div class="card-body d-flex flex-column p-4">
-                                <h5 class="card-title fw-bold text-primary">Sinh tố bơ</h5>
-                                <p class="card-text text-muted flex-grow-1">Bơ tươi xay mịn với sữa đặc.</p>
-                                <div class="price-tag">55.000 ₫</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
-                            <img src="https://www.zulaykitchen.com/cdn/shop/articles/How_to_Authentic_Vietnamese_Iced_Coffee_Ca_Phe_S_a_Da_93df60f4-a9ff-4959-ac8b-542dcb32cffa_1001x.jpg?v=1749504398" class="card-img-top" alt="Cà phê sữa đá" style="height: 220px; object-fit: cover;">
-                            <div class="card-body d-flex flex-column p-4">
-                                <h5 class="card-title fw-bold text-primary">Cà phê sữa đá</h5>
-                                <p class="card-text text-muted flex-grow-1">Cà phê phin nguyên chất Việt Nam.</p>
-                                <div class="price-tag">35.000 ₫</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card menu-card h-100 shadow-sm border-0 overflow-hidden position-relative">
-                            <img src="https://media.istockphoto.com/id/507143336/photo/red-wine.jpg?s=612x612&w=0&k=20&c=E4dDQlwkGe0A7URC4J6rfUXtcCiDmMHi2pVPfj6PnAs=" class="card-img-top" alt="Rượu vang đỏ (chai)" style="height: 220px; object-fit: cover;">
-                            <div class="card-body d-flex flex-column p-4">
-                                <h5 class="card-title fw-bold text-primary">Rượu vang đỏ (chai)</h5>
-                                <p class="card-text text-muted flex-grow-1">Rượu vang Chile nhập khẩu.</p>
-                                <div class="price-tag">650.000 ₫</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Call to action -->
-        <div class="text-center mt-5 py-5 bg-light rounded-4 fade-in">
-            <h3 class="h3 fw-bold mb-3">Thưởng thức ngay tại Nhà hàng ABC</h3>
-            <p class="lead text-muted mb-4">Đặt bàn để trải nghiệm những món ăn tuyệt vời nhất!</p>
-            <a asp-controller="UserHome" asp-action="Index" class="btn btn-danger btn-lg px-5 shadow">
-                <i class="fas fa-calendar-check me-2"></i> Đặt bàn ngay
-            </a>
+<!-- Menu Navigation -->
+<section class="menu-navigation">
+    <div class="container">
+        <div class="menu-tabs reveal-fade">
+            <button class="menu-tab active" data-category="khai-vi">
+                <span class="tab-icon"><i class="fas fa-seedling"></i></span>
+                <span class="tab-text">Khai vị</span>
+            </button>
+            <button class="menu-tab" data-category="mon-chinh">
+                <span class="tab-icon"><i class="fas fa-utensils"></i></span>
+                <span class="tab-text">Món chính</span>
+            </button>
+            <button class="menu-tab" data-category="trang-mieng">
+                <span class="tab-icon"><i class="fas fa-ice-cream"></i></span>
+                <span class="tab-text">Tráng miệng</span>
+            </button>
+            <button class="menu-tab" data-category="do-uong">
+                <span class="tab-icon"><i class="fas fa-wine-glass-alt"></i></span>
+                <span class="tab-text">Đồ uống</span>
+            </button>
         </div>
     </div>
-</div>
+</section>
 
-<!-- CSS cho hiệu ứng hover và fade-in -->
+<!-- Menu Content -->
+<section class="menu-section">
+    <div class="container">
+        <!-- Món khai vị -->
+        <div class="menu-category active" id="khai-vi">
+            <div class="category-header text-center reveal-fade">
+                <span class="section-label">Appetizers</span>
+                <h2 class="section-title">Món khai vị</h2>
+                <div class="title-decoration mx-auto"></div>
+                <p class="category-description">
+                    Khởi đầu bữa ăn với những món khai vị tinh tế
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="menu-card reveal-fade delay-1">
+                        <div class="menu-image-wrapper">
+                            <img src="https://i0.wp.com/vickypham.com/wp-content/uploads/2020/09/90a39-thumbnail-9264.jpg"
+                                 alt="Gỏi cuốn tôm thịt"
+                                 class="menu-image">
+                            <div class="image-overlay">
+                                <div class="overlay-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-content">
+                            <div class="menu-header">
+                                <h3 class="menu-item-title">Gỏi cuốn tôm thịt</h3>
+                                <span class="menu-price">85.000₫</span>
+                            </div>
+                            <p class="menu-description">
+                                Tôm tươi, thịt heo quay, rau sống cuốn bánh tráng kèm nước chấm đậu phộng
+                            </p>
+                            <div class="menu-divider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="menu-card reveal-fade delay-2">
+                        <div class="menu-image-wrapper">
+                            <img src="https://legiaseafood.com/uploads/product/full_396vfsygcpc61bq-568-cha-gio-hai-san.jpg"
+                                 alt="Chả giò hải sản"
+                                 class="menu-image">
+                            <div class="image-overlay">
+                                <div class="overlay-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-content">
+                            <div class="menu-header">
+                                <h3 class="menu-item-title">Chả giò hải sản</h3>
+                                <span class="menu-price">95.000₫</span>
+                            </div>
+                            <p class="menu-description">
+                                Chả giò giòn tan nhân tôm, cua, mực tươi
+                            </p>
+                            <div class="menu-divider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="menu-card reveal-fade delay-3">
+                        <div class="menu-image-wrapper">
+                            <img src="https://www.seriouseats.com/thmb/jEaaVJpI_UjVZtH8Z6c9I4PCanY=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/20231204-SEA-PorkPasteRicePaperRolls-VyTran-59-d677d06be638468ea11817a6f660e122.jpg"
+                                 alt="Nem nướng Nha Trang"
+                                 class="menu-image">
+                            <div class="image-overlay">
+                                <div class="overlay-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-content">
+                            <div class="menu-header">
+                                <h3 class="menu-item-title">Nem nướng Nha Trang</h3>
+                                <span class="menu-price">120.000₫</span>
+                            </div>
+                            <p class="menu-description">
+                                Nem nướng than hồng kèm bánh tráng và rau sống
+                            </p>
+                            <div class="menu-divider"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Món chính -->
+        <div class="menu-category" id="mon-chinh">
+            <div class="category-header text-center reveal-fade">
+                <span class="section-label">Main Course</span>
+                <h2 class="section-title">Món chính</h2>
+                <div class="title-decoration mx-auto"></div>
+                <p class="category-description">
+                    Những món ăn chính được chế biến tinh tế từ nguyên liệu cao cấp
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="menu-card reveal-fade delay-1">
+                        <div class="menu-image-wrapper">
+                            <img src="https://thewoksoflife.com/wp-content/uploads/2025/07/shaking-beef-11.jpg"
+                                 alt="Bò lúc lắc"
+                                 class="menu-image">
+                            <div class="image-overlay">
+                                <div class="overlay-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-content">
+                            <div class="menu-header">
+                                <h3 class="menu-item-title">Bò lúc lắc</h3>
+                                <span class="menu-price">250.000₫</span>
+                            </div>
+                            <p class="menu-description">
+                                Thịt bò fillet xào lắc kèm khoai tây chiên và salad
+                            </p>
+                            <div class="menu-divider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="menu-card reveal-fade delay-2">
+                        <div class="menu-image-wrapper">
+                            <img src="https://i0.wp.com/vickypham.com/wp-content/uploads/2016/02/Steamed-Fish-with-Scallions-Ginger-and-Soy-Sauce-Recipe-Ca-Hap-Gung-Hanh-3.jpg?resize=1024%2C683&ssl=1"
+                                 alt="Cá chẽm hấp Hồng Kông"
+                                 class="menu-image">
+                            <div class="image-overlay">
+                                <div class="overlay-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-content">
+                            <div class="menu-header">
+                                <h3 class="menu-item-title">Cá chẽm hấp Hồng Kông</h3>
+                                <span class="menu-price">380.000₫</span>
+                            </div>
+                            <p class="menu-description">
+                                Cá chẽm tươi hấp nguyên con với gừng, hành, xì dầu thượng hạng
+                            </p>
+                            <div class="menu-divider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="menu-card reveal-fade delay-3">
+                        <div class="menu-image-wrapper">
+                            <img src="https://image.mux.com/acaUESI01518hCK84fQ00A2taaMIfj9hJhCCa9x6e9Jvg/thumbnail.jpg?height=720&time=0"
+                                 alt="Lẩu thái hải sản"
+                                 class="menu-image">
+                            <div class="image-overlay">
+                                <div class="overlay-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-content">
+                            <div class="menu-header">
+                                <h3 class="menu-item-title">Lẩu thái hải sản</h3>
+                                <span class="menu-price">450.000₫</span>
+                            </div>
+                            <p class="menu-description">
+                                Lẩu chua cay Thái Lan với tôm, mực, cá, nghêu tươi (2-4 người)
+                            </p>
+                            <div class="menu-divider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="menu-card reveal-fade delay-4">
+                        <div class="menu-image-wrapper">
+                            <img src="https://inox304.com.vn/wp-content/uploads/2024/09/Mon-ga-hap-la-chanh-mang-lai-loi-ich-gi-cho-suc-khoe.jpg"
+                                 alt="Gà ta hấp lá chanh"
+                                 class="menu-image">
+                            <div class="image-overlay">
+                                <div class="overlay-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-content">
+                            <div class="menu-header">
+                                <h3 class="menu-item-title">Gà ta hấp lá chanh</h3>
+                                <span class="menu-price">320.000₫</span>
+                            </div>
+                            <p class="menu-description">
+                                Gà ta thả vườn hấp lá chanh thơm lừng (nửa con)
+                            </p>
+                            <div class="menu-divider"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tráng miệng -->
+        <div class="menu-category" id="trang-mieng">
+            <div class="category-header text-center reveal-fade">
+                <span class="section-label">Desserts</span>
+                <h2 class="section-title">Tráng miệng</h2>
+                <div class="title-decoration mx-auto"></div>
+                <p class="category-description">
+                    Kết thúc bữa ăn ngọt ngào với những món tráng miệng tinh tế
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="menu-card reveal-fade delay-1">
+                        <div class="menu-image-wrapper">
+                            <img src="https://xa6zemg4r8.cloudimg.io/_images_/g/Hue-Am%20thuc-Che%20khoai-Che%20khoa-qrznUzNayX06nK7Bi4oy.jpg"
+                                 alt="Chè khoai tím"
+                                 class="menu-image">
+                            <div class="image-overlay">
+                                <div class="overlay-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-content">
+                            <div class="menu-header">
+                                <h3 class="menu-item-title">Chè khoai tím</h3>
+                                <span class="menu-price">45.000₫</span>
+                            </div>
+                            <p class="menu-description">
+                                Khoai tím dẻo ngọt nấu với nước cốt dừa béo ngậy
+                            </p>
+                            <div class="menu-divider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="menu-card reveal-fade delay-2">
+                        <div class="menu-image-wrapper">
+                            <img src="https://tarasmulticulturaltable.com/wp-content/uploads/2024/03/Banh-Flan-Creme-Caramel-4-of-4.jpg"
+                                 alt="Bánh flan caramen"
+                                 class="menu-image">
+                            <div class="image-overlay">
+                                <div class="overlay-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-content">
+                            <div class="menu-header">
+                                <h3 class="menu-item-title">Bánh flan caramen</h3>
+                                <span class="menu-price">50.000₫</span>
+                            </div>
+                            <p class="menu-description">
+                                Flan truyền thống với caramen đắng ngọt
+                            </p>
+                            <div class="menu-divider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="menu-card reveal-fade delay-3">
+                        <div class="menu-image-wrapper">
+                            <img src="https://runawayrice.com/wp-content/uploads/2014/08/a-Vanilla-Ice-Cream-in-Pandan-Waffle-Bowl.jpg"
+                                 alt="Kem vani nhà làm"
+                                 class="menu-image">
+                            <div class="image-overlay">
+                                <div class="overlay-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-content">
+                            <div class="menu-header">
+                                <h3 class="menu-item-title">Kem vani nhà làm</h3>
+                                <span class="menu-price">60.000₫</span>
+                            </div>
+                            <p class="menu-description">
+                                Kem vani tự làm kèm trái cây tươi
+                            </p>
+                            <div class="menu-divider"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Đồ uống -->
+        <div class="menu-category" id="do-uong">
+            <div class="category-header text-center reveal-fade">
+                <span class="section-label">Beverages</span>
+                <h2 class="section-title">Đồ uống</h2>
+                <div class="title-decoration mx-auto"></div>
+                <p class="category-description">
+                    Thức uống tuyển chọn từ khắp nơi trên thế giới
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="menu-card reveal-fade delay-1">
+                        <div class="menu-image-wrapper">
+                            <img src="https://vietnam-tea.com/wp-content/uploads/2021/12/vietnamese-lime-iced-tea.jpg"
+                                 alt="Trà đá"
+                                 class="menu-image">
+                            <div class="image-overlay">
+                                <div class="overlay-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-content">
+                            <div class="menu-header">
+                                <h3 class="menu-item-title">Trà đá</h3>
+                                <span class="menu-price">10.000₫</span>
+                            </div>
+                            <p class="menu-description">
+                                Trà đen truyền thống mát lạnh
+                            </p>
+                            <div class="menu-divider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="menu-card reveal-fade delay-2">
+                        <div class="menu-image-wrapper">
+                            <img src="https://static.wixstatic.com/media/6a893c_c4cfde5c69b14399992eb03e2e33de10~mv2.jpg/v1/fill/w_6720,h_4480,al_c,q_90/Avocado%20Smoothie.jpg"
+                                 alt="Sinh tố bơ"
+                                 class="menu-image">
+                            <div class="image-overlay">
+                                <div class="overlay-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-content">
+                            <div class="menu-header">
+                                <h3 class="menu-item-title">Sinh tố bơ</h3>
+                                <span class="menu-price">55.000₫</span>
+                            </div>
+                            <p class="menu-description">
+                                Bơ tươi xay mịn với sữa đặc
+                            </p>
+                            <div class="menu-divider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="menu-card reveal-fade delay-3">
+                        <div class="menu-image-wrapper">
+                            <img src="https://www.zulaykitchen.com/cdn/shop/articles/How_to_Authentic_Vietnamese_Iced_Coffee_Ca_Phe_S_a_Da_93df60f4-a9ff-4959-ac8b-542dcb32cffa_1001x.jpg?v=1749504398"
+                                 alt="Cà phê sữa đá"
+                                 class="menu-image">
+                            <div class="image-overlay">
+                                <div class="overlay-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-content">
+                            <div class="menu-header">
+                                <h3 class="menu-item-title">Cà phê sữa đá</h3>
+                                <span class="menu-price">35.000₫</span>
+                            </div>
+                            <p class="menu-description">
+                                Cà phê phin nguyên chất Việt Nam
+                            </p>
+                            <div class="menu-divider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="menu-card reveal-fade delay-4">
+                        <div class="menu-image-wrapper">
+                            <img src="https://media.istockphoto.com/id/507143336/photo/red-wine.jpg?s=612x612&w=0&k=20&c=E4dDQlwkGe0A7URC4J6rfUXtcCiDmMHi2pVPfj6PnAs="
+                                 alt="Rượu vang đỏ"
+                                 class="menu-image">
+                            <div class="image-overlay">
+                                <div class="overlay-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-content">
+                            <div class="menu-header">
+                                <h3 class="menu-item-title">Rượu vang đỏ (chai)</h3>
+                                <span class="menu-price">650.000₫</span>
+                            </div>
+                            <p class="menu-description">
+                                Rượu vang Chile nhập khẩu
+                            </p>
+                            <div class="menu-divider"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="cta-overlay"></div>
+    <div class="container">
+        <div class="cta-content reveal-fade">
+            <span class="cta-label">Đặt bàn ngay</span>
+            <h2 class="cta-title">Trải nghiệm ẩm thực đẳng cấp<br>tại FOURMEN</h2>
+            <p class="cta-description">
+                Để lại thông tin hoặc liên hệ trực tiếp để được tư vấn và đặt bàn
+            </p>
+            <div class="cta-buttons">
+                <a asp-controller="UserHome" asp-action="Index" class="btn-primary-custom">
+                    <span>Đặt bàn</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="tel:+84123456789" class="btn-secondary-custom">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>0123 456 789</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
 <style>
-    /* Hiệu ứng fade-in khi load trang */
-    .fade-in {
-        opacity: 0;
-        animation: fadeIn 1s ease-out forwards;
+    :root {
+        --primary-color: #1a1a1a;
+        --secondary-color: #c9a961;
+        --accent-color: #8b7355;
+        --text-dark: #2c2c2c;
+        --text-light: #6c6c6c;
+        --bg-light: #f8f6f3;
+        --white: #ffffff;
     }
 
-        .fade-in:nth-child(1) {
-            animation-delay: 0.2s;
-        }
-
-        .fade-in:nth-child(2) {
-            animation-delay: 0.4s;
-        }
-
-        .fade-in:nth-child(3) {
-            animation-delay: 0.6s;
-        }
-
-    @@keyframes fadeIn {
-        from
-
-    {
-        opacity: 0;
-        transform: translateY(30px);
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    body {
+        font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+        color: var(--text-dark);
+        line-height: 1.6;
+        overflow-x: hidden;
     }
 
+    /* Hero Section */
+    .menu-hero {
+        position: relative;
+        height: 70vh;
+        background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
     }
 
-    /* Hiệu ứng hover cho card món ăn */
-    .menu-card {
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.3) 100%);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+    }
+
+    .hero-label {
+        font-size: 0.9rem;
+        letter-spacing: 3px;
+        color: var(--secondary-color);
+        text-transform: uppercase;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 20px;
+    }
+
+    .hero-title {
+        font-size: 4.5rem;
+        font-weight: 400;
+        letter-spacing: 8px;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        font-family: 'Cinzel', serif;
+    }
+
+    .hero-divider {
+        width: 100px;
+        height: 1px;
+        background: var(--secondary-color);
+        margin: 0 auto 25px;
+    }
+
+    .hero-description {
+        font-size: 1.3rem;
+        max-width: 700px;
+        margin: 0 auto;
+        color: rgba(255,255,255,0.9);
+        font-weight: 300;
+    }
+
+    /* Menu Navigation */
+    .menu-navigation {
+        background: var(--white);
+        padding: 60px 0;
+        border-bottom: 1px solid #e8e5e0;
+    }
+
+    .menu-tabs {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .menu-tab {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        padding: 30px 40px;
+        background: transparent;
+        border: 2px solid #e8e5e0;
+        cursor: pointer;
         transition: all 0.4s ease;
+        color: var(--text-dark);
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        min-width: 180px;
+    }
+
+        .menu-tab:hover {
+            border-color: var(--secondary-color);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .menu-tab.active {
+            background: var(--secondary-color);
+            border-color: var(--secondary-color);
+            color: var(--white);
+        }
+
+    .tab-icon {
+        font-size: 2rem;
+        transition: transform 0.4s ease;
+    }
+
+    .menu-tab:hover .tab-icon,
+    .menu-tab.active .tab-icon {
+        transform: scale(1.2);
+    }
+
+    .tab-text {
+        font-weight: 600;
+    }
+
+    /* Menu Section */
+    .menu-section {
+        padding: 120px 0;
+        background: var(--bg-light);
+    }
+
+    .menu-category {
+        display: none;
+    }
+
+        .menu-category.active {
+            display: block;
+        }
+
+    .category-header {
+        margin-bottom: 80px;
+    }
+
+    .section-label {
+        font-size: 0.9rem;
+        letter-spacing: 3px;
+        color: var(--secondary-color);
+        text-transform: uppercase;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    .section-title {
+        font-size: 3rem;
+        font-weight: 400;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+
+    .title-decoration {
+        width: 60px;
+        height: 2px;
+        background: var(--secondary-color);
+        margin-bottom: 30px;
+    }
+
+    .category-description {
+        font-size: 1.2rem;
+        color: var(--text-light);
+        max-width: 600px;
+        margin: 20px auto 0;
+    }
+
+    /* Menu Cards */
+    .menu-card {
+        background: var(--white);
+        overflow: hidden;
+        transition: all 0.5s ease;
+        height: 100%;
         cursor: pointer;
     }
 
         .menu-card:hover {
-            transform: translateY(-15px) scale(1.05);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.2) !important;
+            transform: translateY(-15px);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.15);
         }
 
-            .menu-card:hover img {
-                transform: scale(1.15);
-                transition: transform 0.6s ease;
-            }
+    .menu-image-wrapper {
+        position: relative;
+        height: 300px;
+        overflow: hidden;
+    }
 
-            .menu-card:hover .price-tag {
-                transform: scale(1.1);
-                background: #dc3545;
-            }
+    .menu-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
 
-    /* Tag giá - ĐÃ GIẢM 50% KÍCH THƯỚC */
-    .price-tag {
+    .menu-card:hover .menu-image {
+        transform: scale(1.15);
+    }
+
+    .image-overlay {
         position: absolute;
-        bottom: 15px;
-        right: 15px;
-        background: rgba(220, 53, 69, 0.95);
-        color: white;
-        padding: 6px 12px; /* Giảm padding */
-        border-radius: 30px;
-        font-size: 1rem; /* Giảm từ 1.4rem xuống 1rem (~50% nhỏ hơn) */
-        font-weight: bold;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(26, 26, 26, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+
+    .menu-card:hover .image-overlay {
+        opacity: 1;
+    }
+
+    .overlay-icon {
+        width: 60px;
+        height: 60px;
+        border: 2px solid var(--secondary-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--secondary-color);
+        font-size: 1.5rem;
+        transform: scale(0);
+        transition: transform 0.4s ease 0.2s;
+    }
+
+    .menu-card:hover .overlay-icon {
+        transform: scale(1);
+    }
+
+    .menu-content {
+        padding: 35px 30px;
+    }
+
+    .menu-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        gap: 15px;
+    }
+
+    .menu-item-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        flex: 1;
+        line-height: 1.3;
+    }
+
+    .menu-price {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--secondary-color);
+        white-space: nowrap;
+        font-family: 'Cinzel', serif;
+    }
+
+    .menu-description {
+        font-size: 1rem;
+        color: var(--text-light);
+        line-height: 1.7;
+        margin-bottom: 20px;
+    }
+
+    .menu-divider {
+        width: 40px;
+        height: 2px;
+        background: var(--secondary-color);
+        transition: width 0.4s ease;
+    }
+
+    .menu-card:hover .menu-divider {
+        width: 100%;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        position: relative;
+        padding: 120px 0;
+        background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
+        color: var(--white);
+        text-align: center;
+    }
+
+    .cta-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(201, 169, 97, 0.1), rgba(26, 26, 26, 0.3));
+    }
+
+    .cta-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .cta-label {
+        font-size: 0.9rem;
+        letter-spacing: 3px;
+        color: var(--secondary-color);
+        text-transform: uppercase;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 20px;
+    }
+
+    .cta-title {
+        font-size: 3.5rem;
+        font-weight: 400;
+        margin-bottom: 25px;
+        line-height: 1.3;
+    }
+
+    .cta-description {
+        font-size: 1.2rem;
+        max-width: 700px;
+        margin: 0 auto 50px;
+        color: rgba(255,255,255,0.9);
+    }
+
+    .cta-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary-custom {
+        display: inline-flex;
+        align-items: center;
+        gap: 15px;
+        padding: 18px 45px;
+        background: var(--secondary-color);
+        color: var(--white);
+        text-decoration: none;
+        font-size: 1.1rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
         transition: all 0.4s ease;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        border: 2px solid var(--secondary-color);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn-primary-custom::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: var(--white);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+            z-index: 0;
+        }
+
+        .btn-primary-custom:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .btn-primary-custom:hover {
+            color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(201, 169, 97, 0.4);
+        }
+
+        .btn-primary-custom span,
+        .btn-primary-custom i {
+            position: relative;
+            z-index: 1;
+        }
+
+    .btn-secondary-custom {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 18px 40px;
+        background: transparent;
+        color: var(--white);
+        text-decoration: none;
+        font-size: 1.1rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        transition: all 0.4s ease;
+        border: 2px solid var(--white);
+    }
+
+        .btn-secondary-custom:hover {
+            background: var(--white);
+            color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255,255,255,0.3);
+        }
+
+    /* Animations */
+    .animate-fade-in {
+        animation: fadeIn 1.2s ease-out;
+    }
+
+    .animate-fade-in-delay {
+        animation: fadeIn 1.2s ease-out 0.3s both;
+    }
+
+    .animate-fade-in-delay-2 {
+        animation: fadeIn 1.2s ease-out 0.6s both;
+    }
+
+    .animate-fade-in-delay-3 {
+        animation: fadeIn 1.2s ease-out 0.9s both;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Scroll Reveal */
+    .reveal-fade {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 1s ease-out;
+    }
+
+        .reveal-fade.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    .delay-1 {
+        transition-delay: 0.1s;
+    }
+
+    .delay-2 {
+        transition-delay: 0.2s;
+    }
+
+    .delay-3 {
+        transition-delay: 0.3s;
+    }
+
+    .delay-4 {
+        transition-delay: 0.4s;
+    }
+
+    /* Responsive */
+    @@media (max-width: 992px) {
+        .hero-title {
+            font-size: 3rem;
+            letter-spacing: 5px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+        }
+
+        .menu-tabs {
+            gap: 15px;
+        }
+
+        .menu-tab {
+            min-width: 150px;
+            padding: 25px 30px;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+            letter-spacing: 3px;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+        }
+
+        .menu-tab {
+            min-width: 140px;
+            padding: 20px 25px;
+        }
+
+        .tab-icon {
+            font-size: 1.5rem;
+        }
+
+        .menu-header {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .menu-item-title {
+            font-size: 1.3rem;
+        }
+
+        .menu-price {
+            font-size: 1.2rem;
+        }
     }
 </style>
 
-<!-- Script kích hoạt hiệu ứng fade-in cho card khi chuyển tab -->
 <script>
+    // Menu Tab Switching
     document.addEventListener("DOMContentLoaded", function () {
-        const tabPanes = document.querySelectorAll('.tab-pane');
-        tabPanes.forEach(pane => {
-            pane.addEventListener('shown.bs.tab', function () {
-                pane.querySelectorAll('.menu-card').forEach((card, index) => {
-                    card.style.opacity = '0';
-                    card.style.animation = 'fadeIn 0.8s ease-out forwards';
-                    card.style.animationDelay = index * 0.1 + 's';
-                });
+        const menuTabs = document.querySelectorAll('.menu-tab');
+        const menuCategories = document.querySelectorAll('.menu-category');
+
+        menuTabs.forEach(tab => {
+            tab.addEventListener('click', function () {
+                // Remove active class from all tabs
+                menuTabs.forEach(t => t.classList.remove('active'));
+
+                // Add active class to clicked tab
+                this.classList.add('active');
+
+                // Hide all categories
+                menuCategories.forEach(cat => cat.classList.remove('active'));
+
+                // Show selected category
+                const categoryId = this.getAttribute('data-category');
+                const selectedCategory = document.getElementById(categoryId);
+                if (selectedCategory) {
+                    selectedCategory.classList.add('active');
+
+                    // Reset and trigger reveal animations for cards
+                    const cards = selectedCategory.querySelectorAll('.menu-card');
+                    cards.forEach((card, index) => {
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(50px)';
+
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0)';
+                        }, index * 100);
+                    });
+
+                    // Scroll to menu section
+                    selectedCategory.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
             });
         });
 
-        // Kích hoạt cho tab đầu tiên
-        const firstTab = new bootstrap.Tab(document.querySelector('#khai-vi-tab'));
-        firstTab.show();
+        // Scroll Reveal Animation
+        const revealElements = document.querySelectorAll('.reveal-fade');
+
+        const revealOnScroll = () => {
+            const triggerBottom = window.innerHeight * 0.85;
+
+            revealElements.forEach(el => {
+                const elementTop = el.getBoundingClientRect().top;
+
+                if (elementTop < triggerBottom) {
+                    el.classList.add('active');
+                }
+            });
+        };
+
+        revealOnScroll();
+        window.addEventListener('scroll', revealOnScroll);
+
+        // Trigger initial animation for first category
+        const firstCategory = document.querySelector('.menu-category.active');
+        if (firstCategory) {
+            const cards = firstCategory.querySelectorAll('.menu-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100 + 500);
+            });
+        }
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
     });
 </script>
