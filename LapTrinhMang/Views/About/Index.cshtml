@@ -1,164 +1,1074 @@
 ﻿@{
-    ViewData["Title"] = "Giới thiệu";
+    ViewData["Title"] = "Về FOURMEN - Giới thiệu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="py-5">
-    <div class="container">
-        <!-- Hero Section Giới thiệu -->
-        <div class="row mb-5">
-            <div class="col-lg-6 d-flex align-items-center scroll-reveal">
-                <div>
-                    <h1 class="display-4 fw-bold text-primary mb-4 scroll-reveal delay-1">Chào mừng đến với Nhà hàng ABC</h1>
-                    <p class="lead text-muted mb-4 scroll-reveal delay-2">
-                        Hơn 10 năm mang đến những bữa ăn ngon, không gian ấm cúng và dịch vụ tận tâm cho thực khách tại TP. Hồ Chí Minh.
-                    </p>
-                    <p class="fs-5 text-secondary scroll-reveal delay-3">
-                        Chúng tôi tự hào là nơi lưu giữ hương vị truyền thống Việt Nam kết hợp hài hòa với phong cách hiện đại,
-                        phục vụ từ những bữa cơm gia đình thân mật đến tiệc chiêu đãi sang trọng.
-                    </p>
-                    <a asp-controller="UserHome" asp-action="Index" class="btn btn-danger btn-lg mt-3 shadow scroll-reveal delay-4">
-                        <i class="fas fa-calendar-check me-2"></i> Đặt bàn ngay hôm nay
-                    </a>
-                </div>
-            </div>
-            <div class="col-lg-6 text-center scroll-reveal delay-2">
-                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                     alt="Không gian nhà hàng ABC"
-                     class="img-fluid rounded shadow-lg"
-                     style="max-height: 500px; object-fit: cover;" />
-            </div>
-        </div>
-
-        <!-- Sứ mệnh - Tầm nhìn - Giá trị cốt lõi -->
-        <div class="row g-5 my-5">
-            <div class="col-md-4 text-center scroll-reveal delay-1">
-                <div class="p-4">
-                    <i class="fas fa-heart fa-4x text-danger mb-4"></i>
-                    <h3 class="h4 fw-bold">Sứ mệnh</h3>
-                    <p class="text-muted">
-                        Mang đến những bữa ăn ngon từ nguyên liệu tươi sạch, phục vụ bằng cả tấm lòng để mỗi thực khách đều cảm thấy như đang dùng bữa tại nhà.
-                    </p>
-                </div>
-            </div>
-            <div class="col-md-4 text-center scroll-reveal delay-2">
-                <div class="p-4">
-                    <i class="fas fa-eye fa-4x text-primary mb-4"></i>
-                    <h3 class="h4 fw-bold">Tầm nhìn</h3>
-                    <p class="text-muted">
-                        Trở thành chuỗi nhà hàng Việt Nam được yêu thích nhất, nơi mọi người nghĩ đến đầu tiên khi muốn thưởng thức ẩm thực truyền thống chất lượng cao.
-                    </p>
-                </div>
-            </div>
-            <div class="col-md-4 text-center scroll-reveal delay-3">
-                <div class="p-4">
-                    <i class="fas fa-star fa-4x text-warning mb-4"></i>
-                    <h3 class="h4 fw-bold">Giá trị cốt lõi</h3>
-                    <p class="text-muted">
-                        Chất lượng - Tận tâm - Sạch sẽ - Sáng tạo - Trách nhiệm với cộng đồng.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Đội ngũ & Không gian -->
-        <div class="row align-items-center g-5 my-5">
-            <div class="col-lg-6 scroll-reveal delay-1">
-                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                     alt="Đầu bếp nhà hàng ABC"
-                     class="img-fluid rounded shadow" />
-            </div>
-            <div class="col-lg-6 scroll-reveal delay-2">
-                <h2 class="h3 fw-bold mb-4">Đội ngũ đầu bếp tài hoa</h2>
-                <p class="text-secondary fs-5">
-                    Đội ngũ đầu bếp của chúng tôi được dẫn dắt bởi Bếp trưởng Nguyễn Văn A – người có hơn 20 năm kinh nghiệm tại các nhà hàng 5 sao trong và ngoài nước.
-                </p>
-                <p class="text-secondary">
-                    Mỗi món ăn đều được chế biến tỉ mỉ, giữ trọn hương vị truyền thống nhưng vẫn sáng tạo để phù hợp với khẩu vị hiện đại.
-                </p>
-            </div>
-        </div>
-
-        <div class="row align-items-center g-5 my-5 flex-lg-row-reverse">
-            <div class="col-lg-6 scroll-reveal delay-1">
-                <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                     alt="Không gian nhà hàng sang trọng"
-                     class="img-fluid rounded shadow" />
-            </div>
-            <div class="col-lg-6 scroll-reveal delay-2">
-                <h2 class="h3 fw-bold mb-4">Không gian lý tưởng cho mọi dịp</h2>
-                <p class="text-secondary fs-5">
-                    Với sức chứa lên đến 300 khách, nhà hàng được thiết kế đa khu vực: phòng VIP riêng tư, khu ngoài trời thoáng đãng, sảnh lớn cho tiệc cưới và hội nghị.
-                </p>
-                <ul class="list-unstyled text-secondary">
-                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Phòng VIP riêng biệt</li>
-                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Sân khấu biểu diễn âm nhạc sống</li>
-                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Khu vui chơi cho trẻ em</li>
-                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Bãi đỗ xe rộng rãi miễn phí</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Call to action cuối trang -->
-        <div class="text-center py-5 bg-light rounded-4 my-5 scroll-reveal">
-            <h2 class="h3 fw-bold mb-4 scroll-reveal delay-1">Hãy đến và trải nghiệm ngay hôm nay!</h2>
-            <p class="lead text-muted mb-4 scroll-reveal delay-2">Đặt bàn nhanh chóng - Nhận ưu đãi đặc biệt cho khách đặt online</p>
-            <a asp-controller="UserHome" asp-action="Index" class="btn btn-danger btn-lg px-5 shadow scroll-reveal delay-3">
-                <i class="fas fa-calendar-alt me-2"></i> Đặt bàn online
-            </a>
+<!-- Hero Section -->
+<section class="about-hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <div class="container">
+            <span class="hero-label animate-fade-in">Về chúng tôi</span>
+            <h1 class="hero-title animate-fade-in-delay">Câu chuyện FOURMEN</h1>
+            <div class="hero-divider animate-fade-in-delay-2"></div>
+            <p class="hero-description animate-fade-in-delay-3">
+                Nơi hội tụ tinh hoa ẩm thực và nghệ thuật phục vụ đẳng cấp
+            </p>
         </div>
     </div>
-</div>
+</section>
+
+<!-- Story Section -->
+<section class="story-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 reveal-left">
+                <div class="story-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                         alt="FOURMEN Restaurant"
+                         class="story-image">
+                    <div class="image-frame"></div>
+                </div>
+            </div>
+            <div class="col-lg-6 reveal-right">
+                <div class="story-content">
+                    <span class="section-label">Khởi nguồn</span>
+                    <h2 class="section-title">Hành trình 15 năm kiến tạo đẳng cấp</h2>
+                    <div class="title-decoration"></div>
+                    <p class="story-text">
+                        FOURMEN được thành lập vào năm 2010 với tầm nhìn trở thành biểu tượng
+                        của sự tinh tế trong ngành ẩm thực cao cấp tại Việt Nam. Tên gọi "FOURMEN"
+                        đại diện cho bốn giá trị cốt lõi: Chất lượng, Nghệ thuật, Tận tâm và Đẳng cấp.
+                    </p>
+                    <p class="story-text">
+                        Từ một nhà hàng nhỏ với 20 bàn, chúng tôi đã không ngừng phát triển và
+                        hoàn thiện để trở thành điểm đến yêu thích của những thực khách sành ăn,
+                        nơi mỗi bữa ăn đều là một trải nghiệm đáng nhớ.
+                    </p>
+                    <div class="signature">
+                        <div class="signature-line"></div>
+                        <span class="signature-text">Founder & Executive Chef</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Values Section -->
+<section class="values-section">
+    <div class="container">
+        <div class="section-header text-center reveal-fade">
+            <span class="section-label">Triết lý của chúng tôi</span>
+            <h2 class="section-title">Giá trị cốt lõi</h2>
+            <div class="title-decoration mx-auto"></div>
+            <p class="section-subtitle">
+                Bốn trụ cột định hình nên sự xuất sắc của FOURMEN
+            </p>
+        </div>
+
+        <div class="row g-0">
+            <div class="col-md-6 col-lg-3">
+                <div class="value-card reveal-fade delay-1">
+                    <div class="value-number">01</div>
+                    <div class="value-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h3 class="value-title">Chất lượng</h3>
+                    <p class="value-description">
+                        Cam kết sử dụng nguyên liệu cao cấp nhất, được tuyển chọn kỹ lưỡng
+                        từ các nguồn cung cấp uy tín trong và ngoài nước.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="value-card reveal-fade delay-2">
+                    <div class="value-number">02</div>
+                    <div class="value-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3 class="value-title">Nghệ thuật</h3>
+                    <p class="value-description">
+                        Mỗi món ăn là một tác phẩm nghệ thuật, kết hợp hài hòa giữa hương vị,
+                        màu sắc và cách trình bày tinh tế.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="value-card reveal-fade delay-3">
+                    <div class="value-number">03</div>
+                    <div class="value-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3 class="value-title">Tận tâm</h3>
+                    <p class="value-description">
+                        Đội ngũ chuyên nghiệp luôn sẵn sàng phục vụ với sự chăm sóc chu đáo
+                        và tinh thần trách nhiệm cao nhất.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="value-card reveal-fade delay-4">
+                    <div class="value-number">04</div>
+                    <div class="value-icon">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <h3 class="value-title">Đẳng cấp</h3>
+                    <p class="value-description">
+                        Không gian sang trọng và dịch vụ hoàn hảo, tạo nên trải nghiệm
+                        fine dining đích thực cho mọi thực khách.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Chef Section -->
+<section class="chef-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 order-lg-2 reveal-right">
+                <div class="chef-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                         alt="Executive Chef"
+                         class="chef-image">
+                    <div class="chef-frame"></div>
+                </div>
+            </div>
+            <div class="col-lg-6 order-lg-1 reveal-left">
+                <div class="chef-content">
+                    <span class="section-label">Đầu bếp</span>
+                    <h2 class="section-title">Nghệ nhân ẩm thực</h2>
+                    <div class="title-decoration"></div>
+                    <p class="chef-text">
+                        <strong>Chef Nguyễn Văn Minh</strong> - Bếp trưởng điều hành của FOURMEN
+                        với hơn 25 năm kinh nghiệm tại các nhà hàng Michelin Star và khách sạn
+                        5 sao quốc tế.
+                    </p>
+                    <p class="chef-text">
+                        Được đào tạo chính thống tại Le Cordon Bleu Paris, Chef Minh đã mang về
+                        những kỹ thuật nấu nướng tinh túy của ẩm thực Pháp và Ý, đồng thời khéo
+                        léo kết hợp với tinh hoa ẩm thực Á Đông.
+                    </p>
+                    <div class="chef-achievements">
+                        <div class="achievement-item">
+                            <i class="fas fa-trophy"></i>
+                            <span>Best Chef Award 2023</span>
+                        </div>
+                        <div class="achievement-item">
+                            <i class="fas fa-medal"></i>
+                            <span>Michelin Trained</span>
+                        </div>
+                        <div class="achievement-item">
+                            <i class="fas fa-star"></i>
+                            <span>25+ Years Experience</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Space Section -->
+<section class="space-section">
+    <div class="container">
+        <div class="section-header text-center reveal-fade">
+            <span class="section-label">Không gian</span>
+            <h2 class="section-title">Thiết kế tinh tế & sang trọng</h2>
+            <div class="title-decoration mx-auto"></div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4 reveal-fade delay-1">
+                <div class="space-card">
+                    <div class="space-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                             alt="Main Dining Area"
+                             class="space-image">
+                    </div>
+                    <div class="space-content">
+                        <h3 class="space-title">Khu vực chính</h3>
+                        <p class="space-description">
+                            Sảnh chính rộng rãi với thiết kế hiện đại, ánh sáng ấm áp
+                            và view tuyệt đẹp ra thành phố.
+                        </p>
+                        <ul class="space-features">
+                            <li><i class="fas fa-check"></i> Sức chứa 150 khách</li>
+                            <li><i class="fas fa-check"></i> Hệ thống âm thanh cao cấp</li>
+                            <li><i class="fas fa-check"></i> Không gian thoáng đãng</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 reveal-fade delay-2">
+                <div class="space-card">
+                    <div class="space-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1551218372-a8789b81b253?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                             alt="Private Rooms"
+                             class="space-image">
+                    </div>
+                    <div class="space-content">
+                        <h3 class="space-title">Phòng VIP</h3>
+                        <p class="space-description">
+                            5 phòng riêng biệt với thiết kế độc đáo, phù hợp cho
+                            các buổi họp mặt gia đình hoặc tiệc riêng tư.
+                        </p>
+                        <ul class="space-features">
+                            <li><i class="fas fa-check"></i> 10-30 khách/phòng</li>
+                            <li><i class="fas fa-check"></i> Thiết bị karaoke</li>
+                            <li><i class="fas fa-check"></i> Menu riêng biệt</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 reveal-fade delay-3">
+                <div class="space-card">
+                    <div class="space-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                             alt="Wine Cellar"
+                             class="space-image">
+                    </div>
+                    <div class="space-content">
+                        <h3 class="space-title">Hầm rượu</h3>
+                        <p class="space-description">
+                            Bộ sưu tập hơn 200 loại rượu vang cao cấp từ khắp nơi
+                            trên thế giới, bảo quản trong điều kiện lý tưởng.
+                        </p>
+                        <ul class="space-features">
+                            <li><i class="fas fa-check"></i> 200+ nhãn hiệu</li>
+                            <li><i class="fas fa-check"></i> Sommelier chuyên nghiệp</li>
+                            <li><i class="fas fa-check"></i> Wine pairing menu</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="stats-overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-box reveal-fade delay-1">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="stat-number" data-target="15">0</div>
+                    <div class="stat-label">Năm kinh nghiệm</div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-box reveal-fade delay-2">
+                    <div class="stat-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <div class="stat-number" data-target="50">0</div>
+                    <div class="stat-label">Món ăn đặc sắc</div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-box reveal-fade delay-3">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-number" data-target="10000">0</div>
+                    <div class="stat-label">Khách hài lòng</div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-box reveal-fade delay-4">
+                    <div class="stat-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <div class="stat-number" data-target="25">0</div>
+                    <div class="stat-label">Giải thưởng</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content reveal-fade">
+            <span class="cta-label">Trải nghiệm FOURMEN</span>
+            <h2 class="cta-title">Đặt bàn ngay hôm nay</h2>
+            <p class="cta-description">
+                Hãy để chúng tôi phục vụ bạn một bữa ăn đáng nhớ
+            </p>
+            <div class="cta-buttons">
+                <a asp-controller="UserHome" asp-action="Index" class="btn-primary-custom">
+                    <span>Đặt bàn</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="tel:+84123456789" class="btn-secondary-custom">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>0123 456 789</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
 
 <style>
-    /* Hiệu ứng scroll reveal */
-    .scroll-reveal {
-        opacity: 0;
-        transform: translateY(60px);
-        transition: all 0.9s ease-out;
+    :root {
+        --primary-color: #1a1a1a;
+        --secondary-color: #c9a961;
+        --accent-color: #8b7355;
+        --text-dark: #2c2c2c;
+        --text-light: #6c6c6c;
+        --bg-light: #f8f6f3;
+        --white: #ffffff;
     }
 
-        .scroll-reveal.revealed {
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+        color: var(--text-dark);
+        line-height: 1.6;
+        overflow-x: hidden;
+    }
+
+    /* Hero Section */
+    .about-hero {
+        position: relative;
+        height: 70vh;
+        background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1559339352-11d035aa65de?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+    }
+
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.3) 100%);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+    }
+
+    .hero-label {
+        font-size: 0.9rem;
+        letter-spacing: 3px;
+        color: var(--secondary-color);
+        text-transform: uppercase;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 20px;
+    }
+
+    .hero-title {
+        font-size: 4.5rem;
+        font-weight: 400;
+        letter-spacing: 8px;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        font-family: 'Cinzel', serif;
+    }
+
+    .hero-divider {
+        width: 100px;
+        height: 1px;
+        background: var(--secondary-color);
+        margin: 0 auto 25px;
+    }
+
+    .hero-description {
+        font-size: 1.3rem;
+        max-width: 700px;
+        margin: 0 auto;
+        color: rgba(255,255,255,0.9);
+        font-weight: 300;
+    }
+
+    /* Story Section */
+    .story-section {
+        padding: 120px 0;
+        background: var(--white);
+    }
+
+    .story-image-wrapper {
+        position: relative;
+        padding: 30px;
+    }
+
+    .story-image {
+        width: 100%;
+        height: 600px;
+        object-fit: cover;
+        border-radius: 2px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .image-frame {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 2px solid var(--secondary-color);
+        z-index: 1;
+    }
+
+    .story-content {
+        padding-left: 60px;
+    }
+
+    .section-label {
+        font-size: 0.9rem;
+        letter-spacing: 3px;
+        color: var(--secondary-color);
+        text-transform: uppercase;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    .section-title {
+        font-size: 3rem;
+        font-weight: 400;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+
+    .title-decoration {
+        width: 60px;
+        height: 2px;
+        background: var(--secondary-color);
+        margin-bottom: 30px;
+    }
+
+    .story-text {
+        font-size: 1.1rem;
+        color: var(--text-light);
+        margin-bottom: 20px;
+        line-height: 1.8;
+    }
+
+    .signature {
+        margin-top: 40px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .signature-line {
+        width: 80px;
+        height: 1px;
+        background: var(--secondary-color);
+    }
+
+    .signature-text {
+        font-size: 1rem;
+        color: var(--secondary-color);
+        font-style: italic;
+    }
+
+    /* Values Section */
+    .values-section {
+        padding: 120px 0;
+        background: var(--bg-light);
+    }
+
+    .section-header {
+        margin-bottom: 80px;
+    }
+
+    .section-subtitle {
+        font-size: 1.2rem;
+        color: var(--text-light);
+        max-width: 600px;
+        margin: 20px auto 0;
+    }
+
+    .value-card {
+        padding: 60px 40px;
+        background: var(--white);
+        border-right: 1px solid #e8e5e0;
+        text-align: center;
+        height: 100%;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .value-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(201, 169, 97, 0.05), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .value-card:hover::before {
+            left: 100%;
+        }
+
+        .value-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+
+    .value-number {
+        font-size: 3rem;
+        font-weight: 300;
+        color: var(--secondary-color);
+        opacity: 0.3;
+        margin-bottom: 20px;
+        font-family: 'Cinzel', serif;
+    }
+
+    .value-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--secondary-color);
+        border-radius: 50%;
+        color: var(--secondary-color);
+        font-size: 2rem;
+        transition: all 0.4s ease;
+    }
+
+    .value-card:hover .value-icon {
+        background: var(--secondary-color);
+        color: var(--white);
+        transform: rotateY(360deg);
+    }
+
+    .value-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+    }
+
+    .value-description {
+        font-size: 1rem;
+        color: var(--text-light);
+        line-height: 1.8;
+    }
+
+    /* Chef Section */
+    .chef-section {
+        padding: 120px 0;
+        background: var(--white);
+    }
+
+    .chef-image-wrapper {
+        position: relative;
+        padding: 30px;
+    }
+
+    .chef-image {
+        width: 100%;
+        height: 650px;
+        object-fit: cover;
+        border-radius: 2px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .chef-frame {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        border: 2px solid var(--secondary-color);
+        z-index: 1;
+    }
+
+    .chef-content {
+        padding-right: 60px;
+    }
+
+    .chef-text {
+        font-size: 1.1rem;
+        color: var(--text-light);
+        margin-bottom: 20px;
+        line-height: 1.8;
+    }
+
+    .chef-achievements {
+        margin-top: 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .achievement-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 20px;
+        background: var(--bg-light);
+        border-left: 3px solid var(--secondary-color);
+    }
+
+        .achievement-item i {
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+        }
+
+        .achievement-item span {
+            font-size: 1rem;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+    /* Space Section */
+    .space-section {
+        padding: 120px 0;
+        background: var(--bg-light);
+    }
+
+    .space-card {
+        background: var(--white);
+        overflow: hidden;
+        transition: all 0.4s ease;
+        height: 100%;
+    }
+
+        .space-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+
+    .space-image-wrapper {
+        position: relative;
+        overflow: hidden;
+        height: 300px;
+    }
+
+    .space-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+
+    .space-card:hover .space-image {
+        transform: scale(1.1);
+    }
+
+    .space-content {
+        padding: 40px 35px;
+    }
+
+    .space-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+    }
+
+    .space-description {
+        font-size: 1rem;
+        color: var(--text-light);
+        margin-bottom: 25px;
+        line-height: 1.7;
+    }
+
+    .space-features {
+        list-style: none;
+        padding: 0;
+    }
+
+        .space-features li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+
+        .space-features i {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+
+    /* Stats Section */
+    .stats-section {
+        position: relative;
+        padding: 100px 0;
+        background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover fixed;
+        color: var(--white);
+    }
+
+    .stats-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(201, 169, 97, 0.1), rgba(26, 26, 26, 0.3));
+    }
+
+    .stat-box {
+        text-align: center;
+        padding: 40px 20px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .stat-icon {
+        font-size: 3rem;
+        color: var(--secondary-color);
+        margin-bottom: 20px;
+    }
+
+    .stat-number {
+        font-size: 4rem;
+        font-weight: 700;
+        color: var(--white);
+        margin-bottom: 10px;
+        font-family: 'Cinzel', serif;
+    }
+
+    .stat-label {
+        font-size: 1rem;
+        color: rgba(255,255,255,0.8);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        padding: 120px 0;
+        background: var(--bg-light);
+        text-align: center;
+    }
+
+    .cta-label {
+        font-size: 0.9rem;
+        letter-spacing: 3px;
+        color: var(--secondary-color);
+        text-transform: uppercase;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 20px;
+    }
+
+    .cta-title {
+        font-size: 3.5rem;
+        font-weight: 400;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+        line-height: 1.3;
+    }
+
+    .cta-description {
+        font-size: 1.2rem;
+        color: var(--text-light);
+        max-width: 600px;
+        margin: 0 auto 50px;
+    }
+
+    .cta-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary-custom {
+        display: inline-flex;
+        align-items: center;
+        gap: 15px;
+        padding: 18px 45px;
+        background: var(--secondary-color);
+        color: var(--white);
+        text-decoration: none;
+        font-size: 1.1rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        transition: all 0.4s ease;
+        border: 2px solid var(--secondary-color);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn-primary-custom::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: var(--primary-color);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+            z-index: 0;
+        }
+
+        .btn-primary-custom:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(201, 169, 97, 0.4);
+        }
+
+        .btn-primary-custom span,
+        .btn-primary-custom i {
+            position: relative;
+            z-index: 1;
+        }
+
+    .btn-secondary-custom {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 18px 40px;
+        background: transparent;
+        color: var(--primary-color);
+        text-decoration: none;
+        font-size: 1.1rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        transition: all 0.4s ease;
+        border: 2px solid var(--primary-color);
+    }
+
+        .btn-secondary-custom:hover {
+            background: var(--primary-color);
+            color: var(--white);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(26, 26, 26, 0.3);
+        }
+
+    /* Animations */
+    .animate-fade-in {
+        animation: fadeIn 1.2s ease-out;
+    }
+
+    .animate-fade-in-delay {
+        animation: fadeIn 1.2s ease-out 0.3s both;
+    }
+
+    .animate-fade-in-delay-2 {
+        animation: fadeIn 1.2s ease-out 0.6s both;
+    }
+
+    .animate-fade-in-delay-3 {
+        animation: fadeIn 1.2s ease-out 0.9s both;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
             opacity: 1;
             transform: translateY(0);
         }
+    }
 
-    /* Delay cho từng phần tử */
+    /* Scroll Reveal */
+    .reveal-fade,
+    .reveal-left,
+    .reveal-right {
+        opacity: 0;
+        transition: all 1s ease-out;
+    }
+
+    .reveal-fade {
+        transform: translateY(50px);
+    }
+
+    .reveal-left {
+        transform: translateX(-50px);
+    }
+
+    .reveal-right {
+        transform: translateX(50px);
+    }
+
+        .reveal-fade.active,
+        .reveal-left.active,
+        .reveal-right.active {
+            opacity: 1;
+            transform: translate(0, 0);
+        }
+
     .delay-1 {
-        transition-delay: 0.2s;
+        transition-delay: 0.1s;
     }
 
     .delay-2 {
-        transition-delay: 0.4s;
+        transition-delay: 0.2s;
     }
 
     .delay-3 {
-        transition-delay: 0.6s;
+        transition-delay: 0.3s;
     }
 
     .delay-4 {
-        transition-delay: 0.8s;
+        transition-delay: 0.4s;
+    }
+
+    /* Responsive */
+    @@media (max-width: 992px) {
+        .hero-title {
+            font-size: 3rem;
+            letter-spacing: 5px;
+        }
+
+        .story-content,
+        .chef-content {
+            padding-left: 0;
+            padding-right: 0;
+            margin-top: 50px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+        }
+
+        .value-card {
+            border-right: none;
+            border-bottom: 1px solid #e8e5e0;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+            letter-spacing: 3px;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+        }
     }
 </style>
 
 <script>
-    // Hiệu ứng scroll reveal - hiện phần tử khi cuộn đến
+    // Scroll Reveal Animation
     document.addEventListener("DOMContentLoaded", function () {
-        const revealElements = document.querySelectorAll('.scroll-reveal');
+        const revealElements = document.querySelectorAll('.reveal-fade, .reveal-left, .reveal-right');
 
         const revealOnScroll = () => {
-            const triggerBottom = window.innerHeight * 0.85; // Kích hoạt khi 85% viewport
+            const triggerBottom = window.innerHeight * 0.85;
 
             revealElements.forEach(el => {
                 const elementTop = el.getBoundingClientRect().top;
 
                 if (elementTop < triggerBottom) {
-                    el.classList.add('revealed');
+                    el.classList.add('active');
                 }
             });
         };
 
-        // Chạy khi load và khi scroll
         revealOnScroll();
         window.addEventListener('scroll', revealOnScroll);
+    });
+
+    // Counter Animation
+    document.addEventListener("DOMContentLoaded", function () {
+        const counters = document.querySelectorAll('.stat-number');
+        let hasAnimated = false;
+
+        const animateCounters = () => {
+            const statsSection = document.querySelector('.stats-section');
+            const sectionTop = statsSection.getBoundingClientRect().top;
+            const triggerBottom = window.innerHeight * 0.8;
+
+            if (sectionTop < triggerBottom && !hasAnimated) {
+                hasAnimated = true;
+
+                counters.forEach(counter => {
+                    const target = parseInt(counter.getAttribute('data-target'));
+                    const increment = target / 100;
+                    let current = 0;
+
+                    const updateCounter = () => {
+                        if (current < target) {
+                            current += increment;
+                            counter.textContent = Math.ceil(current) + (target >= 1000 ? '+' : '+');
+                            setTimeout(updateCounter, 20);
+                        } else {
+                            counter.textContent = target + '+';
+                        }
+                    };
+
+                    updateCounter();
+                });
+            }
+        };
+
+        window.addEventListener('scroll', animateCounters);
+        animateCounters();
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
     });
 </script>

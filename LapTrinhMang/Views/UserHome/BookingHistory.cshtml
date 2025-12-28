@@ -4,108 +4,529 @@
     ViewData["Title"] = "Lịch sử đặt bàn";
 }
 
-@* Re-designed for a modern C# Web App with a luxury dark/gold aesthetic. Used deep shadows, refined badges, and improved typography. *@
-<div class="container py-16 max-w-7xl mx-auto px-6">
-    <div class="flex flex-col md:flex-row justify-between items-center mb-16 border-b border-primary/10 pb-12">
-        <div class="text-center md:text-left">
-            <h1 class="text-6xl font-serif text-primary mb-4 tracking-tighter italic">
-                Reservations
-            </h1>
-            <p class="text-muted-foreground uppercase tracking-[0.3em] text-[10px] font-bold opacity-70">
-                Lịch sử đặt bàn — The Lighthouse Experience
-            </p>
+<style>
+    :root {
+        --primary: #0a0a0a;
+        --gold: #d4a574;
+        --gold-dark: #b8935f;
+        --gold-light: #e8c4a0;
+        --text-primary: #0a0a0a;
+        --text-secondary: #4a4a4a;
+        --text-muted: #8a8a8a;
+        --bg-primary: #ffffff;
+        --bg-secondary: #fafaf9;
+        --border: #e7e5e4;
+        --success: #16a34a;
+        --danger: #dc2626;
+        --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .history-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 80px 24px;
+    }
+
+    .history-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 64px;
+        padding-bottom: 48px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .history-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 12px;
+        letter-spacing: -0.03em;
+        font-style: italic;
+    }
+
+    .history-subtitle {
+        font-size: 0.688rem;
+        text-transform: uppercase;
+        letter-spacing: 0.25em;
+        color: var(--text-muted);
+        font-weight: 700;
+    }
+
+    .btn-book {
+        position: relative;
+        padding: 16px 32px;
+        background: linear-gradient(135deg, var(--gold), var(--gold-light));
+        color: var(--primary);
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.15em;
+        border: none;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-book::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            opacity: 0;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-book:hover::before {
+            opacity: 1;
+        }
+
+        .btn-book:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(212, 165, 116, 0.3);
+            color: var(--primary);
+        }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 128px 32px;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        backdrop-filter: blur(8px);
+    }
+
+    .empty-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 32px;
+        border: 1px solid rgba(212, 165, 116, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .empty-icon i {
+            font-size: 2rem;
+            color: rgba(212, 165, 116, 0.4);
+        }
+
+    .empty-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        color: var(--text-primary);
+        margin-bottom: 16px;
+        font-weight: 600;
+    }
+
+    .empty-text {
+        color: var(--text-muted);
+        max-width: 480px;
+        margin: 0 auto 40px;
+        font-size: 0.938rem;
+        line-height: 1.7;
+    }
+
+    .btn-empty {
+        padding: 16px 48px;
+        border: 1.5px solid var(--gold);
+        color: var(--gold);
+        background: transparent;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        border-radius: 10px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-empty:hover {
+            background: var(--gold);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+    /* Table Styles */
+    .table-wrapper {
+        background: rgba(255, 255, 255, 0.3);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+        backdrop-filter: blur(12px);
+    }
+
+    .history-table {
+        width: 100%;
+        margin: 0;
+    }
+
+        .history-table thead {
+            background: rgba(0, 0, 0, 0.02);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .history-table th {
+            padding: 24px 32px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 800;
+            color: var(--text-muted);
+            border: none;
+        }
+
+        .history-table tbody tr {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+            .history-table tbody tr:hover {
+                background: rgba(212, 165, 116, 0.03);
+            }
+
+        .history-table td {
+            padding: 40px 32px;
+            border: none;
+            vertical-align: middle;
+        }
+
+    .table-number-box {
+        position: relative;
+        width: 64px;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .table-number-border {
+        position: absolute;
+        inset: 0;
+        border: 1px solid rgba(212, 165, 116, 0.3);
+        transform: rotate(45deg);
+        transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    tr:hover .table-number-box {
+        transform: scale(1.1);
+    }
+
+    tr:hover .table-number-border {
+        transform: rotate(90deg);
+    }
+
+    .table-number {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.75rem;
+        color: var(--gold);
+        font-style: italic;
+        position: relative;
+        z-index: 1;
+    }
+
+    .table-info-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.125rem;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+        transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    tr:hover .table-info-title {
+        color: var(--gold);
+    }
+
+    .table-info-meta {
+        font-size: 0.688rem;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--text-muted);
+        margin-top: 4px;
+    }
+
+    .date-time {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .date-main {
+        font-size: 0.938rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        letter-spacing: -0.01em;
+    }
+
+    .time-range {
+        font-size: 0.75rem;
+        color: var(--gold);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-top: 6px;
+        opacity: 0.8;
+    }
+
+    .guest-name {
+        font-family: 'Playfair Display', serif;
+        font-size: 1rem;
+        color: var(--text-primary);
+    }
+
+    .guest-phone {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        font-family: 'Courier New', monospace;
+        margin-top: 4px;
+        opacity: 0.6;
+    }
+
+    /* Status Badges */
+    .status-badge {
+        display: flex;
+        align-items: center;
+    }
+
+    .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        margin-right: 12px;
+    }
+
+        .status-dot.pending {
+            background: var(--gold);
+            box-shadow: 0 0 10px rgba(212, 165, 116, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .status-dot.confirmed {
+            background: var(--success);
+            box-shadow: 0 0 10px rgba(22, 163, 74, 0.5);
+        }
+
+        .status-dot.cancelled {
+            background: var(--danger);
+            box-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
+        }
+
+    @@keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.5);
+            opacity: 0.5;
+        }
+    }
+
+    .status-text {
+        font-size: 0.688rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        font-weight: 800;
+    }
+
+        .status-text.pending {
+            color: var(--gold);
+        }
+
+        .status-text.confirmed {
+            color: var(--success);
+        }
+
+        .status-text.cancelled {
+            color: var(--danger);
+        }
+
+    .created-at {
+        font-size: 0.75rem;
+        color: rgba(138, 138, 138, 0.4);
+        font-family: 'Courier New', monospace;
+        letter-spacing: -0.02em;
+        font-style: italic;
+    }
+
+    /* Footer Note */
+    .history-footer {
+        margin-top: 80px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.688rem;
+        text-transform: uppercase;
+        letter-spacing: 0.25em;
+        color: rgba(138, 138, 138, 0.3);
+        font-weight: 700;
+    }
+
+    /* Responsive */
+    @@media (max-width: 1200px) {
+        .history-table th:nth-child(5),
+        .history-table td:nth-child(5) {
+            display: none;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .history-container {
+            padding: 60px 20px;
+        }
+
+        .history-header {
+            flex-direction: column;
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .history-title {
+            font-size: 2.5rem;
+        }
+
+        .btn-book {
+            margin-top: 24px;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 24px 16px;
+        }
+
+        .history-footer {
+            flex-direction: column;
+            gap: 16px;
+            text-align: center;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .table-wrapper {
+            border-radius: 12px;
+        }
+
+        .history-table {
+            font-size: 0.875rem;
+        }
+
+            .history-table th:nth-child(4),
+            .history-table td:nth-child(4) {
+                display: none;
+            }
+
+        .table-number-box {
+            width: 48px;
+            height: 48px;
+        }
+
+        .table-number {
+            font-size: 1.25rem;
+        }
+
+        .empty-state {
+            padding: 80px 24px;
+        }
+    }
+</style>
+
+<div class="history-container">
+    <div class="history-header">
+        <div>
+            <h1 class="history-title">Reservations</h1>
+            <p class="history-subtitle">Lịch sử đặt bàn — ABC Restaurant Experience</p>
         </div>
-        <div class="flex gap-4 mt-8 md:mt-0">
-            <a asp-action="Index" class="group relative px-8 py-4 bg-primary text-primary-foreground overflow-hidden transition-all duration-500 hover:shadow-[0_0_30px_rgba(197,160,89,0.3)]">
-                <span class="relative z-10 uppercase tracking-widest text-[10px] font-black">Book a Table</span>
-                <div class="absolute inset-0 bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
-            </a>
-        </div>
+        <a asp-action="Index" class="btn-book">
+            <span style="position: relative; z-index: 1;">Book a Table</span>
+        </a>
     </div>
 
     @if (!Model.Any())
     {
-        <div class="text-center py-32 bg-card/50 border border-border backdrop-blur-sm">
-            <div class="w-20 h-20 mx-auto mb-8 rounded-full border border-primary/20 flex items-center justify-center">
-                <i class="fas fa-wine-glass-alt text-2xl text-primary/40"></i>
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-wine-glass-alt"></i>
             </div>
-            <h2 class="text-3xl font-serif text-foreground mb-4">No Reservations Found</h2>
-            <p class="text-muted-foreground mb-10 max-w-md mx-auto text-sm leading-relaxed">Bạn chưa có yêu cầu đặt bàn nào. Hãy bắt đầu hành trình khám phá vị giác của bạn ngay bây giờ.</p>
-            <a asp-action="Index" class="inline-block px-12 py-4 border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-500 uppercase tracking-widest text-[10px] font-bold">
-                Make Your First Booking
-            </a>
+            <h2 class="empty-title">No Reservations Found</h2>
+            <p class="empty-text">Bạn chưa có yêu cầu đặt bàn nào. Hãy bắt đầu hành trình khám phá vị giác của bạn ngay bây giờ.</p>
+            <a asp-action="Index" class="btn-empty">Make Your First Booking</a>
         </div>
     }
     else
     {
-        <div class="bg-card/30 border border-border overflow-hidden shadow-2xl backdrop-blur-md">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
+        <div class="table-wrapper">
+            <div class="table-responsive">
+                <table class="history-table">
                     <thead>
-                        <tr class="border-b border-primary/10 bg-secondary/10">
-                            <th class="px-8 py-6 text-[10px] uppercase tracking-[0.25em] font-black text-primary/70">Table Details</th>
-                            <th class="px-8 py-6 text-[10px] uppercase tracking-[0.25em] font-black text-primary/70">Time & Date</th>
-                            <th class="px-8 py-6 text-[10px] uppercase tracking-[0.25em] font-black text-primary/70">Guest Info</th>
-                            <th class="px-8 py-6 text-[10px] uppercase tracking-[0.25em] font-black text-primary/70">Status</th>
-                            <th class="px-8 py-6 text-[10px] uppercase tracking-[0.25em] font-black text-primary/70 text-right">Created At</th>
+                        <tr>
+                            <th>Table Details</th>
+                            <th>Time & Date</th>
+                            <th>Guest Info</th>
+                            <th>Status</th>
+                            <th class="text-end">Created At</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-primary/5">
+                    <tbody>
                         @foreach (var item in Model)
                         {
-                            <tr class="group hover:bg-primary/[0.03] transition-all duration-500">
-                                <td class="px-8 py-10">
-                                    <div class="flex items-center gap-8">
-                                        <div class="relative w-16 h-16 flex items-center justify-center group-hover:scale-110 transition-transform duration-700">
-                                            <div class="absolute inset-0 border border-primary/30 rotate-45 group-hover:rotate-90 transition-transform duration-1000"></div>
-                                            <span class="text-2xl font-serif text-primary italic">@(item.Table?.Number.ToString() ?? "?")</span>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-4">
+                                        <div class="table-number-box">
+                                            <div class="table-number-border"></div>
+                                            <span class="table-number">@(item.Table?.Number.ToString() ?? "?")</span>
                                         </div>
                                         <div>
-                                            <div class="text-lg font-serif text-foreground group-hover:text-primary transition-colors">Table No. @(item.Table?.Number.ToString() ?? "N/A")</div>
-                                            <div class="text-[9px] uppercase tracking-[0.2em] text-muted-foreground mt-1">@item.Table?.Type • @(item.Table?.Capacity ?? 2) Guests</div>
+                                            <div class="table-info-title">Table No. @(item.Table?.Number.ToString() ?? "N/A")</div>
+                                            <div class="table-info-meta">@item.Table?.Type • @(item.Table?.Capacity ?? 2) Guests</div>
                                         </div>
                                     </div>
                                 </td>
 
-                                <td class="px-8 py-10">
-                                    <div class="flex flex-col">
-                                        <span class="text-sm font-bold tracking-tight text-foreground">@item.StartTime.ToString("ddd, dd MMM yyyy")</span>
-                                        <span class="text-[10px] text-primary uppercase tracking-widest mt-1.5 opacity-80">
-                                            @item.StartTime.ToString("HH:mm") — @item.EndTime.ToString("HH:mm")
-                                        </span>
+                                <td>
+                                    <div class="date-time">
+                                        <span class="date-main">@item.StartTime.ToString("ddd, dd MMM yyyy")</span>
+                                        <span class="time-range">@item.StartTime.ToString("HH:mm") — @item.EndTime.ToString("HH:mm")</span>
                                     </div>
                                 </td>
 
-                                <td class="px-8 py-10">
-                                    <div class="text-base font-serif text-foreground">@item.CustomerName</div>
-                                    <div class="text-[10px] text-muted-foreground font-mono mt-1 opacity-60">@item.Phone</div>
+                                <td>
+                                    <div class="guest-name">@item.CustomerName</div>
+                                    <div class="guest-phone">@item.Phone</div>
                                 </td>
 
-                                <td class="px-8 py-10">
-                                    <div class="flex items-center">
+                                <td>
+                                    <div class="status-badge">
                                         @if (item.Status == "Pending")
                                         {
-                                            <div class="relative flex h-2 w-2 mr-3">
-                                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                                                <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                                            </div>
-                                            <span class="text-[9px] uppercase tracking-[0.25em] font-black text-primary">Pending</span>
+                                            <span class="status-dot pending"></span>
+                                            <span class="status-text pending">Pending</span>
                                         }
                                         else if (item.Status == "Approved" || item.Status == "Confirmed")
                                         {
-                                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 mr-3 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
-                                            <span class="text-[9px] uppercase tracking-[0.25em] font-black text-emerald-500">Confirmed</span>
+                                            <span class="status-dot confirmed"></span>
+                                            <span class="status-text confirmed">Confirmed</span>
                                         }
                                         else
                                         {
-                                            <span class="h-1.5 w-1.5 rounded-full bg-rose-500 mr-3 shadow-[0_0_10px_rgba(244,63,94,0.5)]"></span>
-                                            <span class="text-[9px] uppercase tracking-[0.25em] font-black text-rose-500">Cancelled</span>
+                                            <span class="status-dot cancelled"></span>
+                                            <span class="status-text cancelled">Cancelled</span>
                                         }
                                     </div>
                                 </td>
 
-                                <td class="px-8 py-10 text-right">
-                                    <span class="text-[10px] text-muted-foreground/40 font-mono tracking-tighter italic">@item.CreatedAt.ToString("MMM dd, HH:mm")</span>
+                                <td class="text-end">
+                                    <span class="created-at">@item.CreatedAt.ToString("MMM dd, HH:mm")</span>
                                 </td>
                             </tr>
                         }
@@ -114,9 +535,9 @@
             </div>
         </div>
 
-        <div class="mt-20 flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-[0.3em] font-bold opacity-30">
+        <div class="history-footer">
             <p>Late arrivals may forfeit reservation after 15 minutes.</p>
-            <p class="mt-4 md:mt-0">© 2025 THE LIGHTHOUSE DINING</p>
+            <p>© @DateTime.Now.Year ABC Restaurant Dining</p>
         </div>
     }
 </div>
