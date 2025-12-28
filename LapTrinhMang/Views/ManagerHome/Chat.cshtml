@@ -1,0 +1,102 @@
+﻿@{
+    ViewData["Title"] = "Hỗ trợ khách hàng";
+}
+
+<div style="display: flex; height: 80vh; gap: 20px; margin-top: 20px;">
+    <div style="width: 300px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+        <div style="padding: 15px; background: #f1f5f9; font-weight: bold; border-bottom: 1px solid #e2e8f0;">Danh sách khách hàng</div>
+        <div id="user-list" style="flex: 1; overflow-y: auto;"></div>
+    </div>
+
+    <div style="flex: 1; background: white; border: 1px solid #e2e8f0; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden;">
+        <div id="chat-header" style="padding: 15px; background: #f1f5f9; font-weight: bold; border-bottom: 1px solid #e2e8f0;">Chọn khách hàng để chat</div>
+
+        <div id="manager-chat-area" style="flex: 1; padding: 20px; overflow-y: auto; background: #f8fafc; display: flex; flex-direction: column; gap: 10px;"></div>
+
+        <div style="padding: 15px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px;">
+            <input type="text" id="manager-input" placeholder="Nhập tin nhắn..." style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
+            <button onclick="sendManagerMessage()" style="padding: 10px 20px; background: #0f172a; color: white; border: none; border-radius: 6px; cursor: pointer;">Gửi</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+<script>
+    let currentUserId = null;
+    const connection = new signalR.HubConnectionBuilder().withUrl("/hubs/chat").build();
+
+    connection.start();
+
+    // 1. Nhận tin nhắn từ User
+    connection.on("ReceiveMessageFromUser", (userId, userName, msg, time) => {
+        // Nếu đang chat với đúng user này -> hiện tin nhắn
+        if (currentUserId == userId) {
+            appendManagerMsg(msg, "user");
+        } else {
+            // Nếu không -> Báo hiệu hoặc reload list để hiện chấm đỏ (bạn tự phát triển thêm)
+            alert(`Tin nhắn mới từ ${userName}: ${msg}`);
+        }
+    });
+
+    // 2. Load danh sách User
+    async function loadUsers() {
+        const res = await fetch('/api/manager/chat/users');
+        const users = await res.json();
+        const list = document.getElementById("user-list");
+        list.innerHTML = users.map(u => `
+            <div onclick="selectUser(${u.id}, '${u.fullName}')" style="padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; hover: background: #f8fafc;">
+                <b>${u.fullName}</b><br><small>${u.phone}</small>
+            </div>
+        `).join("");
+    }
+
+    // 3. Chọn User để chat
+    async function selectUser(id, name) {
+        currentUserId = id;
+        document.getElementById("chat-header").innerText = `Chat với: ${name}`;
+        document.getElementById("manager-chat-area").innerHTML = "Loading...";
+
+        const res = await fetch(`/api/manager/chat/history/${id}`);
+        const msgs = await res.json();
+
+        document.getElementById("manager-chat-area").innerHTML = "";
+        msgs.forEach(m => appendManagerMsg(m.message, m.isFromManager ? "me" : "user"));
+    }
+
+    // 4. Gửi tin nhắn
+    async function sendManagerMessage() {
+        if (!currentUserId) return alert("Chưa chọn khách hàng!");
+        const input = document.getElementById("manager-input");
+        const msg = input.value.trim();
+        if (!msg) return;
+
+        appendManagerMsg(msg, "me");
+        input.value = "";
+
+        await connection.invoke("SendMessageToUser", currentUserId, msg);
+    }
+
+    function appendManagerMsg(text, sender) {
+        const div = document.createElement("div");
+        div.style.padding = "10px 15px";
+        div.style.borderRadius = "8px";
+        div.style.maxWidth = "70%";
+        div.innerText = text;
+
+        if (sender === "me") {
+            div.style.alignSelf = "flex-end";
+            div.style.background = "#0f172a";
+            div.style.color = "white";
+        } else {
+            div.style.alignSelf = "flex-start";
+            div.style.background = "#e2e8f0";
+            div.style.color = "#333";
+        }
+
+        const area = document.getElementById("manager-chat-area");
+        area.appendChild(div);
+        area.scrollTop = area.scrollHeight;
+    }
+
+    loadUsers();
+</script>

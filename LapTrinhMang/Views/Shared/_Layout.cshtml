@@ -106,6 +106,7 @@
             letter-spacing: 0.01em;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
             .nav-link::after {
                 content: '';
                 position: absolute;
@@ -448,17 +449,28 @@
                         <li class="nav-item"><a class="nav-link" asp-controller="Menu" asp-action="Index">Thực đơn</a></li>
                         <li class="nav-item"><a class="nav-link" asp-controller="About" asp-action="Index">Câu chuyện</a></li>
                         <li class="nav-item"><a class="nav-link" asp-controller="Contact" asp-action="Index">Liên hệ</a></li>
+                        @if (User.IsInRole("Manager"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="ManagerHome" asp-action="Chat">Chat</a>
+                            </li>
+                        }
                     </ul>
 
                     <div class="d-flex align-items-center">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
-                            <a class="btn btn-reserve me-3" asp-controller="UserHome" asp-action="Index">Đặt bàn</a>
+                            @if (User.IsInRole("Manager")){
+                                <a class="btn btn-reserve me-3" asp-controller="ManagerHome" asp-action="Index">Quản lý đặt bàn</a>
+                            }else{
+                                <a class="btn btn-reserve me-3" asp-controller="UserHome" asp-action="Index">Đặt bàn</a>
+                            }
                         }
                         else
                         {
                             <a class="btn btn-reserve me-3" asp-controller="AuthView" asp-action="Login">Đặt bàn</a>
                         }
+
 
                         @if (User.Identity?.IsAuthenticated == true)
                         {
@@ -543,6 +555,245 @@
         });
     </script>
 
+    <style>
+        /* Chat Widget Styles - Matched to Fourmen Theme */
+        .chat-btn-floating {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--gold); /* Sử dụng màu Vàng của theme */
+            color: var(--primary); /* Icon màu đen */
+            border-radius: 50%;
+            border: none;
+            box-shadow: 0 4px 15px rgba(212, 165, 116, 0.4);
+            cursor: pointer;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+            .chat-btn-floating:hover {
+                transform: scale(1.1);
+                box-shadow: 0 6px 20px rgba(212, 165, 116, 0.6);
+                color: #fff;
+            }
+
+        .chat-box-popup {
+            display: none;
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            height: 450px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            z-index: 9999;
+            flex-direction: column;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        keyframes slideUp {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .chat-header {
+            background: var(--primary); /* Header màu đen */
+            color: var(--gold); /* Chữ màu vàng */
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-family: 'Playfair Display', serif;
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: var(--bg-tertiary);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chat-footer {
+            padding: 10px;
+            border-top: 1px solid var(--border);
+            background: white;
+            display: flex;
+            gap: 8px;
+        }
+
+        .msg {
+            max-width: 80%;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            word-wrap: break-word;
+        }
+
+        .msg-me {
+            align-self: flex-end;
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 2px;
+        }
+
+        .msg-manager {
+            align-self: flex-start;
+            background: #fff;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 2px;
+        }
+    </style>
+
+    @{
+        bool isUserLogged = User.Identity != null && User.Identity.IsAuthenticated;
+        string loginUrl = "/AuthView/Login";
+    }
+
+    @if (User.IsInRole("User"))
+    {
+        <button class="chat-btn-floating" onclick="toggleChatWidget()" title="Chat với chúng tôi">
+        <i class="fa-solid fa-comments"></i>
+        </button>
+
+        <div id="chatWidget" class="chat-box-popup">
+            <div class="chat-header">
+                <span><i class="fa-solid fa-headset me-2"></i> Hỗ trợ trực tuyến</span>
+                <span style="cursor:pointer" onclick="toggleChatWidget()">&times;</span>
+            </div>
+
+            <div id="chatMessages" class="chat-body">
+                <div style="text-align:center; color:var(--text-muted); font-size:0.85rem; margin-top:20px">
+                    <i class="fas fa-info-circle mb-2"></i><br>
+                    Xin chào! FOURMEN Restaurant có thể giúp gì cho bạn?
+                </div>
+            </div>
+
+            <div class="chat-footer">
+                <input type="text" id="chatInput" placeholder="Nhập tin nhắn..."
+                       style="flex:1; border:1px solid var(--border); padding:8px 12px; border-radius:20px; outline:none; background:var(--bg-secondary);"
+                       onkeypress="handleEnter(event)">
+                <button onclick="sendMessage()"
+                        style="background:var(--primary); color:var(--gold); border:none; width:35px; height:35px; border-radius:50%; cursor:pointer; transition:0.2s;">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    }
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+
+    <script>
+        const isLogged = @isUserLogged.ToString().ToLower();
+        const loginLink = '@loginUrl';
+        let chatConnection = null;
+        let isConnected = false;
+
+        function toggleChatWidget() {
+            if (!isLogged) {
+                window.location.href = loginLink;
+                return;
+            }
+
+            const box = document.getElementById("chatWidget");
+            if (box.style.display === "none" || box.style.display === "") {
+                box.style.display = "flex";
+                if (!isConnected) startChatConnection();
+            } else {
+                box.style.display = "none";
+            }
+        }
+
+        async function startChatConnection() {
+            chatConnection = new signalR.HubConnectionBuilder()
+                .withUrl("/hubs/chat")
+                .withAutomaticReconnect()
+                .build();
+
+            chatConnection.on("ReceiveMessageFromManager", (msg, time) => {
+                appendMsg(msg, "manager");
+            });
+
+            try {
+                await chatConnection.start();
+                isConnected = true;
+                console.log("Chat Connected!");
+                loadHistory();
+            } catch (err) {
+                console.error("Lỗi kết nối Chat:", err);
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById("chatInput");
+            const msg = input.value.trim();
+            if (!msg || !isConnected) return;
+
+            appendMsg(msg, "me");
+            input.value = "";
+
+            try {
+                await chatConnection.invoke("SendMessageToManager", msg);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function loadHistory() {
+            try {
+                const res = await fetch('/api/chat/history');
+                if (res.ok) {
+                    const msgs = await res.json();
+                    const container = document.getElementById("chatMessages");
+                    if(msgs.length > 0) container.innerHTML = "";
+
+                    msgs.forEach(m => {
+                        appendMsg(m.message, m.isFromManager ? "manager" : "me");
+                    });
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        function appendMsg(text, type) {
+            const div = document.createElement("div");
+            div.classList.add("msg");
+            div.classList.add(type === "me" ? "msg-me" : "msg-manager");
+            div.textContent = text;
+
+            const container = document.getElementById("chatMessages");
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function handleEnter(e) {
+            if (e.key === "Enter") sendMessage();
+        }
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
