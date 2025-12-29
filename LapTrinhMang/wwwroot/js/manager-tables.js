@@ -1,297 +1,261 @@
 ﻿const cfg = window.MANAGER_CFG || {};
 const baseUrl = cfg.baseUrl || location.origin;
-
 const el = (id) => document.getElementById(id);
-let currentTableNumber = null;
 
-// ===== Auth helpers (JWT OR Cookie) =====
-function getToken() {
-    return localStorage.getItem("token") || "";
-}
-async function apiFetch(url, opts = {}) {
-    const token = getToken();
-    const headers = { ...(opts.headers || {}) };
-    if (token) headers["Authorization"] = `Bearer ${token}`;
-    return fetch(url, { ...opts, headers, credentials: "include" });
-}
+// --- STATE ---
+const state = {
+    tables: [],
+    selectedTable: null
+};
 
-// ===== Date helpers =====
-function todayISO() {
-    const d = new Date();
-    const pad = (n) => String(n).padStart(2, "0");
-    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-}
-function getSelectedDate() {
-    const v = el("pageDate")?.value;
-    return v || todayISO();
-}
-
-// ===== UI helpers =====
-function badgeClass(status) {
-    if (status === "Full") return "full";
-    if (status === "Pending") return "pending";
-    if (status === "Reserved") return "reserved";
-    return "ok";
-}
-function badgeText(t) {
-    if (t.status === "Full") return "Hết suất";
-    if (t.status === "Pending") return `Pending (${t.pendingCount || 0})`;
-    if (t.status === "Reserved") return `Reserved (${t.approvedCount || 0})`;
-    return "Available";
-}
-function typeClass(type) {
-    const t = (type || "").toLowerCase();
-    if (t.includes("vvip")) return "vvip";
-    if (t.includes("vip")) return "vip";
-    return "";
-}
-function fmtDateTime(x) {
-    if (!x) return "";
-    return new Date(x).toLocaleString();
-}
-
-// ===== API =====
-async function apiGetTables(dateVal) {
-    const qs = new URLSearchParams();
-    qs.set("date", dateVal);
-
-    const res = await apiFetch(`${baseUrl}/api/manager/tables?${qs.toString()}`);
-    if (res.status === 401) throw new Error("401_UNAUTHORIZED");
-    if (!res.ok) throw new Error(`GET /api/manager/tables ${res.status}`);
-    const data = await res.json();
-    return Array.isArray(data) ? data : [];
-}
-
-async function apiGetReservations(tableNo, status, dateVal) {
-    const qs = new URLSearchParams();
-    qs.set("tableNumber", tableNo);
-    qs.set("date", dateVal);
-    if (status) qs.set("status", status);
-
-    const res = await apiFetch(`${baseUrl}/api/manager/reservations?${qs.toString()}`);
-    if (res.status === 401) throw new Error("401_UNAUTHORIZED");
-    if (!res.ok) throw new Error(`GET reservations ${res.status} ${await res.text()}`);
-    const data = await res.json();
-    return Array.isArray(data) ? data : [];
-}
-
-async function apiApprove(id) {
-    const res = await apiFetch(`${baseUrl}/api/manager/reservations/${id}/approve`, { method: "PUT" });
-    if (res.status === 401) throw new Error("401_UNAUTHORIZED");
-    if (!res.ok) throw new Error(await res.text());
-}
-async function apiCancel(id) {
-    const res = await apiFetch(`${baseUrl}/api/manager/reservations/${id}/cancel`, { method: "PUT" });
-    if (res.status === 401) throw new Error("401_UNAUTHORIZED");
-    if (!res.ok) throw new Error(await res.text());
-}
-
-// ===== Render tables =====
-function renderTables(items, dateVal) {
-    const filter = el("filter").value;
-    const list = filter ? items.filter(x => x.status === filter) : items;
-
-    el("grid").innerHTML = list.map(t => {
-        const badge = `<span class="badge ${badgeClass(t.status)}">${badgeText(t)}</span>`;
-        const type = t.type || "Normal";
-        const typePill = `<span class="typePill ${typeClass(type)}">${type}</span>`;
-
-        const slotLine = `Suất trống (${dateVal}): <b>${t.slotCount ?? "-"}</b>`;
-        const orderLine = `Đơn: <b>Pending ${t.pendingCount ?? 0}</b> | <b>Approved ${t.approvedCount ?? 0}</b>`;
-
-        const note =
-            (t.pendingCount > 0)
-                ? `<div class="row" style="color:#b45309">Có đơn chờ duyệt → bấm “Xem đơn”</div>`
-                : (t.approvedCount > 0)
-                    ? `<div class="row" style="color:#dc2626">Có đơn đã duyệt</div>`
-                    : `<div class="row">Không có đơn</div>`;
-
-        return `
-      <div class="card">
-        <div class="cardHead">
-          <div class="tableNo">Bàn ${t.tableNumber}</div>
-          ${badge}
-        </div>
-
-        <div class="row">Sức chứa: <b>${t.capacity}</b></div>
-        <div class="row">Loại: ${typePill}</div>
-        <div class="row">${slotLine}</div>
-        <div class="row">${orderLine}</div>
-        ${note}
-
-        <div class="cardActions">
-          <button class="cardBtn" type="button" data-open-res="${t.tableNumber}">Xem đơn</button>
-        </div>
-      </div>
-    `;
-    }).join("");
-}
-
-async function loadTables() {
-    try {
-        const dateVal = getSelectedDate();
-        const data = await apiGetTables(dateVal);
-        renderTables(data, dateVal);
-    } catch (e) {
-        if (String(e.message || e) === "401_UNAUTHORIZED") {
-            location.href = "/AuthView/Login";
-            return;
-        }
-        console.error(e);
-    }
-}
-
-// ===== Dialog reservations =====
-function pill(status) {
-    const s = (status || "").toLowerCase();
-    if (s === "pending") return `<span class="pill pending">Pending</span>`;
-    if (s === "approved") return `<span class="pill approved">Approved</span>`;
-    if (s === "canceled") return `<span class="pill canceled">Canceled</span>`;
-    return `<span class="pill canceled">${status}</span>`;
-}
-
-function setHint(msg) { el("resHint").textContent = msg || ""; }
-
-function openResDialog(tableNo) {
-    currentTableNumber = tableNo;
-    el("resTitle").textContent = `Đơn đặt bàn - Bàn ${tableNo}`;
-    el("resFilter").value = "";
-    setHint("");
-    el("resDlg").showModal();
-    reloadReservations();
-}
-function closeResDialog() {
-    el("resDlg").close();
-    currentTableNumber = null;
-}
-
-async function reloadReservations() {
-    if (!currentTableNumber) return;
-
-    try {
-        setHint("Đang tải...");
-        const status = el("resFilter").value;
-        const dateVal = getSelectedDate();
-
-        const data = await apiGetReservations(currentTableNumber, status, dateVal);
-
-        if (!data.length) {
-            el("resList").innerHTML =
-                `<div class="resItem" style="border-style:dashed;">Không có đơn trong ngày ${dateVal}.</div>`;
-            setHint("");
-            return;
-        }
-
-        el("resList").innerHTML = data.map(r => {
-            const start = fmtDateTime(r.startTime);
-            const end = fmtDateTime(r.endTime);
-
-            const canApprove = r.status === "Pending";
-            const canCancel = r.status !== "Canceled";
-
-            return `
-        <div class="resItem">
-          <div class="resHead">
-            <div class="resId">#${r.id} - Bàn ${r.tableNumber}</div>
-            ${pill(r.status)}
-          </div>
-
-          <div class="row" style="margin-top:8px; color:var(--text);">
-            <b>${r.customerName}</b> (${r.phone})
-          </div>
-          <div class="row">${start} → ${end}</div>
-
-          <div class="resActions">
-            <button class="actionBtn primary" type="button" data-approve="${r.id}" ${canApprove ? "" : "disabled"}>Duyệt</button>
-            <button class="actionBtn" type="button" data-cancel="${r.id}" ${canCancel ? "" : "disabled"}>Hủy</button>
-          </div>
-        </div>
-      `;
-        }).join("");
-
-        setHint("");
-    } catch (e) {
-        if (String(e.message || e) === "401_UNAUTHORIZED") {
-            location.href = "/AuthView/Login";
-            return;
-        }
-        setHint(String(e));
-    }
-}
-
-// ===== Logout =====
-async function logout() {
-    try { await apiFetch(`${baseUrl}/api/auth/logout`, { method: "POST" }); } catch { }
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    localStorage.removeItem("fullName");
-    localStorage.removeItem("phone");
-    location.href = "/AuthView/Login";
-}
-
-// ===== SignalR =====
-const token = getToken();
-const hubUrl = baseUrl + "/hubs/booking";
-const hubOpts = token ? { accessTokenFactory: () => getToken() } : { withCredentials: true };
-
-const connection = new signalR.HubConnectionBuilder()
-    .withUrl(hubUrl, hubOpts)
-    .withAutomaticReconnect()
-    .configureLogging(signalR.LogLevel.Information)
-    .build();
-
-async function onRealtime() {
-    await loadTables();
-    if (currentTableNumber) await reloadReservations();
-}
-
-// ===== Init =====
+// --- INIT ---
 document.addEventListener("DOMContentLoaded", async () => {
-    // date init
-    if (el("pageDate")) {
-        el("pageDate").value = todayISO();
-        el("pageDate").addEventListener("change", async () => {
-            await loadTables();
-            if (el("resDlg")?.open) await reloadReservations();
+    // 1. Set ngày mặc định là hôm nay
+    const d = new Date();
+    const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    if (!el("pageDate").value) {
+        el("pageDate").value = today;
+    }
+
+    // 2. Gán sự kiện
+    el("pageDate").addEventListener("change", loadTables);
+    el("filter").addEventListener("change", renderGrid);
+    el("btnResReload").addEventListener("click", loadReservations);
+    el("resFilter").addEventListener("change", loadReservations);
+
+    // Đóng dialog
+    el("resCloseX").addEventListener("click", () => el("resDlg").close());
+    el("btnResClose").addEventListener("click", () => el("resDlg").close());
+
+    // Logout (Nếu bạn bỏ comment nút logout trong HTML)
+    const btnLogout = el("btnLogout");
+    if (btnLogout) {
+        btnLogout.addEventListener("click", async () => {
+            await fetch(`${baseUrl}/AuthView/Logout`, { method: "POST" }); // Sửa lại đường dẫn logout của bạn cho đúng
+            location.reload();
         });
     }
 
-    el("btnLogout").addEventListener("click", logout);
-    el("filter").addEventListener("change", loadTables);
-
-    // open dialog delegation
-    el("grid").addEventListener("click", (e) => {
-        const btn = e.target.closest("[data-open-res]");
-        if (!btn) return;
-        openResDialog(Number(btn.getAttribute("data-open-res")));
-    });
-
-    // dialog controls
-    el("resCloseX").addEventListener("click", closeResDialog);
-    el("btnResClose").addEventListener("click", closeResDialog);
-    el("btnResReload").addEventListener("click", reloadReservations);
-    el("resFilter").addEventListener("change", reloadReservations);
-
-    // approve/cancel delegation
-    el("resList").addEventListener("click", async (e) => {
-        const a = e.target.closest("[data-approve]");
-        const c = e.target.closest("[data-cancel]");
-        try {
-            if (a) { await apiApprove(Number(a.getAttribute("data-approve"))); await reloadReservations(); await loadTables(); }
-            if (c) { await apiCancel(Number(c.getAttribute("data-cancel"))); await reloadReservations(); await loadTables(); }
-        } catch (err) {
-            if (String(err.message || err) === "401_UNAUTHORIZED") { location.href = "/AuthView/Login"; return; }
-            alert(String(err));
-        }
-    });
-
+    // 3. Load dữ liệu lần đầu
     await loadTables();
 
-    // realtime
-    connection.on("TableUpdated", onRealtime);
-    connection.on("ReservationCreated", onRealtime);
-    connection.on("ReservationUpdated", onRealtime);
-    connection.on("ReservationCanceled", onRealtime);
-
-    try { await connection.start(); } catch { }
+    // 4. Kết nối SignalR
+    await startSignalR();
 });
+
+// --- API & LOGIC ---
+async function loadTables() {
+    const dateVal = el("pageDate").value;
+    const grid = el("grid");
+
+    // Hiệu ứng loading
+    grid.innerHTML = '<div class="loading">Đang tải dữ liệu...</div>';
+
+    try {
+        const res = await fetch(`${baseUrl}/api/manager/tables?date=${dateVal}`);
+        if (!res.ok) throw new Error("Lỗi tải dữ liệu");
+        state.tables = await res.json();
+        renderGrid();
+    } catch (err) {
+        grid.innerHTML = `<div class="empty"><div class="empty-text text-danger">Lỗi: ${err.message}</div></div>`;
+    }
+}
+
+function renderGrid() {
+    const filterVal = el("filter").value;
+    const grid = el("grid");
+
+    // Lọc Client-side
+    let items = state.tables;
+    if (filterVal) {
+        items = items.filter(t => t.status === filterVal);
+    }
+
+    if (items.length === 0) {
+        grid.innerHTML = `
+            <div class="empty" style="grid-column: 1/-1;">
+                <div class="empty-icon"><i class="fas fa-search"></i></div>
+                <div class="empty-text">Không tìm thấy bàn nào theo bộ lọc này.</div>
+            </div>`;
+        return;
+    }
+
+    // Render HTML khớp với CSS mới (.tcard, .badge...)
+    grid.innerHTML = items.map(t => {
+        // Xác định class và text hiển thị
+        let statusClass = t.status.toLowerCase(); // available, pending, reserved, full
+        let badgeClass = statusClass;
+        let statusLabel = "";
+        let noteText = "";
+
+        switch (t.status) {
+            case "Pending":
+                statusLabel = "CHỜ DUYỆT";
+                noteText = `<span style="color:var(--pending)">Có ${t.pendingCount} đơn cần xử lý ngay!</span>`;
+                break;
+            case "Reserved":
+                statusLabel = "ĐÃ ĐẶT";
+                noteText = `Sắp tới có khách (${t.approvedCount} đơn)`;
+                break;
+            case "Full":
+                statusLabel = "HẾT CHỖ";
+                noteText = "Đã kín lịch hôm nay";
+                break;
+            default: // Available
+                statusLabel = "CÒN TRỐNG";
+                noteText = "Sẵn sàng đón khách";
+                statusClass = "available";
+                badgeClass = "available";
+                break;
+        }
+
+        // Icon loại bàn
+        let typeIcon = t.type === "VIP" ? '<i class="fas fa-crown text-warning"></i>' :
+            t.type === "VVIP" ? '<i class="fas fa-gem text-danger"></i>' : '';
+
+        return `
+        <div class="tcard ${statusClass}" onclick="openResModal(${t.tableNumber})">
+            <div class="tcHead">
+                <div class="tcName">Bàn ${t.tableNumber} ${typeIcon}</div>
+                <div class="tcSeat" title="Sức chứa">
+                    <i class="fas fa-user-friends"></i> ${t.capacity}
+                </div>
+            </div>
+            
+            <div class="tcStat">
+                <span class="badge ${badgeClass}">${statusLabel}</span>
+            </div>
+
+            <div class="tcAvail">
+                Còn <strong>${t.slotCount}</strong> suất trống
+            </div>
+
+            <div class="tcNote">
+                ${noteText}
+            </div>
+        </div>
+        `;
+    }).join("");
+}
+
+// --- MODAL CHI TIẾT ---
+async function openResModal(tableNum) {
+    state.selectedTable = tableNum;
+    el("resTitle").textContent = `Bàn số ${tableNum}`;
+    el("resHint").textContent = `Danh sách đơn ngày ${el("pageDate").value}`;
+    el("resDlg").showModal();
+    await loadReservations();
+}
+
+async function loadReservations() {
+    const tableNum = state.selectedTable;
+    const dateVal = el("pageDate").value;
+    const statusVal = el("resFilter").value;
+    const listEl = el("resList");
+
+    listEl.innerHTML = '<div class="loading">Đang tải...</div>';
+
+    try {
+        let url = `${baseUrl}/api/manager/reservations?date=${dateVal}&tableNumber=${tableNum}`;
+        if (statusVal) url += `&status=${statusVal}`;
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.length === 0) {
+            listEl.innerHTML = '<div class="empty"><div class="empty-text">Không có đơn đặt nào.</div></div>';
+            return;
+        }
+
+        listEl.innerHTML = data.map(r => {
+            const timeStr = new Date(r.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            // Nút bấm hành động
+            let actions = '';
+            if (r.status === 'Pending') {
+                actions = `
+                <div class="resActions">
+                    <button class="btnSmall approve" onclick="approve(${r.id})"><i class="fas fa-check"></i> Duyệt</button>
+                    <button class="btnSmall cancel" onclick="cancel(${r.id})"><i class="fas fa-times"></i> Hủy</button>
+                </div>`;
+            }
+
+            // Màu trạng thái text
+            let statusColor = "var(--text-secondary)";
+            if (r.status === 'Pending') statusColor = "var(--pending)";
+            if (r.status === 'Approved') statusColor = "var(--success)";
+            if (r.status === 'Canceled') statusColor = "var(--danger)";
+
+            return `
+            <div class="resItem">
+                <div class="resHead">
+                    <div class="resName">${r.customerName}</div>
+                    <div style="font-weight:700; color:${statusColor}">${r.status.toUpperCase()}</div>
+                </div>
+                <div class="resInfo">
+                    <div><i class="fas fa-clock"></i> ${timeStr}</div>
+                    <div><i class="fas fa-phone"></i> ${r.phone}</div>
+                </div>
+                ${actions}
+            </div>
+            `;
+        }).join("");
+
+    } catch (e) {
+        console.error(e);
+        listEl.innerHTML = '<div class="empty-text text-danger">Lỗi tải chi tiết.</div>';
+    }
+}
+
+// --- ACTIONS ---
+async function approve(id) {
+    if (!confirm("Duyệt đơn này?")) return;
+    try {
+        await fetch(`${baseUrl}/api/manager/reservations/${id}/approve`, { method: "PUT" });
+        // SignalR sẽ tự cập nhật UI, nhưng ta reload list modal cho nhanh
+        await loadReservations();
+        await loadTables();
+    } catch (e) { alert("Lỗi khi duyệt"); }
+}
+
+async function cancel(id) {
+    if (!confirm("Hủy đơn này?")) return;
+    try {
+        await fetch(`${baseUrl}/api/manager/reservations/${id}/cancel`, { method: "PUT" });
+        await loadReservations();
+        await loadTables();
+    } catch (e) { alert("Lỗi khi hủy"); }
+}
+
+// --- SIGNALR ---
+async function startSignalR() {
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl(baseUrl + "/hubs/booking")
+        .withAutomaticReconnect()
+        .build();
+
+    connection.on("TableUpdated", async () => {
+        await loadTables();
+    });
+
+    connection.on("ReservationCreated", async () => {
+        await loadTables(); // Reload để thấy chấm vàng Pending
+    });
+
+    connection.on("ReservationUpdated", async () => {
+        if (el("resDlg").open) await loadReservations();
+        await loadTables();
+    });
+
+    try {
+        await connection.start();
+        console.log("SignalR Connected");
+    } catch (err) {
+        console.error("SignalR Error", err);
+    }
+}
+
+// Expose functions for HTML onclick
+window.openResModal = openResModal;
+window.approve = approve;
+window.cancel = cancel;
