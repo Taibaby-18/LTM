@@ -1,107 +1,711 @@
 ﻿@{
     Layout = null;
 }
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
-    <title>Register Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Manager Registration - FOURMEN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #0f172a;
+            --primary-dark: #020617;
+            --secondary: #0891b2;
+            --secondary-dark: #0e7490;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-dark: #0a0f1e;
+            --border: #e2e8f0;
+            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial;
-            background: #f6f7fb;
-            padding: 24px
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0891b2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .card {
-            max-width: 420px;
-            margin: auto;
-            background: #fff;
-            padding: 16px;
-            border-radius: 14px;
-            border: 1px solid #e5e7eb
+            /* Animated background grid */
+            body::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+                background-size: 50px 50px;
+                animation: gridMove 20s linear infinite;
+                z-index: 0;
+            }
+
+        @@keyframes gridMove {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(50px, 50px);
+            }
         }
 
-        input {
+        /* Floating orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.3;
+            animation: float 20s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: #0891b2;
+            top: -200px;
+            left: -200px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 350px;
+            height: 350px;
+            background: #06b6d4;
+            bottom: -150px;
+            right: -150px;
+            animation-delay: 5s;
+        }
+
+        .orb-3 {
+            width: 300px;
+            height: 300px;
+            background: #0e7490;
+            top: 50%;
+            left: 50%;
+            animation-delay: 10s;
+        }
+
+        @@keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(30px, -30px) scale(1.1);
+            }
+
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+        }
+
+        /* Main container */
+        .admin-container {
+            position: relative;
+            z-index: 1;
             width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border: 1px solid #d1d5db;
-            border-radius: 10px
+            max-width: 540px;
+            animation: slideIn 0.6s ease-out;
         }
 
-        button {
-            width: 100%;
-            padding: 10px 12px;
-            border: 0;
+        @@keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Card */
+        .admin-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Header */
+        .admin-header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            padding: 28px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .admin-header::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, var(--secondary), var(--accent), var(--secondary));
+                background-size: 200% 100%;
+                animation: shimmer 3s ease-in-out infinite;
+            }
+
+        @@keyframes shimmer {
+            0%, 100% {
+                background-position: 0% 0%;
+            }
+
+            50% {
+                background-position: 100% 0%;
+            }
+        }
+
+        .admin-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(8, 145, 178, 0.15);
+            border: 1px solid rgba(8, 145, 178, 0.3);
+            color: #06b6d4;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 12px;
+        }
+
+            .admin-badge i {
+                font-size: 0.9rem;
+            }
+
+        .admin-title {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+
+        .admin-subtitle {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+        }
+
+        /* Security notice */
+        .security-notice {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
             border-radius: 10px;
-            cursor: pointer;
-            background: #059669;
-            color: #fff
+            padding: 10px 12px;
+            margin: 20px 32px 0;
+            display: flex;
+            align-items: start;
+            gap: 10px;
         }
 
-        pre {
-            background: #0b1020;
-            color: #b6ffb6;
-            padding: 10px;
-            border-radius: 12px;
-            margin-top: 12px;
-            height: 160px;
-            overflow: auto
+            .security-notice i {
+                color: var(--warning);
+                font-size: 1rem;
+                margin-top: 1px;
+            }
+
+        .security-notice-content {
+            flex: 1;
         }
 
-        a {
+        .security-notice-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--warning);
+            margin-bottom: 3px;
+        }
+
+        .security-notice-text {
+            font-size: 0.75rem;
+            color: #92400e;
+            line-height: 1.5;
+        }
+
+        .security-code {
             display: inline-block;
-            margin-top: 10px
+            background: rgba(245, 158, 11, 0.2);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
         }
 
-        .small {
-            font-size: 12px;
-            color: #6b7280
+        /* Body */
+        .admin-body {
+            padding: 28px 32px 26px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+            .form-label i {
+                color: var(--secondary);
+                font-size: 0.9rem;
+            }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 14px 12px 42px;
+            font-size: 0.875rem;
+            border: 2px solid var(--border);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 10px;
+            font-weight: 500;
+            outline: none;
+        }
+
+            .form-control:focus {
+                border-color: var(--secondary);
+                background: var(--bg-primary);
+                box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            }
+
+                .form-control:focus + .input-icon {
+                    color: var(--secondary);
+                }
+
+            .form-control::placeholder {
+                color: var(--text-muted);
+                font-weight: 400;
+            }
+
+        /* Special style for register code input */
+        .code-input {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* Button */
+        .btn-register {
+            width: 100%;
+            padding: 13px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Inter', sans-serif;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(8, 145, 178, 0.3);
+            margin-top: 4px;
+        }
+
+            .btn-register::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, var(--secondary-dark), #0e7490);
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .btn-register:hover::before {
+                opacity: 1;
+            }
+
+            .btn-register:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 24px rgba(8, 145, 178, 0.4);
+            }
+
+            .btn-register:active {
+                transform: translateY(0);
+            }
+
+            .btn-register span {
+                position: relative;
+                z-index: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+            }
+
+        /* Back link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-top: 16px;
+            padding: 8px 14px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.825rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+            .back-link:hover {
+                background: var(--bg-primary);
+                border-color: var(--secondary);
+                color: var(--secondary);
+                transform: translateX(-4px);
+            }
+
+        /* Console log */
+        .console-log {
+            margin-top: 18px;
+            background: var(--bg-dark);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #1e293b;
+        }
+
+        .console-header {
+            background: #1e293b;
+            padding: 9px 12px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .console-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .console-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .dot-red {
+            background: #ef4444;
+        }
+
+        .dot-yellow {
+            background: #f59e0b;
+        }
+
+        .dot-green {
+            background: #10b981;
+        }
+
+        .console-title {
+            font-size: 0.68rem;
+            color: #94a3b8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .console-body {
+            padding: 11px 12px;
+            height: 130px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.775rem;
+            line-height: 1.5;
+            color: #10b981;
+        }
+
+            .console-body::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .console-body::-webkit-scrollbar-track {
+                background: #0a0f1e;
+            }
+
+            .console-body::-webkit-scrollbar-thumb {
+                background: #334155;
+                border-radius: 3px;
+            }
+
+                .console-body::-webkit-scrollbar-thumb:hover {
+                    background: #475569;
+                }
+
+        /* Responsive */
+        @@media (max-width: 640px) {
+            body {
+                padding: 15px;
+            }
+
+            .admin-container {
+                max-width: 100%;
+            }
+
+            .admin-header {
+                padding: 24px 28px;
+            }
+
+            .admin-title {
+                font-size: 1.6rem;
+            }
+
+            .security-notice {
+                margin: 18px 28px 0;
+                padding: 10px 12px;
+            }
+
+            .admin-body {
+                padding: 26px 28px 24px;
+            }
+
+            .form-group {
+                margin-bottom: 16px;
+            }
+
+            .console-body {
+                height: 120px;
+                font-size: 0.75rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>Đăng ký Manager</h2>
-        <div class="small">Mã đăng ký (appsettings.json): <b>MANAGER-123</b></div>
+    <!-- Floating orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
 
-        <input id="phone" placeholder="SĐT" />
-        <input id="name" placeholder="Họ tên" />
-        <input id="pass" type="password" placeholder="Mật khẩu" />
-        <input id="code" placeholder="Mã đăng ký" value="MANAGER-123" />
+    <!-- Admin Container -->
+    <div class="admin-container">
+        <div class="admin-card">
+            <!-- Header -->
+            <div class="admin-header">
+                <div class="admin-badge">
+                    <i class="fas fa-shield-halved"></i>
+                    <span>Admin Access</span>
+                </div>
+                <h1 class="admin-title">Manager Registration</h1>
+                <p class="admin-subtitle">Restricted access for authorized personnel only</p>
+            </div>
 
-        <button onclick="registerManager()">Đăng ký Manager</button>
+            <!-- Security Notice -->
+            <div class="security-notice">
+                <i class="fas fa-key"></i>
+                <div class="security-notice-content">
+                    <div class="security-notice-title">Security Code Required</div>
+                    <div class="security-notice-text">
+                        Registration code: <span class="security-code">MANAGER-123</span>
+                    </div>
+                </div>
+            </div>
 
-        <a href="/AuthView/Login">← Về Login</a>
+            <!-- Body -->
+            <div class="admin-body">
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-phone"></i>
+                            <span>Phone Number</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="tel"
+                                   class="form-control"
+                                   id="phone"
+                                   placeholder="Enter phone number"
+                                   required />
+                            <i class="fas fa-phone input-icon"></i>
+                        </div>
+                    </div>
 
-        <pre id="log"></pre>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i>
+                            <span>Full Name</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="text"
+                                   class="form-control"
+                                   id="name"
+                                   placeholder="Enter full name"
+                                   required />
+                            <i class="fas fa-user input-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-lock"></i>
+                            <span>Password</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="password"
+                                   class="form-control"
+                                   id="pass"
+                                   placeholder="Create secure password"
+                                   required />
+                            <i class="fas fa-lock input-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-key"></i>
+                            <span>Registration Code</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="text"
+                                   class="form-control code-input"
+                                   id="code"
+                                   placeholder="Enter registration code"
+                                   value="MANAGER-123"
+                                   required />
+                            <i class="fas fa-key input-icon"></i>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-register">
+                        <span>
+                            <i class="fas fa-user-shield"></i>
+                            Register as Manager
+                        </span>
+                    </button>
+                </form>
+
+                <a href="/AuthView/Login" class="back-link">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Login</span>
+                </a>
+
+                <!-- Console Log -->
+                <div class="console-log">
+                    <div class="console-header">
+                        <div class="console-dots">
+                            <div class="console-dot dot-red"></div>
+                            <div class="console-dot dot-yellow"></div>
+                            <div class="console-dot dot-green"></div>
+                        </div>
+                        <div class="console-title">System Log</div>
+                    </div>
+                    <div class="console-body" id="log">
+                        > System initialized...<br>
+                        > Awaiting registration request...<br>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         const baseUrl = location.origin;
         const logEl = document.getElementById("log");
-        function log(m){ logEl.textContent += m + "\n"; logEl.scrollTop = logEl.scrollHeight; }
 
-        async function registerManager(){
-          const body = {
-            phone: document.getElementById("phone").value.trim(),
-            fullName: document.getElementById("name").value.trim(),
-            password: document.getElementById("pass").value,
-            registerCode: document.getElementById("code").value.trim()
-          };
-
-          const res = await fetch(baseUrl + "/api/auth/register-manager", {
-            method:"POST",
-            headers: {"Content-Type":"application/json"},
-            body: JSON.stringify(body)
-          });
-
-          const text = await res.text();
-          log(res.status + " " + text);
-
-          if(res.ok) log("OK. Qua Login để đăng nhập.");
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'success' ? '✓' : type === 'error' ? '✗' : '>';
+            const color = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#10b981';
+            logEl.innerHTML += `<span style="color: ${color}">${prefix} [${timestamp}] ${message}</span><br>`;
+            logEl.scrollTop = logEl.scrollHeight;
         }
+
+        document.getElementById("registerForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            const body = {
+                phone: document.getElementById("phone").value.trim(),
+                fullName: document.getElementById("name").value.trim(),
+                password: document.getElementById("pass").value,
+                registerCode: document.getElementById("code").value.trim()
+            };
+
+            log("Sending registration request...");
+
+            try {
+                const res = await fetch(baseUrl + "/api/auth/register-manager", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                const text = await res.text();
+
+                if (res.ok) {
+                    log(`Registration successful! (${res.status})`, 'success');
+                    log("Manager account created.", 'success');
+                    log("Redirecting to login page...", 'success');
+
+                    setTimeout(() => {
+                        location.href = "/AuthView/Login";
+                    }, 1500);
+                } else {
+                    log(`Registration failed: ${res.status}`, 'error');
+                    log(`Error: ${text}`, 'error');
+                }
+            } catch (err) {
+                log("Connection error occurred", 'error');
+                log(`Details: ${err.message}`, 'error');
+            }
+        });
     </script>
 </body>
 </html>

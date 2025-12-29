@@ -3,50 +3,108 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ABC Restaurant</title>
+    <title>@ViewData["Title"] - FOURMEN Restaurant</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary: #0f172a;
-            --accent: #b5924a;
-            --text-main: #334155;
-            --bg-light: #f8fafc;
+            --primary: #0a0a0a;
+            --primary-light: #1a1a1a;
+            --gold: #d4a574;
+            --gold-dark: #b8935f;
+            --gold-light: #e8c4a0;
+            --text-primary: #0a0a0a;
+            --text-secondary: #4a4a4a;
+            --text-muted: #8a8a8a;
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafaf9;
+            --bg-tertiary: #f5f5f4;
+            --border: #e7e5e4;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         h1, h2, h3, .navbar-brand {
             font-family: 'Playfair Display', serif;
+            letter-spacing: -0.02em;
         }
 
+        /* ===== NAVBAR ===== */
         .navbar {
-            background: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            padding: 1rem 0;
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 0;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .navbar-scrolled {
+            padding: 0.75rem 0;
+            box-shadow: var(--shadow-md);
         }
 
         .navbar-brand {
-            font-size: 1.8rem;
+            font-size: 1.75rem;
+            font-weight: 700;
             color: var(--primary) !important;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.03em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+            .navbar-brand span {
+                color: var(--gold);
+                font-weight: 800;
+            }
+
+            .navbar-brand:hover {
+                transform: translateY(-1px);
+            }
+
+        .navbar-toggler {
+            border: none;
+            padding: 0.5rem;
+        }
+
+            .navbar-toggler:focus {
+                box-shadow: none;
+            }
+
+        .navbar-toggler-icon {
+            width: 24px;
+            height: 24px;
         }
 
         .nav-link {
             font-weight: 500;
-            color: var(--primary) !important;
-            margin: 0 0.5rem;
+            color: var(--text-secondary) !important;
+            margin: 0 0.75rem;
+            padding: 0.5rem 0 !important;
             position: relative;
+            font-size: 0.938rem;
+            letter-spacing: 0.01em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
             .nav-link::after {
@@ -56,87 +114,320 @@
                 left: 50%;
                 width: 0;
                 height: 2px;
-                background: var(--accent);
-                transition: all 0.3s;
+                background: linear-gradient(90deg, var(--gold), var(--gold-light));
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
                 transform: translateX(-50%);
             }
 
-            .nav-link:hover::after {
-                width: 80%;
+            .nav-link:hover {
+                color: var(--gold) !important;
             }
 
+                .nav-link:hover::after {
+                    width: 100%;
+                }
+
+        /* ===== BUTTONS ===== */
         .btn-reserve {
-            background: var(--primary);
-            color: white !important;
-            border-radius: 0;
-            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: var(--primary) !important;
+            border-radius: 10px;
+            padding: 0.75rem 1.75rem;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s;
-            border: 1px solid var(--primary);
+            letter-spacing: 0.05em;
+            font-size: 0.875rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
             text-decoration: none;
+            position: relative;
+            overflow: hidden;
         }
 
-            .btn-reserve:hover {
-                background: transparent;
-                color: var(--primary) !important;
+            .btn-reserve::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+                opacity: 0;
+                transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
+            .btn-reserve:hover::before {
+                opacity: 1;
+            }
+
+            .btn-reserve:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 16px rgba(212, 165, 116, 0.3);
+            }
+
+            .btn-reserve:active {
+                transform: translateY(-1px);
+            }
+
+        /* ===== USER DROPDOWN ===== */
         .user-avatar {
-            width: 35px;
-            height: 35px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid var(--accent);
-            margin-right: 8px;
+            border: 2px solid var(--gold);
+            margin-right: 10px;
             vertical-align: middle;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.5rem 1rem !important;
+            border-radius: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+            .dropdown-toggle:hover {
+                background: var(--bg-tertiary);
+            }
+
+                .dropdown-toggle:hover .user-avatar {
+                    transform: scale(1.05);
+                    border-color: var(--gold-light);
+                }
+
+            .dropdown-toggle::after {
+                margin-left: 4px;
+            }
+
         .dropdown-menu {
-            border: none;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            border-radius: 16px;
             overflow: hidden;
-            margin-top: 10px !important;
+            margin-top: 12px !important;
+            padding: 8px;
+            min-width: 220px;
         }
 
         .dropdown-item {
-            padding: 10px 20px;
+            padding: 12px 16px;
             font-weight: 500;
+            border-radius: 10px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.938rem;
         }
 
-            .dropdown-item:hover {
-                background-color: var(--bg-light);
-                color: var(--accent);
+            .dropdown-item i {
+                width: 20px;
+                text-align: center;
             }
 
-        main {
-            flex: 1;
-            margin-top: 100px;
+            .dropdown-item:hover {
+                background-color: var(--bg-tertiary);
+                color: var(--gold);
+                transform: translateX(4px);
+            }
+
+            .dropdown-item.text-danger:hover {
+                background-color: rgba(220, 38, 38, 0.1);
+                color: #dc2626 !important;
+            }
+
+        .dropdown-divider {
+            margin: 8px 0;
+            border-color: var(--border);
         }
 
+        /* ===== MAIN CONTENT ===== */
+        main {
+            flex: 1;
+            margin-top: 88px;
+        }
+
+        /* ===== FOOTER ===== */
         footer {
             background: var(--primary);
             color: #94a3b8;
             padding: 5rem 0 2rem;
-            margin-top: auto;
+            margin-top: 6rem;
+            position: relative;
         }
 
-            footer h5 {
-                color: white;
-                margin-bottom: 1.5rem;
+            footer::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+                background-size: 200% 100%;
+                animation: shimmer 3s ease-in-out infinite;
             }
 
-        .footer-social a {
-            color: white;
-            font-size: 1.2rem;
-            margin-right: 1.5rem;
-            transition: color 0.3s;
+        @@keyframes shimmer {
+            0%, 100% {
+                background-position: 0% 0%;
+            }
+
+            50% {
+                background-position: 100% 0%;
+            }
         }
 
-            .footer-social a:hover {
-                color: var(--accent);
+        footer h5 {
+            color: var(--bg-primary);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            font-size: 1.125rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        footer p {
+            line-height: 1.8;
+            font-size: 0.938rem;
+        }
+
+        footer i {
+            color: var(--gold);
+            margin-right: 10px;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+            .footer-social a {
+                width: 42px;
+                height: 42px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+                color: var(--bg-primary);
+                font-size: 1.125rem;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+                .footer-social a:hover {
+                    background: var(--gold);
+                    border-color: var(--gold);
+                    color: var(--primary);
+                    transform: translateY(-4px);
+                }
+
+        footer hr {
+            border-color: rgba(255, 255, 255, 0.1);
+            margin: 3rem 0 2rem;
+        }
+
+        footer small {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @@media (max-width: 991px) {
+            .navbar {
+                padding: 1rem 0;
+            }
+
+            .navbar-collapse {
+                margin-top: 1rem;
+                padding: 1rem 0;
+                border-top: 1px solid var(--border);
+            }
+
+            .nav-link {
+                margin: 0.5rem 0;
+                padding: 0.75rem 0 !important;
+            }
+
+                .nav-link::after {
+                    left: 0;
+                    transform: none;
+                }
+
+                .nav-link:hover::after {
+                    width: 60px;
+                }
+
+            .btn-reserve {
+                width: 100%;
+                margin: 1rem 0 !important;
+            }
+
+            .dropdown-toggle {
+                padding: 0.75rem 0 !important;
+                border-radius: 0;
+            }
+
+            .dropdown-menu {
+                border-radius: 12px;
+                margin-top: 8px !important;
+            }
+
+            main {
+                margin-top: 76px;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+
+            footer {
+                padding: 3rem 0 2rem;
+                margin-top: 4rem;
+            }
+
+                footer h5 {
+                    font-size: 1rem;
+                    margin-bottom: 1rem;
+                }
+
+                footer p {
+                    font-size: 0.875rem;
+                }
+        }
+
+        /* ===== SMOOTH SCROLL ===== */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* ===== SELECTION ===== */
+        ::selection {
+            background-color: var(--gold);
+            color: var(--primary);
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 5px;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: var(--gold-dark);
             }
     </style>
     @await RenderSectionAsync("Styles", required: false)
@@ -146,10 +437,10 @@
         <nav class="navbar navbar-expand-lg fixed-top">
             <div class="container">
                 <a class="navbar-brand" asp-controller="Home" asp-action="Index">
-                    ABC <span style="color: var(--accent)">RESTAURANT</span>
+                    FOURMEN <span>RESTAURANT</span>
                 </a>
 
-                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
@@ -158,34 +449,45 @@
                         <li class="nav-item"><a class="nav-link" asp-controller="Menu" asp-action="Index">Thực đơn</a></li>
                         <li class="nav-item"><a class="nav-link" asp-controller="About" asp-action="Index">Câu chuyện</a></li>
                         <li class="nav-item"><a class="nav-link" asp-controller="Contact" asp-action="Index">Liên hệ</a></li>
+                        @if (User.IsInRole("Manager"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="ManagerHome" asp-action="Chat">Chat</a>
+                            </li>
+                        }
                     </ul>
 
                     <div class="d-flex align-items-center">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
-                            <a class="btn btn-reserve me-3" asp-controller="UserHome" asp-action="Index">Đặt bàn</a>
+                            @if (User.IsInRole("Manager")){
+                                <a class="btn btn-reserve me-3" asp-controller="ManagerHome" asp-action="Index">Quản lý đặt bàn</a>
+                            }else{
+                                <a class="btn btn-reserve me-3" asp-controller="UserHome" asp-action="Index">Đặt bàn</a>
+                            }
                         }
                         else
                         {
                             <a class="btn btn-reserve me-3" asp-controller="AuthView" asp-action="Login">Đặt bàn</a>
                         }
 
+
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <div class="dropdown">
-                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" data-bs-toggle="dropdown">
-                                    <img src="https://ui-avatars.com/api/?name=@User.Identity.Name&background=b5924a&color=fff" alt="Avatar" class="user-avatar" />
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
+                                    <img src="https://ui-avatars.com/api/?name=@User.Identity.Name&background=d4a574&color=0a0a0a&bold=true" alt="Avatar" class="user-avatar" />
                                     <span>@User.Identity.Name</span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" asp-controller="UserHome" asp-action="Profile"><i class="fas fa-user me-2"></i> Hồ sơ</a></li>
-                                    <li><a class="dropdown-item" asp-controller="UserHome" asp-action="BookingHistory"><i class="fas fa-history me-2"></i> Lịch sử</a></li>
+                                    <li><a class="dropdown-item" asp-controller="UserHome" asp-action="Profile"><i class="fas fa-user"></i> Hồ sơ</a></li>
+                                    <li><a class="dropdown-item" asp-controller="UserHome" asp-action="BookingHistory"><i class="fas fa-history"></i> Lịch sử</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form asp-controller="AuthView" asp-action="Logout" method="post" class="d-inline">
                                             @Html.AntiForgeryToken()
                                             <button type="submit" class="dropdown-item text-danger">
-                                                <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
+                                                <i class="fas fa-sign-out-alt"></i> Đăng xuất
                                             </button>
                                         </form>
                                     </li>
@@ -210,29 +512,30 @@
         <div class="container">
             <div class="row g-4">
                 <div class="col-lg-4">
-                    <h5>ABC RESTAURANT</h5>
-                    <p>Nơi tinh hoa ẩm thực hội tụ trong không gian kiến trúc đương đại.</p>
+                    <h5>FOURMEN Restaurant</h5>
+                    <p>Nơi tinh hoa ẩm thực hội tụ trong không gian kiến trúc đương đại và nghệ thuật phục vụ tận tâm.</p>
                     <div class="footer-social">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-instagram"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
                 <div class="col-lg-4">
-                    <h5>LIÊN HỆ</h5>
-                    <p><i class="fas fa-map-marker-alt me-2"></i> 123 Đường ABC, Quận 1, TP.HCM</p>
-                    <p><i class="fas fa-phone me-2"></i> 0123 456 789</p>
-                    <p><i class="fas fa-envelope me-2"></i> hello@abcrestaurant.com</p>
+                    <h5>Liên hệ</h5>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Đường ABC, Quận 1, TP.HCM</p>
+                    <p><i class="fas fa-phone"></i> 0123 456 789</p>
+                    <p><i class="fas fa-envelope"></i> hello@abcrestaurant.com</p>
                 </div>
                 <div class="col-lg-4">
-                    <h5>GIỜ MỞ CỬA</h5>
-                    <p>Thứ 2 - Thứ 6: 09:00 - 22:00</p>
-                    <p>Thứ 7 - CN: 08:00 - 23:00</p>
+                    <h5>Giờ mở cửa</h5>
+                    <p><i class="fas fa-clock"></i> Thứ 2 - Thứ 6: 09:00 - 22:00</p>
+                    <p><i class="fas fa-clock"></i> Thứ 7 - CN: 08:00 - 23:00</p>
                 </div>
             </div>
-            <hr class="mt-5 border-secondary">
+            <hr>
             <div class="text-center">
-                <small>&copy; @DateTime.Now.Year ABC Restaurant. Crafted with passion.</small>
+                <small>&copy; @DateTime.Now.Year ABC Restaurant. Crafted with passion & precision.</small>
             </div>
         </div>
     </footer>
@@ -240,6 +543,257 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('navbar-scrolled');
+            } else {
+                navbar.classList.remove('navbar-scrolled');
+            }
+        });
+    </script>
+
+    <style>
+        /* Chat Widget Styles - Matched to Fourmen Theme */
+        .chat-btn-floating {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--gold); /* Sử dụng màu Vàng của theme */
+            color: var(--primary); /* Icon màu đen */
+            border-radius: 50%;
+            border: none;
+            box-shadow: 0 4px 15px rgba(212, 165, 116, 0.4);
+            cursor: pointer;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+            .chat-btn-floating:hover {
+                transform: scale(1.1);
+                box-shadow: 0 6px 20px rgba(212, 165, 116, 0.6);
+                color: #fff;
+            }
+
+        .chat-box-popup {
+            display: none;
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            height: 450px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            z-index: 9999;
+            flex-direction: column;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        keyframes slideUp {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .chat-header {
+            background: var(--primary); /* Header màu đen */
+            color: var(--gold); /* Chữ màu vàng */
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-family: 'Playfair Display', serif;
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: var(--bg-tertiary);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chat-footer {
+            padding: 10px;
+            border-top: 1px solid var(--border);
+            background: white;
+            display: flex;
+            gap: 8px;
+        }
+
+        .msg {
+            max-width: 80%;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            word-wrap: break-word;
+        }
+
+        .msg-me {
+            align-self: flex-end;
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 2px;
+        }
+
+        .msg-manager {
+            align-self: flex-start;
+            background: #fff;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 2px;
+        }
+    </style>
+
+    @{
+        bool isUserLogged = User.Identity != null && User.Identity.IsAuthenticated;
+        string loginUrl = "/AuthView/Login";
+    }
+
+    @if (User.IsInRole("User"))
+    {
+        <button class="chat-btn-floating" onclick="toggleChatWidget()" title="Chat với chúng tôi">
+        <i class="fa-solid fa-comments"></i>
+        </button>
+
+        <div id="chatWidget" class="chat-box-popup">
+            <div class="chat-header">
+                <span><i class="fa-solid fa-headset me-2"></i> Hỗ trợ trực tuyến</span>
+                <span style="cursor:pointer" onclick="toggleChatWidget()">&times;</span>
+            </div>
+
+            <div id="chatMessages" class="chat-body">
+                <div style="text-align:center; color:var(--text-muted); font-size:0.85rem; margin-top:20px">
+                    <i class="fas fa-info-circle mb-2"></i><br>
+                    Xin chào! FOURMEN Restaurant có thể giúp gì cho bạn?
+                </div>
+            </div>
+
+            <div class="chat-footer">
+                <input type="text" id="chatInput" placeholder="Nhập tin nhắn..."
+                       style="flex:1; border:1px solid var(--border); padding:8px 12px; border-radius:20px; outline:none; background:var(--bg-secondary);"
+                       onkeypress="handleEnter(event)">
+                <button onclick="sendMessage()"
+                        style="background:var(--primary); color:var(--gold); border:none; width:35px; height:35px; border-radius:50%; cursor:pointer; transition:0.2s;">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    }
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+
+    <script>
+        const isLogged = @isUserLogged.ToString().ToLower();
+        const loginLink = '@loginUrl';
+        let chatConnection = null;
+        let isConnected = false;
+
+        function toggleChatWidget() {
+            if (!isLogged) {
+                window.location.href = loginLink;
+                return;
+            }
+
+            const box = document.getElementById("chatWidget");
+            if (box.style.display === "none" || box.style.display === "") {
+                box.style.display = "flex";
+                if (!isConnected) startChatConnection();
+            } else {
+                box.style.display = "none";
+            }
+        }
+
+        async function startChatConnection() {
+            chatConnection = new signalR.HubConnectionBuilder()
+                .withUrl("/hubs/chat")
+                .withAutomaticReconnect()
+                .build();
+
+            chatConnection.on("ReceiveMessageFromManager", (msg, time) => {
+                appendMsg(msg, "manager");
+            });
+
+            try {
+                await chatConnection.start();
+                isConnected = true;
+                console.log("Chat Connected!");
+                loadHistory();
+            } catch (err) {
+                console.error("Lỗi kết nối Chat:", err);
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById("chatInput");
+            const msg = input.value.trim();
+            if (!msg || !isConnected) return;
+
+            appendMsg(msg, "me");
+            input.value = "";
+
+            try {
+                await chatConnection.invoke("SendMessageToManager", msg);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function loadHistory() {
+            try {
+                const res = await fetch('/api/chat/history');
+                if (res.ok) {
+                    const msgs = await res.json();
+                    const container = document.getElementById("chatMessages");
+                    if(msgs.length > 0) container.innerHTML = "";
+
+                    msgs.forEach(m => {
+                        appendMsg(m.message, m.isFromManager ? "manager" : "me");
+                    });
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        function appendMsg(text, type) {
+            const div = document.createElement("div");
+            div.classList.add("msg");
+            div.classList.add(type === "me" ? "msg-me" : "msg-manager");
+            div.textContent = text;
+
+            const container = document.getElementById("chatMessages");
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function handleEnter(e) {
+            if (e.key === "Enter") sendMessage();
+        }
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

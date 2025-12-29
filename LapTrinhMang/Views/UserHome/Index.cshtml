@@ -5,30 +5,880 @@
 }
 
 <link rel="stylesheet" href="~/css/user-booking.css" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --primary: #0a0a0a;
+        --gold: #d4a574;
+        --gold-dark: #b8935f;
+        --gold-light: #e8c4a0;
+        --text-primary: #0a0a0a;
+        --text-secondary: #4a4a4a;
+        --text-muted: #8a8a8a;
+        --bg-primary: #ffffff;
+        --bg-secondary: #fafaf9;
+        --border: #e7e5e4;
+        --success: #16a34a;
+        --danger: #dc2626;
+        --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    /* ===== CONTAINER ===== */
+    .wrap {
+        min-height: 100vh;
+        padding: 80px 24px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* ===== HEADER ===== */
+    .topbar {
+        background: var(--bg-primary);
+        padding: 48px;
+        border-radius: 16px;
+        margin-bottom: 48px;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .topbar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+    @@keyframes shimmer {
+        0%, 100% {
+            background-position: 0% 0%;
+        }
+
+        50% {
+            background-position: 100% 0%;
+        }
+    }
+
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 40px;
+        margin-bottom: 40px;
+    }
+
+    .header-text {
+        flex: 1;
+    }
+
+    .title {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 12px;
+        letter-spacing: -0.03em;
+        font-style: italic;
+        line-height: 1.1;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+        color: var(--text-secondary);
+        line-height: 1.7;
+        max-width: 600px;
+        font-weight: 400;
+    }
+
+    /* ===== CONTROLS ===== */
+    .controls {
+        display: flex;
+        align-items: flex-end;
+        gap: 16px;
+        padding-top: 40px;
+        border-top: 1px solid var(--border);
+        flex-wrap: wrap;
+    }
+
+    .ctrl {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex: 1;
+        min-width: 200px;
+    }
+
+        .ctrl span {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .ctrl input[type="date"],
+        .ctrl select {
+            padding: 12px 16px;
+            font-size: 0.938rem;
+            border: 1.5px solid var(--border);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 10px;
+            font-weight: 500;
+            outline: none;
+        }
+
+            .ctrl input[type="date"]:focus,
+            .ctrl select:focus {
+                border-color: var(--gold);
+                box-shadow: 0 0 0 4px rgba(212, 165, 116, 0.1);
+            }
+
+            .ctrl input[type="date"]:hover,
+            .ctrl select:hover {
+                border-color: var(--gold-dark);
+            }
+
+
+    .btn {
+        padding: 12px 28px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border: none;
+        background: linear-gradient(135deg, var(--gold), var(--gold-light));
+        color: var(--primary);
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: 'Inter', sans-serif;
+        border-radius: 10px;
+        position: relative;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+        .btn > span,
+        .btnPrimary > span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            opacity: 0;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn:hover::before {
+            opacity: 1;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(212, 165, 116, 0.3);
+        }
+
+        /* Thêm dòng này */
+        .btn > * {
+            position: relative;
+            z-index: 1;
+        }
+
+    /* ===== GRID ===== */
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+    }
+
+    /* ===== TABLE CARD ===== */
+    .tcard {
+        background: var(--bg-primary);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 32px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .tcard::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold), var(--gold-light));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tcard:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--gold);
+        }
+
+            .tcard:hover::before {
+                transform: scaleX(1);
+            }
+
+        .tcard.full {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: var(--bg-secondary);
+        }
+
+            .tcard.full:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-md);
+            }
+
+            .tcard.full::before {
+                background: linear-gradient(90deg, var(--danger), #ef4444);
+            }
+
+    /* Card Header */
+    .tcHead {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .tcName {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--primary);
+        letter-spacing: -0.02em;
+    }
+
+    .tcSeat {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        font-weight: 600;
+        background: var(--bg-secondary);
+        padding: 6px 12px;
+        border-radius: 8px;
+    }
+
+        .tcSeat i {
+            color: var(--gold);
+            font-size: 1rem;
+        }
+
+    /* Card Body */
+    .tcStat {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .badge {
+        padding: 5px 12px;
+        font-size: 0.688rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        border-radius: 6px;
+    }
+
+        .badge.avail {
+            background: rgba(22, 163, 74, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(22, 163, 74, 0.2);
+        }
+
+        .badge.full {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+        }
+
+    .tcAvail {
+        font-size: 0.938rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+
+        .tcAvail strong {
+            color: var(--gold);
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+    .tcNote {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        font-style: italic;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+        line-height: 1.6;
+    }
+
+    /* ===== DIALOG ===== */
+    dialog {
+        border: none;
+        border-radius: 16px;
+        padding: 0;
+        max-width: 560px;
+        width: 92%;
+        box-shadow: var(--shadow-xl);
+        background: var(--bg-primary);
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        margin: 0;
+        border: 1px solid var(--border);
+    }
+
+        dialog::backdrop {
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(12px);
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        dialog[open] {
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @@keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -45%);
+        }
+
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    .dlgTop {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 32px 32px 24px;
+        border-bottom: 1px solid var(--border);
+        position: relative;
+    }
+
+        .dlgTop::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold), var(--gold-light));
+        }
+
+    .dlgTitle {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 8px;
+        letter-spacing: -0.02em;
+    }
+
+        .dlgTitle span {
+            color: var(--gold);
+        }
+
+    .dlgSub {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        line-height: 1.6;
+    }
+
+        .dlgSub b {
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+    .xbtn {
+        width: 36px;
+        height: 36px;
+        border: 1.5px solid var(--border);
+        background: var(--bg-secondary);
+        color: var(--text-secondary);
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 10px;
+        font-weight: 300;
+    }
+
+        .xbtn:hover {
+            background: var(--danger);
+            border-color: var(--danger);
+            color: var(--bg-primary);
+            transform: rotate(90deg);
+        }
+
+    .dlgBody {
+        padding: 28px 32px;
+    }
+
+    .field {
+        margin-bottom: 20px;
+    }
+
+        .field label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 0.938rem;
+            border: 1.5px solid var(--border);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 10px;
+            font-weight: 500;
+            outline: none;
+        }
+
+            .field input:focus,
+            .field select:focus {
+                border-color: var(--gold);
+                box-shadow: 0 0 0 4px rgba(212, 165, 116, 0.1);
+            }
+
+            .field input::placeholder {
+                color: var(--text-muted);
+                font-weight: 400;
+            }
+
+    .help {
+        font-size: 0.813rem;
+        color: var(--text-muted);
+        margin-top: 6px;
+        font-style: italic;
+    }
+
+    .msgErr,
+    .msgOk {
+        padding: 12px 16px;
+        margin-top: 16px;
+        border-radius: 10px;
+        font-size: 0.875rem;
+        display: none;
+        font-weight: 500;
+    }
+
+    .msgErr {
+        background: rgba(220, 38, 38, 0.1);
+        border: 1px solid rgba(220, 38, 38, 0.2);
+        color: var(--danger);
+    }
+
+    .msgOk {
+        background: rgba(22, 163, 74, 0.1);
+        border: 1px solid rgba(22, 163, 74, 0.2);
+        color: var(--success);
+    }
+
+    .dlgFoot {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        padding: 24px 32px 28px;
+        border-top: 1px solid var(--border);
+        background: var(--bg-secondary);
+    }
+
+    .btnGhost {
+        padding: 12px 24px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border: 1.5px solid var(--border);
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: 'Inter', sans-serif;
+        border-radius: 10px;
+    }
+
+        .btnGhost:hover {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: var(--bg-primary);
+            transform: translateY(-1px);
+        }
+
+    .btnPrimary {
+        padding: 12px 24px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border: none;
+        background: linear-gradient(135deg, var(--gold), var(--gold-light));
+        color: var(--primary);
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: 'Inter', sans-serif;
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px;
+    }
+
+        .btnPrimary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            opacity: 0;
+            transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btnPrimary:hover::before {
+            opacity: 1;
+        }
+
+        .btnPrimary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(212, 165, 116, 0.3);
+        }
+
+        .btnPrimary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    /* ===== LOADING ===== */
+    .loading {
+        text-align: center;
+        padding: 80px 20px;
+    }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--border);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+    @@keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty {
+        text-align: center;
+        padding: 80px 20px;
+        background: var(--bg-primary);
+        border-radius: 16px;
+        border: 2px dashed var(--border);
+    }
+
+    .empty-icon {
+        font-size: 3.5rem;
+        color: var(--gold);
+        margin-bottom: 16px;
+        opacity: 0.4;
+    }
+
+    .empty-text {
+        font-size: 1.125rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @@media (max-width: 1200px) {
+        .grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .wrap {
+            padding: 60px 20px;
+        }
+
+        .topbar {
+            padding: 32px 24px;
+        }
+
+        .header-content {
+            flex-direction: column;
+            margin-bottom: 32px;
+        }
+
+        .title {
+            font-size: 2.5rem;
+        }
+
+        .controls {
+            padding-top: 32px;
+        }
+
+        .ctrl {
+            min-width: calc(50% - 8px);
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .topbar {
+            padding: 28px 20px;
+            border-radius: 12px;
+        }
+
+        .title {
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            font-size: 0.938rem;
+        }
+
+        .controls {
+            flex-direction: column;
+        }
+
+        .ctrl {
+            width: 100%;
+            min-width: 100%;
+        }
+
+        .grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .tcard {
+            padding: 24px;
+        }
+
+        dialog {
+            width: 95%;
+            border-radius: 12px;
+        }
+
+        .dlgTop,
+        .dlgBody {
+            padding: 24px 20px;
+        }
+
+        .dlgFoot {
+            padding: 20px 20px 24px;
+            flex-direction: column;
+        }
+
+        .btnGhost,
+        .btnPrimary {
+            width: 100%;
+        }
+
+        .dlgTitle {
+            font-size: 1.5rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .wrap {
+            padding: 40px 16px;
+        }
+
+        .topbar {
+            padding: 24px 16px;
+        }
+
+        .title {
+            font-size: 1.75rem;
+        }
+
+        .tcHead {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .tcard {
+        animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+    }
+
+        .tcard:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+
+        .tcard:nth-child(2) {
+            animation-delay: 0.08s;
+        }
+
+        .tcard:nth-child(3) {
+            animation-delay: 0.11s;
+        }
+
+        .tcard:nth-child(4) {
+            animation-delay: 0.14s;
+        }
+
+        .tcard:nth-child(5) {
+            animation-delay: 0.17s;
+        }
+
+        .tcard:nth-child(6) {
+            animation-delay: 0.20s;
+        }
+
+        .tcard:nth-child(7) {
+            animation-delay: 0.23s;
+        }
+
+        .tcard:nth-child(8) {
+            animation-delay: 0.26s;
+        }
+
+        .tcard:nth-child(9) {
+            animation-delay: 0.29s;
+        }
+
+        /* ===== ACCESSIBILITY ===== */
+        .tcard:focus-visible,
+        .btn:focus-visible,
+        .btnPrimary:focus-visible,
+        .btnGhost:focus-visible {
+            outline: 2px solid var(--gold);
+            outline-offset: 2px;
+        }
+
+    /* ===== PRINT ===== */
+    @@media print {
+        .controls, .btn, .xbtn {
+            display: none;
+        }
+
+        .tcard {
+            break-inside: avoid;
+        }
+    }
+
+    /* ===== REDUCED MOTION ===== */
+    @@media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+</style>
 
 <div class="wrap">
     <div class="topbar">
-        <div>
-            <h2 class="title">Đặt bàn</h2>
-            <div class="subtitle">Chọn ngày → hệ thống tự tính “suất trống” từng bàn. Popup chỉ nhập SĐT + chọn suất.</div>
+        <div class="header-content">
+            <div class="header-text">
+                <h1 class="title">Reservations</h1>
+                <p class="subtitle">Chọn ngày và hệ thống sẽ tự động tính toán số suất trống cho từng bàn. Chỉ cần nhập thông tin và chọn suất phù hợp.</p>
+            </div>
         </div>
 
         <div class="controls">
             <div class="ctrl">
-                <span>Ngày</span>
+                <span>Chọn ngày</span>
                 <input id="pageDate" type="date" />
             </div>
 
             <div class="ctrl">
-                <span>Lọc</span>
+                <span>Lọc trạng thái</span>
                 <select id="filter">
-                    <option value="">Tất cả</option>
-                    <option value="Available">Còn suất</option>
+                    <option value="">Tất cả bàn</option>
+                    <option value="Available">Còn suất trống</option>
                     <option value="Full">Hết suất</option>
                 </select>
             </div>
 
-            <button class="btn" type="button" id="btnLogout">Logout</button>
+            @* <button class="btn" type="button" id="btnLogout">
+                <span style="position: relative; z-index: 1;">Đăng xuất</span>
+            </button> *@
         </div>
     </div>
 
@@ -37,24 +887,23 @@
     <pre id="rtlog" style="display:none"></pre>
 </div>
 
-<!-- ===== POPUP: CHỈ SĐT + SUẤT ===== -->
 <dialog id="bookDlg">
     <div class="dlgTop">
         <div>
-            <div class="dlgTitle">Đặt bàn <span id="dlgTableNo"></span></div>
-            <div class="dlgSub">Ngày đang chọn: <b id="dlgDateLabel"></b> — chọn suất còn trống để gửi yêu cầu.</div>
+            <h2 class="dlgTitle">Đặt bàn <span id="dlgTableNo"></span></h2>
+            <p class="dlgSub">Ngày đã chọn: <b id="dlgDateLabel"></b> — Vui lòng chọn suất giờ còn trống.</p>
         </div>
         <button type="button" class="xbtn" id="dlgCloseX">×</button>
     </div>
 
     <div class="dlgBody">
-        <div class="field" style="margin-bottom:10px;">
-            <label>Tên khách</label>
-            <input id="dlgName" placeholder="Nhập tên..." />
+        <div class="field">
+            <label>Tên khách hàng</label>
+            <input id="dlgName" placeholder="Nhập tên của bạn..." />
         </div>
 
-        <div class="field" style="margin-bottom:10px;">
-            <label>SĐT</label>
+        <div class="field">
+            <label>Số điện thoại</label>
             <input id="dlgPhone" placeholder="Nhập số điện thoại..." />
         </div>
 
@@ -63,7 +912,7 @@
             <select id="dlgSlot">
                 <option value="">-- Chọn suất giờ --</option>
             </select>
-            <div class="help">Suất đã có người đặt sẽ không hiện.</div>
+            <div class="help">Các suất đã được đặt sẽ không hiển thị trong danh sách.</div>
         </div>
 
         <div id="dlgErr" class="msgErr"></div>
@@ -71,13 +920,14 @@
     </div>
 
     <div class="dlgFoot">
-        <button type="button" class="btnGhost" id="dlgCancel">Hủy</button>
-        <button type="button" class="btnPrimary" id="dlgSubmitBtn">Xác nhận đặt bàn</button>
+        <button type="button" class="btnGhost" id="dlgCancel">Hủy bỏ</button>
+        <button type="button" class="btnPrimary" id="dlgSubmitBtn">
+            <span style="position: relative; z-index: 1;">Xác nhận đặt bàn</span>
+        </button>
     </div>
 </dialog>
 
 <script>
-    // ✅ Đẩy dữ liệu Razor ra ngoài cho file JS dùng
     window.BOOKING_CFG = {
         baseUrl: location.origin,
         loggedName: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(userName)),

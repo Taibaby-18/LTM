@@ -6,111 +6,543 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Đăng ký User</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+    <title>Đăng ký - FOURMEN Restaurant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #0a0a0a;
+            --gold: #d4a574;
+            --gold-dark: #b8935f;
+            --gold-light: #e8c4a0;
+            --text-primary: #0a0a0a;
+            --text-secondary: #4a4a4a;
+            --text-muted: #8a8a8a;
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafaf9;
+            --border: #e7e5e4;
+            --success: #16a34a;
+            --danger: #dc2626;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+            padding: 40px 0;
         }
 
-        .card {
-            border: none;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        /* Background with overlay */
+        .register-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(10, 10, 10, 0.75), rgba(10, 10, 10, 0.85)), url('https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
+            z-index: -1;
+        }
+
+            .register-background::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%);
+            }
+
+        /* Animated particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float linear infinite;
+        }
+
+        @@keyframes float {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.3;
+            }
+
+            90% {
+                opacity: 0.3;
+            }
+
+            100% {
+                transform: translateY(-100vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Main container */
+        .register-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 520px;
+            padding: 20px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Card */
+        .register-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            border: 1px solid rgba(212, 165, 116, 0.2);
+        }
+
+        /* Header */
+        .register-header {
+            background: linear-gradient(135deg, var(--primary), #1a1a1a);
+            padding: 45px 40px;
+            text-align: center;
+            position: relative;
             overflow: hidden;
         }
 
-        .card-header {
-            background: #2563eb;
-            color: white;
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .btn-primary {
-            background: #2563eb;
-            border: none;
-            padding: 0.75rem;
-            font-weight: 600;
-        }
-
-            .btn-primary:hover {
-                background: #1d4ed8;
+            .register-header::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+                background-size: 200% 100%;
+                animation: shimmer 3s ease-in-out infinite;
             }
 
+        @@keyframes shimmer {
+            0%, 100% {
+                background-position: 0% 0%;
+            }
+
+            50% {
+                background-position: 100% 0%;
+            }
+        }
+
+        .logo-container {
+            margin-bottom: 18px;
+        }
+
+        .logo-icon {
+            width: 65px;
+            height: 65px;
+            margin: 0 auto;
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 2px;
+            font-family: 'Playfair Display', serif;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @@keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(212, 165, 116, 0.7);
+            }
+
+            50% {
+                box-shadow: 0 0 0 20px rgba(212, 165, 116, 0);
+            }
+        }
+
+        .register-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 6px;
+            letter-spacing: 3px;
+        }
+
+        .register-subtitle {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 400;
+        }
+
+        /* Body */
+        .register-body {
+            padding: 40px 40px 35px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+        }
+
         .form-control {
+            width: 100%;
+            padding: 14px 16px 14px 46px;
+            font-size: 0.975rem;
+            border: 2px solid var(--border);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 12px;
-            padding: 0.75rem 1rem;
+            font-weight: 500;
+            outline: none;
         }
 
             .form-control:focus {
-                border-color: #2563eb;
-                box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.25);
+                border-color: var(--gold);
+                box-shadow: 0 0 0 4px rgba(212, 165, 116, 0.15);
             }
 
-        .back-link {
+                .form-control:focus + .input-icon {
+                    color: var(--gold);
+                }
+
+            .form-control::placeholder {
+                color: var(--text-muted);
+                font-weight: 400;
+            }
+
+        /* Button */
+        .btn-register {
+            width: 100%;
+            padding: 15px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: none;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Inter', sans-serif;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+            .btn-register::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .btn-register:hover::before {
+                opacity: 1;
+            }
+
+            .btn-register:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px rgba(212, 165, 116, 0.4);
+            }
+
+            .btn-register:active {
+                transform: translateY(0);
+            }
+
+            .btn-register span {
+                position: relative;
+                z-index: 1;
+            }
+
+        /* Message alerts */
+        .message {
+            margin-top: 20px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @@keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: rgba(22, 163, 74, 0.1);
+            border: 1px solid rgba(22, 163, 74, 0.3);
+            color: var(--success);
+        }
+
+        .alert-danger {
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            color: var(--danger);
+        }
+
+        /* Links */
+        .register-footer {
             text-align: center;
-            margin-top: 1.5rem;
+            margin-top: 28px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+            .register-footer p {
+                font-size: 0.95rem;
+                color: var(--text-secondary);
+                margin-bottom: 12px;
+            }
+
+            .register-footer a {
+                color: var(--gold);
+                text-decoration: none;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+                .register-footer a:hover {
+                    color: var(--gold-dark);
+                    transform: translateX(-3px);
+                }
+
+        /* Responsive */
+        @@media (max-width: 576px) {
+            body {
+                padding: 20px 0;
+            }
+
+            .register-container {
+                padding: 15px;
+            }
+
+            .register-header {
+                padding: 35px 30px;
+            }
+
+            .register-title {
+                font-size: 1.9rem;
+            }
+
+            .register-body {
+                padding: 35px 30px 30px;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            .form-control {
+                padding: 13px 16px 13px 44px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-5 col-lg-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="mb-0">Đăng ký tài khoản</h3>
-                    </div>
-                    <div class="card-body p-4">
-                        <form id="registerForm">
-                            <div class="mb-3">
-                                <label class="form-label">Email</label>
-                                <input type="email" id="email" class="form-control" placeholder="Nhập email..." />
-                            </div>
-                            <div class="mb-3">
-                                <label for="phone" class="form-label">Số điện thoại</label>
-                                <input type="tel" class="form-control" id="phone" placeholder="Nhập SĐT" required />
-                            </div>
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Họ và tên</label>
-                                <input type="text" class="form-control" id="name" placeholder="Nhập họ tên" required />
-                            </div>
-                            <div class="mb-4">
-                                <label for="pass" class="form-label">Mật khẩu</label>
-                                <input type="password" class="form-control" id="pass" placeholder="Nhập mật khẩu" required />
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">Đăng ký</button>
-                        </form>
-                        <div id="message" class="mt-3 text-center"></div>
-                        <div class="back-link">
-                            <a href="/AuthView/Login" class="text-decoration-none">Đăng nhập</a>
+    <!-- Background -->
+    <div class="register-background"></div>
+
+    <!-- Animated Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Register Container -->
+    <div class="register-container">
+        <div class="register-card">
+            <!-- Header -->
+            <div class="register-header">
+                <div class="logo-container">
+                    <div class="logo-icon">FM</div>
+                </div>
+                <h1 class="register-title">Đăng ký</h1>
+                <p class="register-subtitle">Tạo tài khoản mới</p>
+            </div>
+
+            <!-- Body -->
+            <div class="register-body">
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <div class="input-wrapper">
+                            <input type="email"
+                                   class="form-control"
+                                   id="email"
+                                   placeholder="example@email.com"
+                                   required />
+                            <i class="fas fa-envelope input-icon"></i>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Số điện thoại</label>
+                        <div class="input-wrapper">
+                            <input type="tel"
+                                   class="form-control"
+                                   id="phone"
+                                   placeholder="Nhập số điện thoại"
+                                   required />
+                            <i class="fas fa-phone input-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name" class="form-label">Họ và tên</label>
+                        <div class="input-wrapper">
+                            <input type="text"
+                                   class="form-control"
+                                   id="name"
+                                   placeholder="Nhập họ và tên đầy đủ"
+                                   required />
+                            <i class="fas fa-user input-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pass" class="form-label">Mật khẩu</label>
+                        <div class="input-wrapper">
+                            <input type="password"
+                                   class="form-control"
+                                   id="pass"
+                                   placeholder="Tạo mật khẩu mạnh"
+                                   required />
+                            <i class="fas fa-lock input-icon"></i>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-register">
+                        <span>Đăng ký ngay</span>
+                    </button>
+                </form>
+
+                <div id="message" class="message"></div>
+
+                <div class="register-footer">
+                    <p>Đã có tài khoản?</p>
+                    <a href="/AuthView/Login">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Đăng nhập</span>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
     <script>
+        // Create animated particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // Register form handler
         const baseUrl = location.origin;
         const messageEl = document.getElementById("message");
 
         document.getElementById("registerForm").addEventListener("submit", async function(e) {
             e.preventDefault();
-            messageEl.innerHTML = ""; // Xóa thông báo cũ
+            messageEl.style.display = "none";
+            messageEl.className = "message";
 
-            // 👇 SỬA ĐOẠN NÀY: Thêm dòng lấy email
             const body = {
+                email: document.getElementById("email").value.trim(),
                 phone: document.getElementById("phone").value.trim(),
                 fullName: document.getElementById("name").value.trim(),
-                password: document.getElementById("pass").value,
-
-                // ✅ THÊM DÒNG NÀY ĐỂ GỬI EMAIL LÊN SERVER
-                email: document.getElementById("email").value.trim()
+                password: document.getElementById("pass").value
             };
 
             try {
@@ -123,22 +555,29 @@
                 const text = await res.text();
 
                 if (res.ok) {
-                    messageEl.innerHTML = '<div class="alert alert-success">Đăng ký thành công! Đang chuyển hướng...</div>';
+                    messageEl.className = "message alert-success";
+                    messageEl.innerHTML = '<i class="fas fa-check-circle"></i> Đăng ký thành công! Đang chuyển hướng...';
+                    messageEl.style.display = "block";
+
                     setTimeout(() => {
                         location.href = "/AuthView/Login";
-                    }, 1000); // Tăng lên 1s để kịp đọc thông báo
+                    }, 1200);
                 } else {
-                    // Hiển thị lỗi từ server trả về (nếu có json message)
                     try {
                         const jsonErr = JSON.parse(text);
-                        messageEl.innerHTML = `<div class="alert alert-danger">${jsonErr.message || text}</div>`;
+                        messageEl.className = "message alert-danger";
+                        messageEl.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${jsonErr.message || text}`;
                     } catch {
-                         messageEl.innerHTML = `<div class="alert alert-danger">${text}</div>`;
+                        messageEl.className = "message alert-danger";
+                        messageEl.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${text}`;
                     }
+                    messageEl.style.display = "block";
                 }
             } catch (err) {
                 console.error(err);
-                messageEl.innerHTML = '<div class="alert alert-danger">Lỗi kết nối server.</div>';
+                messageEl.className = "message alert-danger";
+                messageEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Lỗi kết nối. Vui lòng thử lại.';
+                messageEl.style.display = "block";
             }
         });
     </script>
