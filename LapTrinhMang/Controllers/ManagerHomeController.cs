@@ -100,7 +100,6 @@ public class ManagerHomeController : Controller
         return Ok(result);
     }
 
-    // ===== API: LẤY DANH SÁCH ĐƠN =====
     [HttpGet]
     [Route("api/manager/reservations")]
     public async Task<IActionResult> GetReservations([FromQuery] string? status, [FromQuery] int? tableNumber, [FromQuery] string? date)
@@ -129,7 +128,7 @@ public class ManagerHomeController : Controller
         return Ok(items);
     }
 
-    // ===== API: DUYỆT ĐƠN (APPROVE) =====
+
     [HttpPut]
     [Route("api/manager/reservations/{id:int}/approve")]
     public async Task<IActionResult> Approve(int id)
@@ -187,7 +186,7 @@ public class ManagerHomeController : Controller
         return Ok(new { id = r.Id, status = r.Status, message = "Approved" });
     }
 
-    // ===== API: HỦY ĐƠN (CANCEL) =====
+
     [HttpPut]
     [Route("api/manager/reservations/{id:int}/cancel")]
     public async Task<IActionResult> Cancel(int id)
