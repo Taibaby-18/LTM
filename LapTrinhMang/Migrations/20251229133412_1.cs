@@ -8,11 +8,28 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LapTrinhMang.Migrations
 {
     /// <inheritdoc />
-    public partial class Temp : Migration
+    public partial class _1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "ChatMessages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SenderId = table.Column<int>(type: "int", nullable: true),
+                    ReceiverId = table.Column<int>(type: "int", nullable: true),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsFromManager = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChatMessages", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Tables",
                 columns: table => new
@@ -131,6 +148,9 @@ namespace LapTrinhMang.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ChatMessages");
+
             migrationBuilder.DropTable(
                 name: "Reservations");
 
