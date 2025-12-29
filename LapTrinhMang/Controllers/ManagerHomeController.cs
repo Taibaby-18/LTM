@@ -39,51 +39,39 @@ public class ManagerHomeController : Controller
     }
 
     [HttpGet]
-    public IActionResult Statistics()
-    {
-        return View();
-    }
-
-    [HttpGet]
     public IActionResult Chat()
     {
         ViewBag.Name = User.FindFirst("name")?.Value ?? "";
         return View();
     }
 
-    // ===== API: LẤY TRẠNG THÁI BÀN (QUAN TRỌNG) =====
+    // ===== API: LẤY TRẠNG THÁI BÀN =====
     [HttpGet]
     [Route("api/manager/tables")]
     public async Task<IActionResult> GetTablesStatus([FromQuery] string? date)
     {
-        // 1. Xác định ngày xem (Mặc định hôm nay nếu null)
         var (dayOpenUtc, dayCloseUtc, dayLocal) = GetDayUtcRange(date);
 
-        // 2. Lấy danh sách tất cả các bàn
         var tables = await _db.Tables.AsNoTracking()
             .OrderBy(t => t.Number)
             .Select(t => new { t.Id, t.Number, t.Capacity, t.Type })
             .ToListAsync();
 
-        // 3. Lấy đơn đặt trong ngày đó (Pending hoặc Approved)
         var dayRes = await _db.Reservations.AsNoTracking()
             .Where(r => (r.Status == "Pending" || r.Status == "Approved")
-                     && r.StartTime < dayCloseUtc && dayOpenUtc < r.EndTime) // Logic trùng lịch
+                     && r.StartTime < dayCloseUtc && dayOpenUtc < r.EndTime)
             .Select(r => new { r.TableId, r.Status, r.StartTime, r.EndTime })
             .ToListAsync();
 
         var resByTable = dayRes.GroupBy(x => x.TableId).ToDictionary(g => g.Key, g => g.ToList());
 
-        // 4. Tính toán trạng thái từng bàn
         var result = tables.Select(t =>
         {
             resByTable.TryGetValue(t.Id, out var list);
 
-            // Đếm số lượng đơn Pending/Approved của bàn này
             var pendingCount = list?.Count(x => x.Status == "Pending") ?? 0;
             var approvedCount = list?.Count(x => x.Status == "Approved") ?? 0;
 
-            // Tính số slot còn trống
             var allSlots = BuildSlotsUtc(dayLocal, t.Type);
             var bookedSlots = 0;
 
@@ -91,38 +79,22 @@ public class ManagerHomeController : Controller
             {
                 foreach (var s in allSlots)
                 {
-                    // Nếu slot đã qua giờ hiện tại -> Coi như đã mất (booked)
                     if (s.startUtc <= DateTime.UtcNow) { bookedSlots++; continue; }
-
-                    // Nếu có đơn đặt chồng lên slot này -> Booked
-                    if (list.Any(r => Overlap(r.StartTime, r.EndTime, s.startUtc, s.endUtc)))
-                        bookedSlots++;
+                    if (list.Any(r => Overlap(r.StartTime, r.EndTime, s.startUtc, s.endUtc))) bookedSlots++;
                 }
             }
             else
             {
-                // Nếu không có đơn nào, chỉ check giờ quá khứ
                 foreach (var s in allSlots) if (s.startUtc <= DateTime.UtcNow) bookedSlots++;
             }
 
             var slotCount = Math.Max(0, allSlots.Count - bookedSlots);
-
-            // Logic trạng thái hiển thị trên thẻ
             var status = "Available";
-            if (slotCount <= 0) status = "Full";       // Hết chỗ
-            else if (pendingCount > 0) status = "Pending"; // Có đơn chờ duyệt -> Ưu tiên hiện màu vàng
-            else if (approvedCount > 0) status = "Reserved"; // Đã có người đặt -> Màu xanh dương
+            if (slotCount <= 0) status = "Full";
+            else if (pendingCount > 0) status = "Pending";
+            else if (approvedCount > 0) status = "Reserved";
 
-            return new
-            {
-                tableNumber = t.Number,
-                capacity = t.Capacity,
-                type = t.Type ?? "Normal",
-                slotCount,
-                pendingCount,
-                approvedCount,
-                status
-            };
+            return new { tableNumber = t.Number, capacity = t.Capacity, type = t.Type ?? "Normal", slotCount, pendingCount, approvedCount, status };
         });
 
         return Ok(result);
@@ -136,15 +108,12 @@ public class ManagerHomeController : Controller
         var (dayOpenUtc, dayCloseUtc, _) = GetDayUtcRange(date);
 
         var q = _db.Reservations.AsNoTracking().Include(r => r.Table)
-            .Where(r => r.StartTime < dayCloseUtc && dayOpenUtc < r.EndTime) // Lọc theo ngày
+            .Where(r => r.StartTime < dayCloseUtc && dayOpenUtc < r.EndTime)
             .OrderByDescending(r => r.CreatedAt)
             .AsQueryable();
 
-        if (!string.IsNullOrWhiteSpace(status))
-            q = q.Where(r => r.Status == status);
-
-        if (tableNumber.HasValue)
-            q = q.Where(r => r.Table != null && r.Table.Number == tableNumber.Value);
+        if (!string.IsNullOrWhiteSpace(status)) q = q.Where(r => r.Status == status);
+        if (tableNumber.HasValue) q = q.Where(r => r.Table != null && r.Table.Number == tableNumber.Value);
 
         var items = await q.Select(r => new {
             r.Id,
@@ -170,7 +139,6 @@ public class ManagerHomeController : Controller
 
         if (r.Status != "Pending") return BadRequest(new { message = "Chỉ đơn Pending mới được duyệt." });
 
-        // Check trùng lịch lần cuối trước khi duyệt
         var overlapApproved = await _db.Reservations.AnyAsync(x =>
             x.Id != r.Id && x.TableId == r.TableId && x.Status == "Approved" &&
             x.StartTime < r.EndTime && r.StartTime < x.EndTime
@@ -181,7 +149,7 @@ public class ManagerHomeController : Controller
         r.Status = "Approved";
         await _db.SaveChangesAsync();
 
-        // Gửi mail (Chạy ngầm)
+        // GỬI MAIL THÀNH CÔNG (Màu Xanh)
         if (r.UserId != null)
         {
             var userId = r.UserId.Value;
@@ -212,7 +180,7 @@ public class ManagerHomeController : Controller
             });
         }
 
-        // SignalR báo cập nhật
+        // SignalR
         await _hub.Clients.All.SendAsync("ReservationUpdated", new { id = r.Id, status = r.Status });
         await _hub.Clients.All.SendAsync("TableUpdated", new { tableNumber = r.Table!.Number });
 
@@ -232,26 +200,44 @@ public class ManagerHomeController : Controller
         r.Status = "Canceled";
         await _db.SaveChangesAsync();
 
+        // 👇 GỬI MAIL HỦY (Mới thêm)
+        if (r.UserId != null)
+        {
+            var userId = r.UserId.Value;
+            var bookingId = r.Id;
+            var tableInfo = $"{r.Table.Number} ({r.Table.Type})";
+            var bookTime = r.StartTime;
+            var custName = r.CustomerName;
+
+            Task.Run(async () =>
+            {
+                using (var scope = _scopeFactory.CreateScope())
+                {
+                    var dbScope = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                    var mailerScope = scope.ServiceProvider.GetRequiredService<SendMailService>();
+                    try
+                    {
+                        var email = await dbScope.Users.Where(u => u.Id == userId).Select(u => u.Email).FirstOrDefaultAsync();
+                        if (!string.IsNullOrEmpty(email))
+                        {
+                            var subject = $"❌ Thông báo hủy đặt bàn #{bookingId} - FOURMEN RESTAURANT";
+                            // Dùng hàm tạo HTML màu đỏ
+                            var body = GetCanceledHtmlBody(custName, bookingId, tableInfo, bookTime);
+                            await mailerScope.SendEmailAsync(email, subject, body);
+                        }
+                    }
+                    catch (Exception ex) { Console.WriteLine($"[MAIL ERROR] {ex.Message}"); }
+                }
+            });
+        }
+
         await _hub.Clients.All.SendAsync("ReservationCanceled", new { id = r.Id, status = r.Status });
         await _hub.Clients.All.SendAsync("TableUpdated", new { tableNumber = r.Table!.Number });
 
         return Ok(new { id = r.Id, status = r.Status, message = "Canceled" });
     }
 
-    // ===== API: THỐNG KÊ (CHO TRANG STATS) =====
-    [HttpGet]
-    [Route("api/manager/stats")]
-    public async Task<IActionResult> GetStats()
-    {
-        var today = DateTime.UtcNow.Date;
-        var statusCounts = await _db.Reservations.GroupBy(r => r.Status).Select(g => new { Status = g.Key, Count = g.Count() }).ToListAsync();
-        var todayCount = await _db.Reservations.CountAsync(r => r.StartTime >= today && r.StartTime < today.AddDays(1));
-        var totalOrders = await _db.Reservations.CountAsync();
-
-        return Ok(new { statusData = statusCounts, todayCount, totalOrders });
-    }
-
-    // ===== HELPERS (LOGIC TÍNH TOÁN NGÀY GIỜ) =====
+    // ===== HELPERS =====
     private static DateTime ParseLocalDateOrToday(string? ymd)
     {
         if (!string.IsNullOrWhiteSpace(ymd) &&
@@ -293,7 +279,7 @@ public class ManagerHomeController : Controller
 
     private static bool Overlap(DateTime aStart, DateTime aEnd, DateTime bStart, DateTime bEnd) => aStart < bEnd && bStart < aEnd;
 
-    // ===== EMAIL TEMPLATE =====
+    // ===== EMAIL TEMPLATE: APPROVED (MÀU XANH) =====
     private static string GetApprovedHtmlBody(string custName, int bookingId, string tableInfo, DateTime startTimeUtc, int hours)
     {
         return $@"
@@ -316,6 +302,35 @@ public class ManagerHomeController : Controller
                         <tr><td><b>Giờ:</b></td><td>{startTimeUtc.ToLocalTime():HH:mm dd/MM/yyyy}</td></tr>
                         <tr><td><b>Trạng thái:</b></td><td><span class='badge'>APPROVED</span></td></tr>
                     </table>
+                </div>
+            </div>
+        </body></html>";
+    }
+
+    // ===== EMAIL TEMPLATE: CANCELED (MÀU ĐỎ) =====
+    private static string GetCanceledHtmlBody(string custName, int bookingId, string tableInfo, DateTime startTimeUtc)
+    {
+        return $@"
+        <!DOCTYPE html><html><head><style>
+            body {{ font-family: Arial, sans-serif; color: #333; }}
+            .container {{ max-width: 600px; margin: 0 auto; border: 1px solid #ef4444; border-radius: 8px; overflow: hidden; }}
+            .header {{ background: #ef4444; color: #fff; padding: 20px; text-align: center; }}
+            .content {{ padding: 20px; }}
+            .info td {{ padding: 10px; border-bottom: 1px solid #eee; }}
+            .badge {{ background: #fee2e2; color: #991b1b; padding: 4px 10px; border-radius: 12px; font-weight: bold; font-size: 12px; }}
+        </style></head><body>
+            <div class='container'>
+                <div class='header'><h1>FOURMEN RESTAURANT</h1><p>Thông báo hủy đặt bàn</p></div>
+                <div class='content'>
+                    <h2 style='color: #dc2626;'>Xin chào {custName},</h2>
+                    <p>Rất tiếc, đơn đặt bàn của bạn đã bị từ chối hoặc hủy bỏ do hết chỗ hoặc lý do khách quan khác.</p>
+                    <table>
+                        <tr><td><b>Mã đơn:</b></td><td>#{bookingId}</td></tr>
+                        <tr><td><b>Bàn:</b></td><td>{tableInfo}</td></tr>
+                        <tr><td><b>Giờ:</b></td><td>{startTimeUtc.ToLocalTime():HH:mm dd/MM/yyyy}</td></tr>
+                        <tr><td><b>Trạng thái:</b></td><td><span class='badge'>CANCELED</span></td></tr>
+                    </table>
+                    <p>Vui lòng thử đặt lại vào khung giờ khác hoặc liên hệ hotline để được hỗ trợ.</p>
                 </div>
             </div>
         </body></html>";
