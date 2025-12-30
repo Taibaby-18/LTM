@@ -241,8 +241,6 @@ async function submitBooking() {
     try { slot = JSON.parse(slotVal); }
     catch { return showMsg("err", "Dữ liệu suất giờ bị lỗi."); }
 
-    // ✅ Backend mới không cần gửi Email trong body JSON nữa (nó tự tra cứu theo ID)
-    // Nhưng gửi CustomerName và Phone là bắt buộc
     const body = {
         tableNumber: state.selectedTable,
         customerName: name,

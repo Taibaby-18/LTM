@@ -7,6 +7,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
+//thêm để host
+builder.WebHost.UseUrls("http://0.0.0.0:5000");
+
 // MVC + API
 builder.Services.AddControllersWithViews();
 
@@ -61,7 +64,10 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//tắt tạm
+//app.UseHttpsRedirection();
+
+
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -78,3 +84,6 @@ app.MapControllers(); // API controllers (AuthController)
 app.MapHub<LapTrinhMang.Hubs.BookingHub>("/hubs/booking");
 app.MapHub<ChatHub>("/hubs/chat");
 app.Run();
+
+//mở tường lửa
+//netsh advfirewall firewall add rule name="ASP.NET Core 5000" dir=in action=allow protocol=TCP localport=5000

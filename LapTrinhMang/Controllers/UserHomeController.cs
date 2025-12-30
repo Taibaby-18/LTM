@@ -139,7 +139,7 @@ public class UserHomeController : Controller
         _db.Reservations.Add(entity);
         await _db.SaveChangesAsync();
 
-        // 4. GỬI EMAIL (CHẠY NGẦM)
+        // 4. GỬI EMAIL
         if (userId != null)
         {
             var currentUserId = userId.Value;

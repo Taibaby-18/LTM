@@ -212,7 +212,6 @@ async function approve(id) {
     if (!confirm("Duyệt đơn này?")) return;
     try {
         await fetch(`${baseUrl}/api/manager/reservations/${id}/approve`, { method: "PUT" });
-        // SignalR sẽ tự cập nhật UI, nhưng ta reload list modal cho nhanh
         await loadReservations();
         await loadTables();
     } catch (e) { alert("Lỗi khi duyệt"); }
@@ -239,7 +238,7 @@ async function startSignalR() {
     });
 
     connection.on("ReservationCreated", async () => {
-        await loadTables(); // Reload để thấy chấm vàng Pending
+        await loadTables(); 
     });
 
     connection.on("ReservationUpdated", async () => {
