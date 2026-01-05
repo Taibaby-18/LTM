@@ -1,9 +1,10 @@
 ﻿using LapTrinhMang.Data;
+using LapTrinhMang.Hubs;
+using LapTrinhMang.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // MVC + API
@@ -48,6 +49,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 builder.Services.AddSignalR();
 builder.Services.AddAuthorization();
+// Nhớ thêm using LapTrinhMang.Services;
+builder.Services.AddTransient<SendMailService>();
 
 var app = builder.Build();
 
@@ -73,4 +76,5 @@ app.MapControllerRoute(
 
 app.MapControllers(); // API controllers (AuthController)
 app.MapHub<LapTrinhMang.Hubs.BookingHub>("/hubs/booking");
+app.MapHub<ChatHub>("/hubs/chat");
 app.Run();

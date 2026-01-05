@@ -2,6 +2,7 @@
 using LapTrinhMang.Dtos;
 using LapTrinhMang.Hubs;
 using LapTrinhMang.Models;
+using LapTrinhMang.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -15,195 +16,180 @@ public class UserHomeController : Controller
 {
     private readonly AppDbContext _db;
     private readonly IHubContext<BookingHub> _hub;
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public UserHomeController(AppDbContext db, IHubContext<BookingHub> hub)
+    public UserHomeController(AppDbContext db, IHubContext<BookingHub> hub, IServiceScopeFactory scopeFactory)
     {
         _db = db;
         _hub = hub;
+        _scopeFactory = scopeFactory;
     }
 
-    // ===== VIEW =====
+    // ===== VIEW: TRANG CHỦ =====
     public IActionResult Index()
     {
         ViewBag.Name = User.FindFirst("name")?.Value ?? "";
         ViewBag.Phone = User.FindFirst("phone")?.Value ?? "";
+        ViewBag.Email = User.FindFirst("email")?.Value ?? "";
         ViewBag.Role = User.FindFirst(ClaimTypes.Role)?.Value ?? "";
         return View();
     }
 
-    // ===== API: GET TABLES =====
-    // Trả trạng thái "đang diễn ra" + "sắp tới" (để UI vẫn đặt được suất khác)
+    // ===== VIEW: LỊCH SỬ =====
+    [HttpGet]
+    public async Task<IActionResult> BookingHistory()
+    {
+        var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("sub")?.Value;
+        if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int userId))
+        {
+            return RedirectToAction("Index");
+        }
+
+        var list = await _db.Reservations
+            .AsNoTracking()
+            .Include(r => r.Table)
+            .Where(r => r.UserId == userId)
+            .OrderByDescending(r => r.CreatedAt)
+            .ToListAsync();
+
+        return View(list);
+    }
+
+    // ===== API: LẤY DANH SÁCH BÀN =====
     [HttpGet]
     [Route("api/user/tables")]
     public async Task<IActionResult> GetTables()
     {
         var nowUtc = DateTime.UtcNow;
 
-        var tables = await _db.Tables
-    .AsNoTracking()
-    .OrderBy(t => t.Number)
-    .Select(t => new { t.Id, t.Number, t.Capacity, t.Type }) // ✅ thêm Type
-    .ToListAsync();
+        var tables = await _db.Tables.AsNoTracking()
+            .OrderBy(t => t.Number)
+            .Select(t => new { t.Id, t.Number, t.Capacity, t.Type })
+            .ToListAsync();
 
-
-        var list = await _db.Reservations
-            .AsNoTracking()
+        var list = await _db.Reservations.AsNoTracking()
             .Where(r => r.Status != "Canceled" && r.EndTime > nowUtc)
-            .Select(r => new
-            {
-                r.Id,
-                r.TableId,
-                r.StartTime,  // UTC (đang lưu UTC)
-                r.EndTime,    // UTC
-                r.Status,     // Pending / Approved
-                r.CustomerName,
-                r.Phone
-            })
+            .Select(r => new { r.Id, r.TableId, r.StartTime, r.EndTime, r.Status, r.CustomerName, r.Phone })
             .ToListAsync();
 
         var result = tables.Select(t =>
         {
             var byTable = list.Where(x => x.TableId == t.Id).ToList();
-
-            var activeNow = byTable
-                .Where(r => (r.Status == "Pending" || r.Status == "Approved")
-                            && r.StartTime <= nowUtc && nowUtc < r.EndTime)
-                .OrderByDescending(r => r.Id)
-                .FirstOrDefault();
-
-            var upcoming = byTable
-                .Where(r => (r.Status == "Pending" || r.Status == "Approved")
-                            && r.StartTime > nowUtc)
-                .OrderBy(r => r.StartTime)
-                .FirstOrDefault();
+            var activeNow = byTable.Where(r => r.StartTime <= nowUtc && nowUtc < r.EndTime)
+                                   .OrderByDescending(r => r.Id).FirstOrDefault();
 
             var status = "Available";
-            if (activeNow != null)
-                status = activeNow.Status == "Approved" ? "Approved" : "Pending";
-
-            // đảm bảo serialize ra UTC rõ ràng
-            DateTime? activeStartUtc = activeNow?.StartTime;
-            DateTime? activeEndUtc = activeNow?.EndTime;
-            DateTime? nextStartUtc = upcoming?.StartTime;
-            DateTime? nextEndUtc = upcoming?.EndTime;
+            if (activeNow != null) status = activeNow.Status == "Approved" ? "Approved" : "Pending";
 
             return new
             {
-                tableId = t.Id,
                 tableNumber = t.Number,
                 capacity = t.Capacity,
                 type = t.Type,
                 status,
-
-                currentReservationId = activeNow?.Id,
-                currentCustomer = activeNow?.CustomerName,
-                currentPhone = activeNow?.Phone,
-                currentStartTime = activeStartUtc,
-                currentEndTime = activeEndUtc,
-
-                nextReservationId = upcoming?.Id,
-                nextCustomer = upcoming?.CustomerName,
-                nextPhone = upcoming?.Phone,
-                nextStartTime = nextStartUtc,
-                nextEndTime = nextEndUtc,
-                hasUpcoming = upcoming != null
+                slotCount = 0
             };
         });
 
         return Ok(result);
     }
 
-    // ===== Helper: parse StartTime từ client (local string) => UTC =====
-    private static DateTime ParseClientLocalToUtc(DateTime dt)
-    {
-        // JSON "yyyy-MM-ddTHH:mm" => Kind thường Unspecified
-        // => coi là Local server rồi convert sang UTC để lưu
-        var local = dt.Kind switch
-        {
-            DateTimeKind.Utc => dt.ToLocalTime(), // nếu lỡ gửi UTC
-            DateTimeKind.Local => dt,
-            _ => DateTime.SpecifyKind(dt, DateTimeKind.Local)
-        };
-        return local.ToUniversalTime();
-    }
-
-    // ===== API: USER CREATE RESERVATION =====
+    // ===== API: TẠO ĐƠN ĐẶT BÀN =====
     [HttpPost]
     [Route("api/user/reservations")]
     public async Task<IActionResult> CreateReservation([FromBody] CreateReservationDto dto)
     {
+        // 1. Validate
         var table = await _db.Tables.FirstOrDefaultAsync(t => t.Number == dto.TableNumber);
-        if (table is null) return BadRequest(new { message = "Table not found" });
-
-        if (dto.Hours <= 0 || dto.Hours > 12)
-            return BadRequest(new { message = "Hours invalid" });
+        if (table is null) return BadRequest(new { message = "Bàn không tồn tại" });
+        if (dto.Hours <= 0 || dto.Hours > 12) return BadRequest(new { message = "Thời gian không hợp lệ" });
 
         var startUtc = ParseClientLocalToUtc(dto.StartTime);
         var endUtc = startUtc.AddHours(dto.Hours);
 
-        // bắt buộc tương lai (đệm 1 phút)
-        var minStart = DateTime.UtcNow.AddMinutes(1);
-        if (startUtc < minStart)
-            return BadRequest(new { message = "Thời gian phải ở tương lai" });
+        if (startUtc <= DateTime.UtcNow)
+        {
+            return BadRequest(new { message = "Suất này đã bắt đầu hoặc đã qua. Vui lòng chọn khung giờ khác." });
+        }
 
-        // chặn đặt quá xa 30 ngày
-        var maxStart = DateTime.UtcNow.AddDays(30);
-        if (startUtc > maxStart)
-            return BadRequest(new { message = "Thời gian đặt quá 30 ngày" });
+        if (startUtc > DateTime.UtcNow.AddDays(30))
+            return BadRequest(new { message = "Không được đặt trước quá 30 ngày" });
 
-        // chặn trùng giờ với đơn chưa hủy
         var overlapped = await _db.Reservations.AnyAsync(r =>
-            r.TableId == table.Id &&
-            r.Status != "Canceled" &&
-            startUtc < r.EndTime && endUtc > r.StartTime);
+            r.TableId == table.Id && r.Status != "Canceled" && startUtc < r.EndTime && endUtc > r.StartTime);
+        if (overlapped) return Conflict(new { message = "Khung giờ này đã có người đặt." });
 
-        if (overlapped) return Conflict(new { message = "Thời gian này đã có người đặt" });
-
+        // 2. Lấy User
         int? userId = null;
         var sub = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("sub")?.Value;
         if (int.TryParse(sub, out var id)) userId = id;
 
+        // 3. Lưu DB
         var entity = new ReservationEntity
         {
             TableId = table.Id,
             UserId = userId,
-            StartTime = startUtc,     // ✅ lưu UTC
-            EndTime = endUtc,         // ✅ lưu UTC
+            StartTime = startUtc,
+            EndTime = endUtc,
             CustomerName = (dto.CustomerName ?? "").Trim(),
             Phone = (dto.Phone ?? "").Trim(),
             Status = "Pending",
             CreatedAt = DateTime.UtcNow
         };
-
         _db.Reservations.Add(entity);
         await _db.SaveChangesAsync();
 
-        // realtime
-        await _hub.Clients.All.SendAsync("ReservationCreated", new
+        // 4. GỬI EMAIL (CHẠY NGẦM)
+        if (userId != null)
         {
-            id = entity.Id,
-            tableNumber = table.Number,
-            startTime = entity.StartTime,
-            endTime = entity.EndTime,
-            customerName = entity.CustomerName,
-            phone = entity.Phone,
-            status = entity.Status
-        });
+            var currentUserId = userId.Value;
+            var bookingId = entity.Id;
+            var tableInfo = $"{table.Number} ({table.Type})";
+            var custName = entity.CustomerName;
+            var custPhone = entity.Phone;
+            var bookTime = entity.StartTime;
+            var hours = dto.Hours;
 
-        await _hub.Clients.All.SendAsync("TableUpdated", new
-        {
-            tableNumber = table.Number,
-            status = "Pending",
-            startTime = entity.StartTime,
-            endTime = entity.EndTime,
-            customerName = entity.CustomerName,
-            phone = entity.Phone
-        });
+            Task.Run(async () =>
+            {
+                using (var scope = _scopeFactory.CreateScope())
+                {
+                    var dbScope = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                    var mailerScope = scope.ServiceProvider.GetRequiredService<SendMailService>();
+
+                    try
+                    {
+                        var email = await dbScope.Users
+                            .Where(u => u.Id == currentUserId)
+                            .Select(u => u.Email)
+                            .FirstOrDefaultAsync();
+
+                        if (!string.IsNullOrEmpty(email))
+                        {
+                            // ✏️ SỬA TIÊU ĐỀ: Dùng icon đồng hồ cát và từ ngữ "Đã nhận yêu cầu"
+                            var subject = $"⏳ Đã nhận yêu cầu đặt bàn #{bookingId} - FOURMEN RESTAURANT";
+
+                            var body = GetHtmlEmailBody(custName, bookingId, tableInfo, bookTime, hours, custPhone);
+
+                            await mailerScope.SendEmailAsync(email, subject, body);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[MAIL ERROR] {ex.Message}");
+                    }
+                }
+            });
+        }
+
+        // 5. SIGNALR
+        await _hub.Clients.All.SendAsync("TableUpdated", new { tableNumber = table.Number });
+        await _hub.Clients.All.SendAsync("ReservationCreated", new { id = entity.Id });
 
         return Ok(new { id = entity.Id, status = entity.Status });
     }
 
-    // ===== API: USER CANCEL =====
+    // ===== API: HỦY ĐẶT BÀN =====
     [HttpPut]
     [Route("api/user/reservations/{id:int}/cancel")]
     public async Task<IActionResult> CancelReservation(int id)
@@ -211,112 +197,130 @@ public class UserHomeController : Controller
         var r = await _db.Reservations.Include(x => x.Table).FirstOrDefaultAsync(x => x.Id == id);
         if (r == null) return NotFound();
 
+        var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("sub")?.Value;
+        if (int.TryParse(userIdStr, out var userId) && r.UserId != userId) return Forbid();
+
         if (r.Status == "Canceled") return Ok(new { ok = true });
 
         r.Status = "Canceled";
         await _db.SaveChangesAsync();
 
-        await _hub.Clients.All.SendAsync("ReservationCanceled", new
-        {
-            id = r.Id,
-            tableNumber = r.Table.Number,
-            status = r.Status
-        });
-
-        await _hub.Clients.All.SendAsync("TableUpdated", new
-        {
-            tableNumber = r.Table.Number,
-            status = "Available"
-        });
+        await _hub.Clients.All.SendAsync("TableUpdated", new { tableNumber = r.Table.Number });
+        await _hub.Clients.All.SendAsync("ReservationCanceled", new { id = r.Id });
 
         return Ok(new { ok = true });
     }
 
-    // ===== API: AVAILABLE SLOTS FOR A TABLE (slot theo loại bàn) =====
-    // GET /api/user/tables/1/slots?date=2025-12-23
+    // ===== API: LẤY SLOT (GIỜ TRỐNG) =====
     [HttpGet]
     [Route("api/user/tables/{tableNumber:int}/slots")]
     public async Task<IActionResult> GetAvailableSlots(int tableNumber, [FromQuery] DateOnly? date)
     {
         var table = await _db.Tables.AsNoTracking().FirstOrDefaultAsync(t => t.Number == tableNumber);
-        if (table == null) return NotFound(new { message = "Table not found" });
+        if (table == null) return NotFound();
 
-        // Ngày user chọn (local)
         var day = date ?? DateOnly.FromDateTime(DateTime.Now);
-
-        // Mốc bắt đầu ngày local server
         var localDayStart = DateTime.SpecifyKind(day.ToDateTime(TimeOnly.MinValue), DateTimeKind.Local);
-
-        var nowUtc = DateTime.UtcNow;
         var dayStartUtc = localDayStart.ToUniversalTime();
         var dayEndUtc = localDayStart.AddDays(1).ToUniversalTime();
 
-        // Lấy các reservation đã đặt trong ngày (Pending/Approved)
-        var booked = await _db.Reservations
-            .AsNoTracking()
-            .Where(r => r.TableId == table.Id
-                        && r.Status != "Canceled"
-                        && r.StartTime < dayEndUtc
-                        && r.EndTime > dayStartUtc)
+        var booked = await _db.Reservations.AsNoTracking()
+            .Where(r => r.TableId == table.Id && r.Status != "Canceled" && r.StartTime < dayEndUtc && r.EndTime > dayStartUtc)
             .Select(r => new { r.StartTime, r.EndTime })
             .ToListAsync();
 
-        // =========================
-        // SLOT THEO LOẠI BÀN
-        // =========================
-        // Bạn chỉnh giờ theo ý muốn tại đây.
-        // Slot là theo giờ LOCAL, sau đó convert UTC để check overlap
         (TimeSpan start, TimeSpan end)[] slotTemplates = table.Type switch
         {
-            "VIP" => new[]
-            {
-            (new TimeSpan(17,0,0), new TimeSpan(19,0,0)), // 2h
-            (new TimeSpan(19,0,0), new TimeSpan(21,0,0)), // 2h
-        },
-            "VVIP" => new[]
-            {
-            (new TimeSpan(18,0,0), new TimeSpan(21,0,0)), // 3h
-        },
-            _ => new[]
-            {
-            (new TimeSpan(17,0,0), new TimeSpan(18,0,0)), // 1h
-            (new TimeSpan(18,0,0), new TimeSpan(19,0,0)), // 1h
-            (new TimeSpan(19,0,0), new TimeSpan(20,0,0)), // 1h
-        }
+            "VIP" => new[] { (new TimeSpan(17, 0, 0), new TimeSpan(19, 0, 0)), (new TimeSpan(19, 0, 0), new TimeSpan(21, 0, 0)) },
+            "VVIP" => new[] { (new TimeSpan(18, 0, 0), new TimeSpan(21, 0, 0)) },
+            _ => new[] {
+                (new TimeSpan(17,0,0), new TimeSpan(18,0,0)),
+                (new TimeSpan(18,0,0), new TimeSpan(19,0,0)),
+                (new TimeSpan(19,0,0), new TimeSpan(20,0,0)),
+                (new TimeSpan(20,0,0), new TimeSpan(21,0,0)),
+
+            }
         };
 
         var result = new List<object>();
-
         for (int i = 0; i < slotTemplates.Length; i++)
         {
             var s = slotTemplates[i];
-
             var startLocal = DateTime.SpecifyKind(localDayStart.Date + s.start, DateTimeKind.Local);
             var endLocal = DateTime.SpecifyKind(localDayStart.Date + s.end, DateTimeKind.Local);
-
             var startUtc = startLocal.ToUniversalTime();
             var endUtc = endLocal.ToUniversalTime();
 
-            // bỏ slot quá khứ
-            if (endUtc <= nowUtc) continue;
+            if (startUtc <= DateTime.UtcNow) continue;
 
-            // overlap check
-            bool isTaken = booked.Any(r => startUtc < r.EndTime && endUtc > r.StartTime);
-            if (isTaken) continue; // đã có người đặt => không trả về
-
-            // giờ = duration thực tế (đúng VIP/VVIP)
-            var hours = (int)Math.Ceiling((endUtc - startUtc).TotalHours);
+            if (booked.Any(r => startUtc < r.EndTime && endUtc > r.StartTime)) continue;
 
             result.Add(new
             {
-                slotKey = $"{day:yyyyMMdd}-{i + 1}",
                 startLocal = startLocal.ToString("yyyy-MM-ddTHH:mm"),
                 endLocal = endLocal.ToString("yyyy-MM-ddTHH:mm"),
-                hours
+                hours = (int)(endUtc - startUtc).TotalHours
             });
         }
-
         return Ok(result);
     }
 
+    private static DateTime ParseClientLocalToUtc(DateTime dt)
+    {
+        var local = dt.Kind == DateTimeKind.Utc ? dt.ToLocalTime() : dt;
+        if (dt.Kind == DateTimeKind.Unspecified) local = DateTime.SpecifyKind(dt, DateTimeKind.Local);
+        return local.ToUniversalTime();
+    }
+
+    // ===== HELPER: HTML EMAIL (NỘI DUNG MỚI) =====
+    private static string GetHtmlEmailBody(string custName, int bookingId, string tableInfo, DateTime startTimeUtc, int hours, string phone)
+    {
+        return $@"
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {{ font-family: 'Segoe UI', Arial, sans-serif; color: #333; }}
+                .container {{ max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }}
+                .header {{ background: #f59e0b; color: #fff; padding: 20px; text-align: center; }} /* Màu vàng cam cho trạng thái chờ */
+                .content {{ padding: 20px; }}
+                .info {{ width: 100%; border-collapse: collapse; margin: 15px 0; }}
+                .info td {{ padding: 10px; border-bottom: 1px solid #eee; }}
+                .footer {{ background: #f8f9fa; padding: 15px; text-align: center; font-size: 12px; color: #777; }}
+                .badge {{ background: #fff3cd; color: #856404; padding: 4px 10px; border-radius: 12px; font-weight: bold; font-size: 12px; }}
+                .note {{ background: #fff7ed; border-left: 4px solid #f97316; padding: 10px; margin-top: 20px; font-size: 0.9rem; color: #c2410c; }}
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1>FOURMEN RESTAURANT</h1>
+                    <p>Yêu cầu đặt bàn đã được tiếp nhận</p>
+                </div>
+                <div class='content'>
+                    <h2 style='color: #d97706; margin-top: 0;'>Xin chào {custName},</h2>
+                    <p>Cảm ơn bạn đã gửi yêu cầu đặt bàn. Chúng tôi đang kiểm tra tình trạng bàn và sẽ phản hồi sớm nhất.</p>
+                    
+                    <table class='info'>
+                        <tr><td><b>Mã đơn:</b></td><td>#{bookingId}</td></tr>
+                        <tr><td><b>Bàn số:</b></td><td>{tableInfo}</td></tr>
+                        <tr><td><b>Thời gian:</b></td><td>{startTimeUtc.ToLocalTime():HH:mm dd/MM/yyyy}</td></tr>
+                        <tr><td><b>Thời lượng:</b></td><td>{hours} tiếng</td></tr>
+                        <tr><td><b>SĐT Liên hệ:</b></td><td>{phone}</td></tr>
+                        <tr><td><b>Trạng thái:</b></td><td><span class='badge'>PENDING (Đang chờ duyệt)</span></td></tr>
+                    </table>
+
+                    <div class='note'>
+                        <b>Lưu ý quan trọng:</b><br>
+                        Đây chưa phải là xác nhận đặt bàn thành công. Vui lòng chờ email <b>Xác nhận (Approved)</b> từ quản lý nhà hàng trước khi đến.
+                    </div>
+                </div>
+                <div class='footer'>
+                    <p>123 123 Đường Lê Lợi, Quận 1, TP.HCM | Hotline: 0123 456 789</p>
+                    <p>&copy; {DateTime.Now.Year} FOURMEN RESTAURANT</p>
+                </div>
+            </div>
+        </body>
+        </html>";
+    }
 }

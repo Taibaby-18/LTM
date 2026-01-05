@@ -1,0 +1,349 @@
+﻿@{
+    ViewData["Title"] = "Danh sách đặt bàn";
+}
+
+<style>
+    /* Sử dụng lại biến màu từ Layout */
+    :root {
+        --primary: #0f172a;
+        --gold: #d4a574;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --bg-secondary: #f8fafc;
+        --border: #e2e8f0;
+    }
+
+    .page-wrap {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 0 20px;
+    }
+
+    /* Top Bar */
+    .top-controls {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        border: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .page-title h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: var(--primary);
+        font-weight: 700;
+    }
+
+    .page-title p {
+        margin: 0;
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+
+    .filters {
+        display: flex;
+        gap: 10px;
+    }
+
+    .form-control-custom {
+        padding: 8px 15px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        outline: none;
+        background: var(--bg-secondary);
+    }
+
+        .form-control-custom:focus {
+            border-color: var(--gold);
+        }
+
+    .btn-back {
+        text-decoration: none;
+        color: var(--primary);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 15px;
+    }
+
+        .btn-back:hover {
+            color: var(--gold);
+        }
+
+    /* Table */
+    .table-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        border: 1px solid var(--border);
+        overflow: hidden;
+    }
+
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .custom-table th {
+            background: #f1f5f9;
+            color: #475569;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .custom-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+
+        .custom-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .custom-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+    /* Badge Trạng thái */
+    .badge-status {
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .st-pending {
+        background: #fffbeb;
+        color: #d97706;
+        border: 1px solid #fcd34d;
+    }
+
+    .st-approved {
+        background: #dcfce7;
+        color: #166534;
+        border: 1px solid #86efac;
+    }
+
+    .st-canceled {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fca5a5;
+    }
+
+    /* Nút hành động nhỏ */
+    .btn-icon {
+        border: none;
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+    }
+
+    .btn-approve {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+        .btn-approve:hover {
+            background: #166534;
+            color: white;
+        }
+
+    .btn-cancel {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+        .btn-cancel:hover {
+            background: #991b1b;
+            color: white;
+        }
+
+    .loading-spinner {
+        text-align: center;
+        padding: 40px;
+        color: #64748b;
+    }
+</style>
+
+<div class="page-wrap">
+    <a href="/ManagerHome/Index" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Quay lại Sơ đồ bàn</a>
+
+    <div class="top-controls">
+        <div class="page-title">
+            <h2>Danh sách đặt bàn</h2>
+            <p>Quản lý toàn bộ lịch sử đặt bàn</p>
+        </div>
+        <div class="filters">
+            <input type="date" id="filterDate" class="form-control-custom">
+            <select id="filterStatus" class="form-control-custom">
+                <option value="">Tất cả trạng thái</option>
+                <option value="Pending">⚠️ Chờ duyệt</option>
+                <option value="Approved">✅ Đã duyệt</option>
+                <option value="Canceled">❌ Đã hủy</option>
+            </select>
+            <button class="btn btn-dark" onclick="loadData()"><i class="fa-solid fa-filter"></i> Lọc</button>
+        </div>
+    </div>
+
+    <div class="table-card">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Mã đơn</th>
+                    <th>Khách hàng</th>
+                    <th>SĐT</th>
+                    <th>Bàn</th>
+                    <th>Ngày giờ</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+        <div id="loading" class="loading-spinner">Đang tải dữ liệu...</div>
+        <div id="emptyMsg" class="loading-spinner" style="display:none">Không tìm thấy đơn đặt bàn nào.</div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+<script>
+    // Config
+    const baseUrl = window.location.origin;
+
+    // Init Date: Mặc định hôm nay
+    document.addEventListener("DOMContentLoaded", () => {
+        const d = new Date();
+        const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        document.getElementById("filterDate").value = today;
+
+        loadData();
+        startSignalR();
+    });
+
+    // 1. Load Data từ API
+    async function loadData() {
+        const date = document.getElementById("filterDate").value;
+        const status = document.getElementById("filterStatus").value;
+        const tbody = document.getElementById("tableBody");
+        const loading = document.getElementById("loading");
+        const empty = document.getElementById("emptyMsg");
+
+        tbody.innerHTML = "";
+        loading.style.display = "block";
+        empty.style.display = "none";
+
+        try {
+            // Gọi API GetReservations bạn đã có trong ManagerHomeController
+            let url = `/api/manager/reservations?date=${date}`;
+            if(status) url += `&status=${status}`;
+
+            const res = await fetch(url);
+            const data = await res.json();
+
+            loading.style.display = "none";
+
+            if (data.length === 0) {
+                empty.style.display = "block";
+                return;
+            }
+
+            // Render dòng
+            const html = data.map(item => {
+                const time = new Date(item.startTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const dateStr = new Date(item.startTime).toLocaleDateString('vi-VN');
+
+                let badgeClass = "";
+                let actions = "";
+
+                if(item.status === "Pending") {
+                    badgeClass = "st-pending";
+                    // Chỉ hiện nút duyệt/hủy nếu đang Pending
+                    actions = `
+                        <button class="btn-icon btn-approve" onclick="approve(${item.id})" title="Duyệt"><i class="fa-solid fa-check"></i></button>
+                        <button class="btn-icon btn-cancel" onclick="cancel(${item.id})" title="Hủy"><i class="fa-solid fa-xmark"></i></button>
+                    `;
+                } else if(item.status === "Approved") {
+                    badgeClass = "st-approved";
+                    actions = `<button class="btn-icon btn-cancel" onclick="cancel(${item.id})" title="Hủy"><i class="fa-solid fa-xmark"></i></button>`;
+                } else {
+                    badgeClass = "st-canceled";
+                    actions = `<span style="color:#94a3b8">-</span>`;
+                }
+
+                return `
+                    <tr>
+                        <td>#${item.id}</td>
+                        <td><strong>${item.customerName}</strong></td>
+                        <td>${item.phone}</td>
+                        <td>Bàn ${item.tableNumber}</td>
+                        <td>${time} - ${dateStr}</td>
+                        <td><span class="badge-status ${badgeClass}">${item.status}</span></td>
+                        <td>${actions}</td>
+                    </tr>
+                `;
+            }).join("");
+
+            tbody.innerHTML = html;
+
+        } catch (err) {
+            console.error(err);
+            loading.innerText = "Lỗi tải dữ liệu";
+        }
+    }
+
+    // 2. Hành động Duyệt
+    async function approve(id) {
+        if(!confirm("Duyệt đơn này?")) return;
+        try {
+            await fetch(`/api/manager/reservations/${id}/approve`, { method: "PUT" });
+            loadData(); // Reload lại bảng
+        } catch(e) { alert("Lỗi khi duyệt"); }
+    }
+
+    // 3. Hành động Hủy
+    async function cancel(id) {
+        if(!confirm("Hủy đơn này?")) return;
+        try {
+            await fetch(`/api/manager/reservations/${id}/cancel`, { method: "PUT" });
+            loadData(); // Reload lại bảng
+        } catch(e) { alert("Lỗi khi hủy"); }
+    }
+
+    // 4. SignalR Realtime (Tự refresh khi có đơn mới)
+    async function startSignalR() {
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/hubs/booking")
+            .withAutomaticReconnect()
+            .build();
+
+        connection.on("ReservationCreated", () => loadData());
+        connection.on("ReservationUpdated", () => loadData());
+        connection.on("ReservationCanceled", () => loadData());
+
+        try {
+            await connection.start();
+            console.log("SignalR Connected on List Page");
+        } catch(e) { console.error(e); }
+    }
+</script>

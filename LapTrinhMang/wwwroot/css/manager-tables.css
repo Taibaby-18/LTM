@@ -1,0 +1,368 @@
+﻿:root {
+    --bg: #f6f7fb;
+    --card: #fff;
+    --text: #0f172a;
+    --muted: #64748b;
+    --border: #e5e7eb;
+    --shadow: 0 10px 25px rgba(2,6,23,.06);
+    --radius: 16px;
+    --ok: #22c55e;
+    --pending: #f59e0b;
+    --reserved: #ef4444;
+    --full: #94a3b8;
+    --btn: #111827;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+}
+
+.wrap {
+    max-width: 1100px;
+    margin: 24px auto;
+    padding: 0 14px;
+}
+
+.topbar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0 16px;
+    flex-wrap: wrap;
+}
+
+.title {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -.02em;
+    margin: 0;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 4px;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    background: rgba(255,255,255,.7);
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    border-radius: 999px;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(6px);
+}
+
+.ctrl {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+    .ctrl input, .ctrl select {
+        padding: 8px 10px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: #fff;
+        outline: none;
+    }
+
+.btn {
+    border: 0;
+    border-radius: 999px;
+    padding: 8px 12px;
+    background: var(--btn);
+    color: #fff;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+    .btn:active {
+        transform: translateY(1px);
+    }
+
+.btnGhost {
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text);
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(170px, 1fr));
+    gap: 14px;
+}
+
+@media (max-width:1000px) {
+    .grid {
+        grid-template-columns: repeat(3, minmax(170px,1fr));
+    }
+}
+
+@media (max-width:680px) {
+    .grid {
+        grid-template-columns: repeat(2, minmax(160px,1fr));
+    }
+}
+
+@media (max-width:420px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px;
+    box-shadow: var(--shadow);
+    transition: transform .12s ease, box-shadow .12s ease;
+}
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 16px 40px rgba(2,6,23,.10);
+    }
+
+.cardHead {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.tableNo {
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.badge {
+    font-size: 12px;
+    font-weight: 900;
+    padding: 5px 10px;
+    border-radius: 999px;
+    color: #fff;
+    user-select: none;
+    white-space: nowrap;
+}
+
+    .badge.ok {
+        background: var(--ok);
+    }
+
+    .badge.pending {
+        background: var(--pending);
+    }
+
+    .badge.reserved {
+        background: var(--reserved);
+    }
+
+    .badge.full {
+        background: var(--full);
+    }
+
+.row {
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.35;
+}
+
+    .row b {
+        color: var(--text);
+    }
+
+.typePill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    font-weight: 800;
+    font-size: 12px;
+    background: #fff;
+    color: var(--text);
+}
+
+    .typePill.vip {
+        color: #2563eb;
+        border-color: rgba(37,99,235,.3);
+        background: rgba(37,99,235,.06);
+    }
+
+    .typePill.vvip {
+        color: #7c3aed;
+        border-color: rgba(124,58,237,.3);
+        background: rgba(124,58,237,.06);
+    }
+
+.cardActions {
+    margin-top: 10px;
+}
+
+.cardBtn {
+    width: 100%;
+    border: 0;
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-weight: 900;
+    cursor: pointer;
+    color: #fff;
+    background: var(--btn);
+}
+
+/* ===== Dialog ===== */
+dialog {
+    border: 0;
+    border-radius: 18px;
+    padding: 0;
+    box-shadow: 0 30px 80px rgba(2,6,23,.25);
+    width: min(820px, 94vw);
+}
+
+    dialog::backdrop {
+        background: rgba(15,23,42,.35);
+        backdrop-filter: blur(2px);
+    }
+
+.dlgTop {
+    padding: 16px 16px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.dlgTitle {
+    font-size: 18px;
+    font-weight: 900;
+    margin: 0;
+}
+
+.dlgSub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 3px;
+}
+
+.xbtn {
+    border: 1px solid var(--border);
+    background: #fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.dlgBody {
+    padding: 16px;
+}
+
+.dlgFoot {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.resBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.btnSmall {
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 12px;
+    padding: 8px 10px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.resItem {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px;
+    margin: 10px 0;
+    background: #fff;
+}
+
+.resHead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.resId {
+    font-weight: 900;
+}
+
+.pill {
+    font-size: 12px;
+    font-weight: 900;
+    padding: 4px 10px;
+    border-radius: 999px;
+    color: #fff;
+}
+
+    .pill.pending {
+        background: var(--pending);
+    }
+
+    .pill.approved {
+        background: var(--ok);
+    }
+
+    .pill.canceled {
+        background: #9ca3af;
+    }
+
+.resActions {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+}
+
+.actionBtn {
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 12px;
+    padding: 8px 10px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+    .actionBtn.primary {
+        background: var(--btn);
+        color: #fff;
+        border-color: transparent;
+    }
+
+    .actionBtn[disabled] {
+        opacity: .55;
+        cursor: not-allowed;
+    }
